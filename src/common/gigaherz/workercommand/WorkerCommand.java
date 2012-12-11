@@ -58,13 +58,6 @@ public class WorkerCommand
     public final static ItemStack miner = circuit.getStack(1,6);
     public final static ItemStack filler = circuit.getStack(1,7);
 	
-    // Future Blocks
-    // * Generator
-    // * Transducer
-    // * Energy Extractor
-    // * Induction Furnace
-    // * Duplicator
-
     // The instance of your mod that Forge uses.
     @Instance("WorkerCommand")
     public static WorkerCommand instance;
@@ -121,6 +114,8 @@ public class WorkerCommand
         GameRegistry.addShapelessRecipe(planter, c[0], Item.melonSeeds);
         GameRegistry.addShapelessRecipe(planter, c[0], Item.pumpkinSeeds);
         GameRegistry.addShapelessRecipe(planter, c[0], Item.netherStalkSeeds);
+        GameRegistry.addShapelessRecipe(planter, c[0], Block.cactus);
+        GameRegistry.addShapelessRecipe(planter, c[0], Item.reed);
         GameRegistry.addShapelessRecipe(harvester, c[0], Item.wheat);        
         GameRegistry.addShapelessRecipe(woodcutter, c[0], new ItemStack(Block.sapling, 1, -1));
         

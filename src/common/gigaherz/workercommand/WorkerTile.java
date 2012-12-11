@@ -2,12 +2,19 @@ package gigaherz.workercommand;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
+import java.util.EnumSet;
 import java.util.HashSet;
 
+import basiccomponents.BCLoader;
+import basiccomponents.block.BlockBasicMachine;
+
+import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.implement.IConductor;
+import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.vector.Vector3;
+import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
@@ -17,6 +24,7 @@ import net.minecraft.src.EntityPlayer;
 import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.INetworkManager;
+import net.minecraft.src.Item;
 import net.minecraft.src.ItemStack;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
@@ -28,18 +36,35 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 
 public class WorkerTile extends TileEntityElectricityReceiver implements IInventory, ISidedInventory
-{	// The amount of watts required by the
+{
+	// The amount of watts required by the
 	// electric furnace per tick
-	public static final double WATTS_PER_TICK = 1000;
-	public static final double WATTS_PER_TIME = 50;
+	public static final double MAX_WATTS_PER_TICK = 1000;
+	public static final double WATTS_PER_ACTION = 0; //5000;
 	
     private ItemStack[] inventory;
+    
+    public int powerAccum = 0;
+    public int currentX = 0;
+    public int currentY = 0;
 
     public WorkerTile()
     {
+		super();
         this.inventory = new ItemStack[24];
+		ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
     }
 
+	@Override
+	public void initiate()
+	{
+		refreshConnectors();
+	}
+
+	public void refreshConnectors() {
+		ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() & 7)));
+	}
+	
     @Override
     public int getSizeInventory()
     {
@@ -181,96 +206,186 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
     @Override
     public void updateEntity()
     {
+    	super.updateEntity();
+    	
         if (this.worldObj.isRemote)
         	return;
         
         boolean stateChanged = false;
+        
+        if(this.ticks == 1)
+        {
+    		this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata);        	
+        }
 
+		ForgeDirection inputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() & 7);
+		TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
+
+		if (inputTile != null)
+		{
+			if (inputTile instanceof IConductor)
+			{
+				IConductor conductor = (IConductor) inputTile;
+				ElectricityNetwork network = conductor.getNetwork();
+				
+				if (this.hasWorkToDo())
+				{
+					network.startRequesting(this, MAX_WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+					
+					int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
+					
+					this.powerAccum = received;
+				}
+				else
+				{
+					network.stopRequesting(this);
+				}
+			}
+		}
+
+		if (this.powerAccum >= this.WATTS_PER_ACTION && !this.isDisabled() && this.hasWorkToDo())
+		{
+			System.out.println("Has work to do!");
+			
+			boolean workDone = false;
+			for(int i=21; i < 24; i++)
+			{
+				ItemStack stack = getStackInSlot(i);
+				
+				if(stack == null)
+					continue;
+				
+				Item item = stack.getItem();
+				
+				if(item == null || !(item instanceof CommandCircuit))
+					continue;
+				
+				CommandCircuit circuit = (CommandCircuit)item;
+				
+				if(!circuit.canDoWork(this, stack.getItemDamage()))
+					continue;
+									
+				if(circuit.doWork(this, stack.getItemDamage()))
+				{
+					this.powerAccum -= this.WATTS_PER_ACTION;
+					workDone = true;
+					stateChanged = true;
+					break;
+				}
+			}
+			
+			if(!workDone)
+			{
+				System.out.println("But nothing can be done!");
+			}
+		}
+        
         if (stateChanged)
         {
             this.onInventoryChanged();
         }
-    }
-
-	/**
-     * Returns true if the furnace can smelt an item, i.e. has a source item, destination stack isn't full, etc.
-     */
-    private boolean canGrind()
-    {
-        if (this.inventory[0] == null)
+        
+        if(this.ticks % 20 == 0)
         {
-            return false;
-        }
-        else
-        {
-            ItemStack var1 = Worker.findRecipeResult(this.inventory[0]);
-
-            if (var1 == null)
-            {
-                return false;
-            }
-
-            if (this.inventory[1] == null)
-            {
-                return true;
-            }
-
-            if (!this.inventory[1].isItemEqual(var1))
-            {
-                return false;
-            }
-
-            int result = inventory[1].stackSize + var1.stackSize;
-            return (result <= getInventoryStackLimit() && result <= var1.getMaxStackSize());
+            sendProgressBarUpdate(0, this.powerAccum);
+            sendProgressBarUpdate(1, this.currentX);
+            sendProgressBarUpdate(2, this.currentY);
         }
     }
 
-    /**
-     * Turn one item from the furnace source stack into the appropriate smelted item in the furnace result stack
-     */
-    public void grindItem()
-    {
-        if (this.canGrind())
-        {
-            ItemStack var1 = Worker.findRecipeResult(this.inventory[0]);
-            
-            if (this.inventory[1] == null)
-            {
-                this.inventory[1] = var1.copy();
-            }
-            else if (this.inventory[1].isItemEqual(var1))
-            {
-            	this.inventory[1].stackSize += var1.stackSize;
-            }
-
-            --this.inventory[0].stackSize;
-
-            if (this.inventory[0].stackSize <= 0)
-            {
-                this.inventory[0] = null;
-            }
-        }
-    }
-
-    @Override
+	@Override
     public int getStartInventorySide(ForgeDirection side)
     {
-        if (side == ForgeDirection.UP)
+    	ForgeDirection left, right;
+    	switch(this.getBlockMetadata() & 7)
+    	{
+    	case 2: // North
+    		left = ForgeDirection.WEST;
+    		right = ForgeDirection.EAST;
+    		break;
+    	case 3: // South
+    		left = ForgeDirection.EAST;
+    		right = ForgeDirection.WEST;
+    		break;
+    	case 4: // West
+    		left = ForgeDirection.NORTH;
+    		right = ForgeDirection.SOUTH;
+    		break;
+    	case 5: // East
+    		left = ForgeDirection.SOUTH;
+    		right = ForgeDirection.NORTH;
+    		break;
+    	default:
+    		left = ForgeDirection.WEST;
+    		right = ForgeDirection.EAST;
+    		break;
+    	}
+    			
+        if (side == left)
         {
             return 0;
         }
+        
+        if(side == right)
+        {
+        	return 9;
+        }
 
-        return 1;
+        if(side == ForgeDirection.UP)
+        {
+        	return 18;
+        }
+
+        return 0;
     }
 
     @Override
     public int getSizeInventorySide(ForgeDirection side)
     {
-        return 1;
+    	ForgeDirection left, right;
+		switch(this.getBlockMetadata() & 7)
+		{
+		case 2: // North
+			left = ForgeDirection.WEST;
+			right = ForgeDirection.EAST;
+			break;
+		case 3: // South
+			left = ForgeDirection.EAST;
+			right = ForgeDirection.WEST;
+			break;
+		case 4: // West
+			left = ForgeDirection.NORTH;
+			right = ForgeDirection.SOUTH;
+			break;
+		case 5: // East
+			left = ForgeDirection.SOUTH;
+			right = ForgeDirection.NORTH;
+			break;
+		default:
+			left = ForgeDirection.WEST;
+			right = ForgeDirection.EAST;
+			break;
+		}
+				
+	    if (side == left)
+	    {
+	        return 9;
+	    }
+	    
+	    if(side == right)
+	    {
+	    	return 9;
+	    }
+	
+	    if(side == ForgeDirection.UP)
+	    {
+	    	return 3;
+	    }
+
+        return 0;
     }
 
-    /*
-    private void sendFlowUpdate() {
+    private void sendProgressBarUpdate(int bar, int value) {
     	ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
     	DataOutputStream outputStream = new DataOutputStream(bos);
     	try {
@@ -278,39 +393,113 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
     		outputStream.writeInt(this.xCoord);
     		outputStream.writeInt(this.yCoord);
     		outputStream.writeInt(this.zCoord);
-    		outputStream.writeInt(2);
-    		outputStream.writeInt(this.powerFlow);
+    		outputStream.writeInt(bar);
+    		outputStream.writeInt(value);
 		} catch (Exception ex) {
     		ex.printStackTrace();
     	}
 
     	Packet250CustomPayload packet = new Packet250CustomPayload();
-    	packet.channel = "Plasma";
+    	packet.channel = "WorkerCommand";
     	packet.data = bos.toByteArray();
     	packet.length = bos.size();
     	
-    	PacketDispatcher.sendPacketToAllAround(this.xCoord, this.yCoord, this.zCoord, 20, this.worldObj.getWorldInfo().getDimension(), packet);
-	}	*/
+    	PacketDispatcher.sendPacketToAllAround(this.xCoord, this.yCoord, this.zCoord, 12, this.worldObj.provider.dimensionId, packet);
+	}
     
 	public void updateProgressBar(int par1, int par2) {
-
-		/*
+        //Worker.updateBlockState(this.isPowered(), this.worldObj, this.xCoord, this.yCoord, this.zCoord);
         if (par1 == 0)
         {
-            this.progressTime = par2;
+            this.powerAccum = par2;
         }
-
         if (par1 == 1)
         {
-            this.powerTicks = par2;
+            this.currentX = par2;
         }
-        
-        if (par1 == 2)
+        if (par1 == 0)
         {
-            this.powerFlow = par2;
-
-            Worker.updateBlockState(this.isPowered(), this.worldObj, this.xCoord, this.yCoord, this.zCoord);
+            this.currentY = par2;
         }
-        */
+	}
+
+    private boolean hasWorkToDo() {
+
+    	for(int i=21; i<24; i++)
+		{
+			ItemStack stack = inventory[i];
+			
+			if(stack == null)
+				continue;
+			
+			Item item = stack.getItem();
+			
+			if(item == null || !(item instanceof CommandCircuit))
+				continue;
+			
+			CommandCircuit circuit = (CommandCircuit)item;
+			
+			if(circuit.canDoWork(this, stack.getItemDamage()))
+			{
+				return true;
+			}
+		}
+    	
+		return false;
+	}
+
+	public boolean hasItemInInputArea(ItemStack itemStack) 
+	{
+		for(int i=0;i<9;i++)
+		{
+			ItemStack slot = inventory[i];
+			if(slot == null)
+				continue;
+			
+			if(slot.itemID != itemStack.itemID)
+				continue;
+			
+			int damage = itemStack.getItemDamage();
+			
+			if(damage < 0 || slot.getItemDamage() == damage)
+				return true;
+		}
+		return false;
+	}
+
+	public boolean hasSpaceInOutputAreaForItem(ItemStack itemStack) 
+	{
+		for(int i=9;i<18;i++)
+		{
+			ItemStack slot = inventory[i];
+			if(slot == null)
+				return true;
+			
+			if(slot.itemID != itemStack.itemID)
+				continue;
+			
+			int damage = itemStack.getItemDamage();
+			
+			if(damage >= 0 && slot.getItemDamage() != damage)
+				continue;
+			
+			if(slot.stackSize + itemStack.stackSize <= slot.getMaxStackSize())
+				return true;
+		}
+		return false;
+	}
+
+	public boolean hasToolInToolArea(ItemStack itemStack)
+	{
+		for(int i=18;i<21;i++)
+		{
+			ItemStack slot = inventory[i];
+			if(slot == null)
+				continue;
+			
+			if(slot.itemID == itemStack.itemID)
+				return true;
+		}
+		return false;
 	}
 }

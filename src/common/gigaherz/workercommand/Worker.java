@@ -119,6 +119,44 @@ public class Worker extends BlockMachine
         }
     }
 
+	@Override
+	public boolean onUseWrench(World world, int x, int y, int z, EntityPlayer par5EntityPlayer, int side, float hitX, float hitY, float hitZ)
+	{
+		int meta = world.getBlockMetadata(x, y, z);
+		int orientation = meta & 7;
+		
+        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+
+        if (tileEntity == null || !(tileEntity instanceof WorkerTile))
+            return false;
+        
+        WorkerTile worker = (WorkerTile)tileEntity;
+
+		// Re-orient the block
+		switch (orientation)
+		{
+			case 2:
+				orientation = 4;
+				break;
+			case 5:
+				orientation = 2;
+				break;
+			case 3:
+				orientation = 5;
+				break;
+			case 4:
+				orientation = 3;
+				break;
+		}
+
+		meta = meta & 8 | orientation;
+		
+		world.setBlockMetadataWithNotify(x, y, z, meta);
+		worker.refreshConnectors();
+		
+		return true;
+	}
+
     @Override
 	public boolean onMachineActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
@@ -153,56 +191,5 @@ public class Worker extends BlockMachine
     public TileEntity createTileEntity(World world, int metadata)
     {
         return new WorkerTile();
-    }
-
-    // Statics (recipe book)
-    public static final List<Recipe> recipes = new ArrayList<Recipe>();
-    
-    public static ItemStack findRecipeResult(ItemStack input) {
-    	for(Recipe r : recipes) {
-    		if(r.input.itemID == input.itemID)
-    		{
-    			if(r.input.getItemDamage() < 0 || r.input.getItemDamage() == input.getItemDamage())
-    				return r.result;
-    		}
-    	}
-    	return null;
-    }
-
-    public static void addRecipe(Block block, ItemStack resultStack) {
-    	recipes.add(new Recipe(new ItemStack(block.blockID, 1, -1), resultStack));
-    }
-
-    public static void addRecipe(Item item, ItemStack resultStack) {
-    	recipes.add(new Recipe(new ItemStack(item.shiftedIndex, 1, -1), resultStack));
-    }
-
-    public static void addRecipe(ItemStack stack, ItemStack resultStack) {
-    	recipes.add(new Recipe(stack, resultStack));
-    }
-
-    public static void addRecipe(int inputId, ItemStack resultStack) {
-    	recipes.add(new Recipe(new ItemStack(inputId, 1, -1), resultStack));
-    }
-
-    private static class Recipe
-    {
-        private ItemStack result;
-        private ItemStack input;
-
-        private Recipe(ItemStack inputId, ItemStack resultStack) {
-        	input = inputId;
-        	result = resultStack;
-        }
-
-        public ItemStack getResult()
-        {
-            return result;
-        }
-
-        public ItemStack getInput()
-        {
-            return input;
-        }
     }
 }

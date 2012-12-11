@@ -12,6 +12,9 @@ import net.minecraft.src.*;
 public class WorkerContainer extends Container
 {
     protected WorkerTile worker;
+    protected int lastPowerAcc=0;
+    protected int lastX=0;
+    protected int lastY=0;
 
     public WorkerContainer(WorkerTile tileEntity, InventoryPlayer playerInventory)
     {
@@ -32,7 +35,7 @@ public class WorkerContainer extends Container
         {
             addSlotToContainer(new Slot(tileEntity, 
                 		i + 18,
-                		92, 
+                		68, 
                 		17 + i * 18));
         }
 
@@ -40,7 +43,7 @@ public class WorkerContainer extends Container
         {
             addSlotToContainer(new Slot(tileEntity, 
                 		i + 21,
-                		68, 
+                		92, 
                 		17 + i * 18));
         }
 
@@ -86,42 +89,43 @@ public class WorkerContainer extends Container
     public void addCraftingToCrafters(ICrafting crafter)
     {
         super.addCraftingToCrafters(crafter);
-        //crafter.sendProgressBarUpdate(this, 0, this.worker.progressTime);
+        crafter.sendProgressBarUpdate(this, 0, this.worker.powerAccum);
+        crafter.sendProgressBarUpdate(this, 1, this.worker.currentX);
+        crafter.sendProgressBarUpdate(this, 2, this.worker.currentY);
     }
     
     public void updateCraftingResults()
     {
         super.updateCraftingResults();
 
-        /*for (int i = 0; i < this.crafters.size(); ++i)
+        for (int i = 0; i < this.crafters.size(); ++i)
         {
             ICrafting crafter = (ICrafting)this.crafters.get(i);
 	
-	        if (this.lastProgress != this.worker.progressTime)
+	        if (this.lastPowerAcc != this.worker.powerAccum)
 	        {
-	        	crafter.sendProgressBarUpdate(this, 0, this.worker.progressTime);
+	        	crafter.sendProgressBarUpdate(this, 0, this.worker.powerAccum);
 	        }
 	
-	        if (this.lastPowerTicks != this.worker.powerTicks)
+	        if (this.lastX != this.worker.currentX)
 	        {
-	        	crafter.sendProgressBarUpdate(this, 1, this.worker.powerTicks);
+	        	crafter.sendProgressBarUpdate(this, 1, this.worker.currentX);
 	        }
 	        
-	        if (this.lastPowerFlow != this.worker.powerFlow)
+	        if (this.lastY != this.worker.currentY)
 	        {
-	            crafter.sendProgressBarUpdate(this, 2, this.worker.powerFlow);
+	            crafter.sendProgressBarUpdate(this, 2, this.worker.currentY);
 	        }
         }
         
-        this.lastProgress = this.worker.progressTime;
-        this.lastPowerTicks = this.worker.powerTicks;
-        this.lastPowerFlow = this.worker.powerFlow;
-        */
+        this.lastPowerAcc = this.worker.powerAccum;
+        this.lastX = this.worker.currentX;
+        this.lastY = this.worker.currentY;        
     }
 
 	@SideOnly(Side.CLIENT)
-    public void updateProgressBar(int par1, int par2)
+    public void updateProgressBar(int bar, int value)
     {
-		this.worker.updateProgressBar(par1, par2);
+		this.worker.updateProgressBar(bar, value);
     }
 }
