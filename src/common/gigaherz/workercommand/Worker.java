@@ -152,7 +152,7 @@ public class Worker extends BlockMachine
 		meta = meta & 8 | orientation;
 		
 		world.setBlockMetadataWithNotify(x, y, z, meta);
-		worker.refreshConnectors();
+		worker.refreshConnectorsAndWorkArea();
 		
 		return true;
 	}

@@ -25,7 +25,9 @@ import net.minecraft.src.FurnaceRecipes;
 import net.minecraft.src.IInventory;
 import net.minecraft.src.INetworkManager;
 import net.minecraft.src.Item;
+import net.minecraft.src.ItemBlock;
 import net.minecraft.src.ItemStack;
+import net.minecraft.src.Material;
 import net.minecraft.src.NBTTagCompound;
 import net.minecraft.src.NBTTagList;
 import net.minecraft.src.Packet;
@@ -40,13 +42,16 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 	// The amount of watts required by the
 	// electric furnace per tick
 	public static final double MAX_WATTS_PER_TICK = 1000;
-	public static final double WATTS_PER_ACTION = 0; //5000;
+	public static final double WATTS_PER_ACTION = 5000;
 	
     private ItemStack[] inventory;
     
     public int powerAccum = 0;
     public int currentX = 0;
-    public int currentY = 0;
+    public int currentZ = 0;
+    
+    public int minX, maxX;
+    public int minZ, maxZ;
 
     public WorkerTile()
     {
@@ -58,11 +63,38 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 	@Override
 	public void initiate()
 	{
-		refreshConnectors();
+		refreshConnectorsAndWorkArea();
 	}
 
-	public void refreshConnectors() {
-		ElectricityConnections.registerConnector(this, EnumSet.of(ForgeDirection.getOrientation(this.getBlockMetadata() & 7)));
+	public void refreshConnectorsAndWorkArea()
+	{
+		int orientation = this.getBlockMetadata() & 7;
+		ForgeDirection direction = ForgeDirection.getOrientation(orientation);
+		ElectricityConnections.registerConnector(this, EnumSet.of(direction));
+		
+		System.out.println("Orientation: " + orientation);
+		
+		if(direction.offsetZ != 0)
+		{
+			this.minX = -2;
+			this.maxX =  2;
+			this.minZ = -1 * direction.offsetZ;
+			this.maxZ = -5 * direction.offsetZ;
+		}
+		else if(direction.offsetX != 0)
+		{
+			this.minZ = -2;
+			this.maxZ =  2;
+			this.minX = -1 * direction.offsetX;
+			this.maxX = -5 * direction.offsetX;
+		}
+		
+		if(this.currentX < this.minX || this.currentX > this.maxX)
+			this.currentX = this.minX;
+
+		if(this.currentZ < this.minZ || this.currentZ > this.maxZ)
+			this.currentZ = this.minZ;
+		
 	}
 	
     @Override
@@ -242,6 +274,8 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 				}
 			}
 		}
+		
+		this.powerAccum += 1000;
 
 		if (this.powerAccum >= this.WATTS_PER_ACTION && !this.isDisabled() && this.hasWorkToDo())
 		{
@@ -270,6 +304,20 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 					this.powerAccum -= this.WATTS_PER_ACTION;
 					workDone = true;
 					stateChanged = true;
+					
+					this.currentX++;
+					if(this.currentX > this.maxX)
+					{
+						this.currentX = this.minX;
+						this.currentZ++;
+						if(this.currentZ > this.maxZ)
+						{
+							this.currentZ = this.minZ;
+						}
+					}
+					
+					System.out.println("New location: " + this.currentX + ", " + this.currentZ);
+					
 					break;
 				}
 			}
@@ -289,7 +337,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
         {
             sendProgressBarUpdate(0, this.powerAccum);
             sendProgressBarUpdate(1, this.currentX);
-            sendProgressBarUpdate(2, this.currentY);
+            sendProgressBarUpdate(2, this.currentZ);
         }
     }
 
@@ -419,7 +467,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
         }
         if (par1 == 0)
         {
-            this.currentY = par2;
+            this.currentZ = par2;
         }
 	}
 
@@ -467,6 +515,22 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 		return false;
 	}
 
+	public boolean hasAnyBlockInInputArea()
+	{
+		for(int i=0;i<9;i++)
+		{
+			ItemStack slot = inventory[i];
+			if(slot == null)
+				continue;
+			
+			Item item = slot.getItem();
+			
+			if(item instanceof ItemBlock)
+				return true;
+		}
+		return false;
+	}
+
 	public boolean hasSpaceInOutputAreaForItem(ItemStack itemStack) 
 	{
 		for(int i=9;i<18;i++)
@@ -501,5 +565,15 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 				return true;
 		}
 		return false;
+	}
+
+	public int getTopY() 
+	{
+		for(int y=0;y<4;y++)
+		{
+			if(this.worldObj.getBlockMaterial(this.xCoord + this.currentX, this.yCoord + y, this.zCoord + this.currentZ) == Material.air)
+				return y;
+		}
+		return -1;
 	}
 }

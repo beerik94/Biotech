@@ -91,7 +91,7 @@ public class WorkerContainer extends Container
         super.addCraftingToCrafters(crafter);
         crafter.sendProgressBarUpdate(this, 0, this.worker.powerAccum);
         crafter.sendProgressBarUpdate(this, 1, this.worker.currentX);
-        crafter.sendProgressBarUpdate(this, 2, this.worker.currentY);
+        crafter.sendProgressBarUpdate(this, 2, this.worker.currentZ);
     }
     
     public void updateCraftingResults()
@@ -112,15 +112,15 @@ public class WorkerContainer extends Container
 	        	crafter.sendProgressBarUpdate(this, 1, this.worker.currentX);
 	        }
 	        
-	        if (this.lastY != this.worker.currentY)
+	        if (this.lastY != this.worker.currentZ)
 	        {
-	            crafter.sendProgressBarUpdate(this, 2, this.worker.currentY);
+	            crafter.sendProgressBarUpdate(this, 2, this.worker.currentZ);
 	        }
         }
         
         this.lastPowerAcc = this.worker.powerAccum;
         this.lastX = this.worker.currentX;
-        this.lastY = this.worker.currentY;        
+        this.lastY = this.worker.currentZ;        
     }
 
 	@SideOnly(Side.CLIENT)
