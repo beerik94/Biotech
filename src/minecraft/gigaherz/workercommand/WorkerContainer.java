@@ -1,13 +1,13 @@
 package gigaherz.workercommand;
 
-import java.util.EnumSet;
-
-import cpw.mods.fml.common.ITickHandler;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.ICrafting;
+import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.SlotFurnace;
 import cpw.mods.fml.common.Side;
-import cpw.mods.fml.common.TickType;
 import cpw.mods.fml.common.asm.SideOnly;
-import cpw.mods.fml.common.registry.TickRegistry;
-import net.minecraft.src.*;
 
 public class WorkerContainer extends Container
 {

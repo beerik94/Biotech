@@ -11,11 +11,6 @@
 /runtime/*
 /temp/*
 /resources/*
-/src/common/cpw/*
-/src/common/net/*
-/src/common/org/*
-/src/common/universalelectricity/*
-/src/common/basiccomponents/*
 /src/minecraft/cpw/*
 /src/minecraft/net/*
 /src/minecraft/org/*
@@ -28,15 +23,14 @@ LICENSE.txt
 *.bat
 *.sh
 
-/src/common/fml_at.cfg
-/src/common/fml_marker.cfg
-/src/common/fmlversion.properties
-/src/common/forge_at.cfg
-/src/common/mcpmod.info
+/src/minecraft/Start.java
+/src/minecraft/dan200/computer/api/IComputerAccess.java
+/src/minecraft/dan200/computer/api/IPeripheral.java
+/src/minecraft/fml_at.cfg
+/src/minecraft/fml_marker.cfg
+/src/minecraft/fmlversion.properties
+/src/minecraft/forge_at.cfg
 /src/minecraft/forge_logo.png
 /src/minecraft/mcp.png
-/src/minecraft/Start.java
-/src/common/buildcraft/api/tools/IToolWrench.java
-/src/common/dan200/computer/api/IComputerAccess.java
-/src/common/dan200/computer/api/IPeripheral.java
-/src/common/railcraft/common/api/core/items/ICrowbar.java
+/src/minecraft/mcpmod.info
+/src/minecraft/railcraft/common/api/core/items/ICrowbar.java

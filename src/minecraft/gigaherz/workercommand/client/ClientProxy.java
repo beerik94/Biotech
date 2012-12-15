@@ -1,7 +1,7 @@
 package gigaherz.workercommand.client;
 
-import net.minecraftforge.client.MinecraftForgeClient;
 import gigaherz.workercommand.CommonProxy;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 public class ClientProxy extends CommonProxy
 {

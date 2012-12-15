@@ -2,9 +2,11 @@ package gigaherz.workercommand.client;
 
 import gigaherz.workercommand.WorkerContainer;
 import gigaherz.workercommand.WorkerTile;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
-import net.minecraft.src.*;
 
 public class WorkerGui extends GuiContainer
 {
