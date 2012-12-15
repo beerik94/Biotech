@@ -15,8 +15,7 @@ public class WorkerGui extends GuiContainer
     public WorkerGui(InventoryPlayer playerInventory, WorkerTile tileEntity)
     {
         super(new WorkerContainer(tileEntity, playerInventory));
-
-    	this.worker = tileEntity;
+        this.worker = tileEntity;
     }
 
     @Override
@@ -29,14 +28,13 @@ public class WorkerGui extends GuiContainer
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
-    {    	
+    {
         int picture = mc.renderEngine.getTexture("/gigaherz/workercommand/worker.png");
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.mc.renderEngine.bindTexture(picture);
         int x = (width - xSize) / 2;
         int y = (height - ySize) / 2;
         this.drawTexturedModalRect(x, y, 0, 0, xSize, ySize);
-
         /*
         if (this.grinder.isPowered())
         {

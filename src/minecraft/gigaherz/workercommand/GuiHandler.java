@@ -17,7 +17,7 @@ public class GuiHandler implements IGuiHandler
         {
             return new WorkerContainer((WorkerTile) tileEntity, player.inventory);
         }
-        
+
         return null;
     }
 

@@ -18,39 +18,41 @@ public class ClientPacketHandler implements IPacketHandler
 {
     @Override
     public void onPacketData(INetworkManager manager, Packet250CustomPayload payload, Player player)
-    {	
-    	if (payload.channel.equals("Plasma")) {
-    		this.handleMachineUpdate(payload);
-    	}
+    {
+        if (payload.channel.equals("Plasma"))
+        {
+            this.handleMachineUpdate(payload);
+        }
     }
 
-	private void handleMachineUpdate(Packet250CustomPayload payload) {
-		
-		ByteArrayInputStream bis = new ByteArrayInputStream(payload.data);
-		DataInputStream ird = new DataInputStream(bis);
+    private void handleMachineUpdate(Packet250CustomPayload payload)
+    {
+        ByteArrayInputStream bis = new ByteArrayInputStream(payload.data);
+        DataInputStream ird = new DataInputStream(bis);
 
-		try {
-			int dim = ird.readInt();
-			int x = ird.readInt();
-			int y = ird.readInt();
-			int z = ird.readInt();
-			int index = ird.readInt();
-			int value = ird.readInt();
-			
-			World world = DimensionManager.getWorld(dim);
-			TileEntity tile = world.getBlockTileEntity(x, y, z);
-			
-			if(!(tile instanceof WorkerTile))
-				return;
-			
-			WorkerTile grinder = (WorkerTile)tile;
-			
-			grinder.updateProgressBar(index, value);
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try
+        {
+            int dim = ird.readInt();
+            int x = ird.readInt();
+            int y = ird.readInt();
+            int z = ird.readInt();
+            int index = ird.readInt();
+            int value = ird.readInt();
+            World world = DimensionManager.getWorld(dim);
+            TileEntity tile = world.getBlockTileEntity(x, y, z);
 
-	}
+            if (!(tile instanceof WorkerTile))
+            {
+                return;
+            }
+
+            WorkerTile grinder = (WorkerTile)tile;
+            grinder.updateProgressBar(index, value);
+        }
+        catch (IOException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 }
