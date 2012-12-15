@@ -8,10 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.MathHelper;
-import net.minecraft.world.World;
 import cpw.mods.fml.common.Side;
 import cpw.mods.fml.common.asm.SideOnly;
 
@@ -76,38 +72,45 @@ public class CommandCircuit extends Item {
     		subItems.add(new ItemStack(this, 1, meta));
     	}
     }
+    
+    final ItemStack[] planterStacks = new ItemStack[]{
+			new ItemStack(Item.seeds, 1),
+			new ItemStack(Item.melonSeeds, 1), 
+			new ItemStack(Item.pumpkinSeeds, 1), 
+			new ItemStack(Item.netherStalkSeeds, 1),
+			new ItemStack(Block.cactus, 1), 
+			new ItemStack(Item.reed, 1),
+    		new ItemStack(Block.sapling, 1, -1)};
 
+    final ItemStack[] harvesterStacks = new ItemStack[]{
+			new ItemStack(Item.seeds, 1),
+			new ItemStack(Item.melonSeeds, 1), 
+			new ItemStack(Item.pumpkinSeeds, 1), 
+			new ItemStack(Item.netherStalkSeeds, 1),
+			new ItemStack(Item.reed, 1)};
+
+    final ItemStack[] woodcutterStacks = new ItemStack[]{
+    		new ItemStack(Block.cactus, 1), 
+    		new ItemStack(Block.wood, 1, -1)};
+    
+    final ItemStack[] woodcutterToolStacks = new ItemStack[]{
+			new ItemStack(Item.axeWood, 1),
+			new ItemStack(Item.axeStone, 1),
+			new ItemStack(Item.axeSteel, 1),
+			new ItemStack(Item.axeGold, 1),
+			new ItemStack(Item.axeDiamond, 1)};
+    
 	public boolean canDoWork(WorkerTile workerTile, int damage) 
 	{
 		switch(damage)
 		{
 		case 1: // planter
-			return hasOneOf(workerTile,
-					new ItemStack(Item.seeds, 1),
-					new ItemStack(Item.melonSeeds, 1), 
-					new ItemStack(Item.pumpkinSeeds, 1), 
-					new ItemStack(Item.netherStalkSeeds, 1),
-					new ItemStack(Block.cactus, 1), 
-					new ItemStack(Item.reed, 1),
-	        		new ItemStack(Block.sapling, 1, -1));
+			return hasOneOf(workerTile, planterStacks);
 		case 2: // harvester
-			return hasSlotWithSpaceFor(workerTile,
-					new ItemStack(Item.seeds, 1),
-					new ItemStack(Item.melonSeeds, 1), 
-					new ItemStack(Item.pumpkinSeeds, 1), 
-					new ItemStack(Item.netherStalkSeeds, 1),
-					new ItemStack(Item.reed, 1));
+			return hasSlotWithSpaceFor(workerTile, harvesterStacks);
 		case 3: // woodcutter
-			return hasSlotWithSpaceFor(workerTile,
-					new ItemStack(Block.cactus, 1), 
-	        		new ItemStack(Block.wood, 1, -1))
-	        			&& hasToolOf(workerTile,
-								new ItemStack(Item.axeWood, 1),
-								new ItemStack(Item.axeStone, 1),
-								new ItemStack(Item.axeSteel, 1),
-								new ItemStack(Item.axeGold, 1),
-								new ItemStack(Item.axeDiamond, 1)
-									   );			
+			return hasSlotWithSpaceFor(workerTile, woodcutterStacks)
+	        			&& hasToolOf(workerTile, woodcutterToolStacks);		
 		case 4: // fertilizer	
 			// TODO: implement
 			break;
@@ -156,9 +159,7 @@ public class CommandCircuit extends Item {
 		switch(damage)
 		{
 		case 1: // planter
-			// TODO: implement
-			System.out.println("Runnig dummy planter.");
-			return true;
+			return runPlanter(workerTile);
 		case 2: // harvester
 			// TODO: implement
 			break;//return true;
@@ -175,147 +176,102 @@ public class CommandCircuit extends Item {
 			// TODO: implement
 			break;
 		case 7: // filler
-			for(int i=0;i<9; i++)
-			{
-				ItemStack stack = workerTile.getStackInSlot(i);
-				if(stack == null)
-					continue;
-
-				Item item = stack.getItem();
-				
-				if(!(item instanceof ItemBlock))
-					continue;
-				
-				int topY = workerTile.getTopY();
-				
-				if(topY < 0)
-					continue;
-				
-				EntityPlayer fakePlayer = new FakePlayer(workerTile.worldObj);
-
-	            ItemBlock block = (ItemBlock)item;
-	            
-	            int cx = workerTile.xCoord + workerTile.currentX;
-	            int cy = workerTile.yCoord + topY;
-	            int cz = workerTile.zCoord + workerTile.currentZ;
-	            for(int s=0;s<6;s++)
-	            {
-	            	int tx=cx, ty=cy, tz=cz;
-	            	switch(s)
-	            	{
-	            	case 0: ty++; break;
-	            	case 1: ty--; break;
-	            	case 2: tz++; break;
-	            	case 3: tz--; break;
-	            	case 4: tx++; break;
-	            	case 5: tx--; break;
-	            	}
-	            	
-		            if (!block.canPlaceItemBlockOnSide(workerTile.worldObj, tx, ty, tz, s, fakePlayer, stack))
-		            {
-		            	continue;
-		            }
-		            				
-					if(block.onItemUse(stack, fakePlayer, workerTile.worldObj, tx, ty, tz, s, (float)0, (float)0, (float)0))
-					{
-						System.out.println("Worked!");
-						stack.stackSize++;
-						return true;
-					}
-	            }
-			}
-			break;
+			return runFiller(workerTile);
 		}
 		return false;
 	}
-}
 
-class FakePlayer extends EntityPlayer
-{
-    public FakePlayer(World par1World)
-    {
-        super(par1World);
-    }
+	private boolean runPlanter(WorkerTile workerTile) 
+	{
+		for(int i=0;i<9; i++)
+		{
+			ItemStack stack = workerTile.getStackInSlot(i);
+			if(stack == null)
+				continue;
 
-    /**
-     * sets the players height back to normal after doing things like sleeping and dieing
-     */
-    protected void resetHeight()
-    {
-    }
+			int dmg = stack.getItemDamage();
+			
+			Item item = null;
+			for(ItemStack st : planterStacks)
+			{
+				if(stack.itemID == st.itemID && (st.getItemDamage() < 0 || (st.getItemDamage() == dmg)))
+				{
+					item = st.getItem();
+				}
+			}
+			
+			if(item == null)
+				continue;
+			
+			int topY = workerTile.getTopY();
+			
+			if(topY < 0)
+				continue;
+			
+			EntityPlayer fakePlayer = new FakePlayer(workerTile.worldObj);
 
-    /**
-     * Called when the entity is attacked.
-     */
-    public boolean attackEntityFrom(DamageSource par1DamageSource, int par2)
-    {
-        return false;
-    }
+		    int cx = workerTile.xCoord + workerTile.currentX;
+		    int cy = workerTile.yCoord + topY;
+		    int cz = workerTile.zCoord + workerTile.currentZ;
+		    
+	    
+	    	int tx=cx, ty=cy-1, tz=cz;
+	    			
+			if(item.onItemUse(stack, fakePlayer, workerTile.worldObj, tx, ty, tz, 1, 0, 0, 0))
+			{
+				System.out.println("Worked!");
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean runFiller(WorkerTile workerTile)
+	{
+		for(int i=0;i<9; i++)
+		{
+			ItemStack stack = workerTile.getStackInSlot(i);
+			if(stack == null)
+				continue;
 
-    /**
-     * Sets the position and rotation. Only difference from the other one is no bounding on the rotation. Args: posX,
-     * posY, posZ, yaw, pitch
-     */
-    public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9)
-    {
-        this.posX = par1;
-        this.posY = par3;
-        this.posZ = par5;
-    }
+			Item item = stack.getItem();
+			
+			if(!(item instanceof ItemBlock))
+				continue;
+			
+			int topY = workerTile.getTopY();
+			
+			if(topY < 0)
+				continue;
+			
+			EntityPlayer fakePlayer = new FakePlayer(workerTile.worldObj);
 
-    public void updateCloak()
-    {
-    }
-
-    /**
-     * Called to update the entity's position/logic.
-     */
-    public void onUpdate()
-    {
-    }
-
-    public float getShadowSize()
-    {
-        return 0.0F;
-    }
-
-    /**
-     * Called frequently so the entity can update its state every tick as required. For example, zombies and skeletons
-     * use this to react to sunlight and start to burn.
-     */
-    public void onLivingUpdate()
-    {
-    }
-
-    /**
-     * Sets the held item, or an armor slot. Slot 0 is held item. Slot 1-4 is armor. Params: Item, slot
-     */
-    public void setCurrentItemOrArmor(int par1, ItemStack par2ItemStack)
-    {
-    }
-
-    public float getEyeHeight()
-    {
-        return 0.5f;
-    }
-
-    public void sendChatToPlayer(String par1Str)
-    {
-    }
-
-    /**
-     * Returns true if the command sender is allowed to use the given command.
-     */
-    public boolean canCommandSenderUseCommand(int par1, String par2Str)
-    {
-        return false;
-    }
-
-    /**
-     * Return the coordinates for this player as ChunkCoordinates.
-     */
-    public ChunkCoordinates getPlayerCoordinates()
-    {
-        return new ChunkCoordinates(MathHelper.floor_double(this.posX + 0.5D), MathHelper.floor_double(this.posY + 0.5D), MathHelper.floor_double(this.posZ + 0.5D));
-    }
+		    ItemBlock block = (ItemBlock)item;
+		    
+		    int cx = workerTile.xCoord + workerTile.currentX;
+		    int cy = workerTile.yCoord + topY;
+		    int cz = workerTile.zCoord + workerTile.currentZ;
+		    for(int s=0;s<6;s++)
+		    {
+		    	int tx=cx, ty=cy, tz=cz;
+		    	switch(s)
+		    	{
+		    	case 0: ty++; break;
+		    	case 1: ty--; break;
+		    	case 2: tz++; break;
+		    	case 3: tz--; break;
+		    	case 4: tx++; break;
+		    	case 5: tx--; break;
+		    	}
+		    				
+				if(block.onItemUse(stack, fakePlayer, workerTile.worldObj, tx, ty, tz, s, 0, 0, 0))
+				{
+					System.out.println("Worked!");
+					return true;
+				}
+		    }
+		}
+		return false;
+	}
+	
 }

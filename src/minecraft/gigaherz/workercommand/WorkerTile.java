@@ -27,8 +27,9 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 {
 	// The amount of watts required by the
 	// electric furnace per tick
-	public static final double MAX_WATTS_PER_TICK = 1000;
+	public static final double MAX_WATTS_PER_TICK = 500;
 	public static final double WATTS_PER_ACTION = 5000;
+	//public static final double WATTS_PER_IDLE= 450;
 	
     private ItemStack[] inventory;
     
@@ -60,14 +61,28 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 		
 		System.out.println("Orientation: " + orientation);
 		
-		if(direction.offsetZ != 0)
+		if(direction.offsetZ > 0)
+		{
+			this.minX = -2;
+			this.maxX =  2;
+			this.minZ = -5 * direction.offsetZ;
+			this.maxZ = -1 * direction.offsetZ;
+		}
+		else if(direction.offsetZ < 0)
 		{
 			this.minX = -2;
 			this.maxX =  2;
 			this.minZ = -1 * direction.offsetZ;
 			this.maxZ = -5 * direction.offsetZ;
 		}
-		else if(direction.offsetX != 0)
+		else if(direction.offsetX > 0)
+		{
+			this.minZ = -2;
+			this.maxZ =  2;
+			this.minX = -5 * direction.offsetX;
+			this.maxX = -1 * direction.offsetX;
+		}
+		else if(direction.offsetX < 0)
 		{
 			this.minZ = -2;
 			this.maxZ =  2;
@@ -173,7 +188,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
         super.readFromNBT(tagCompound);
         
         //this.progressTime = tagCompound.getShort("Progress");
-        //this.powerTicks = tagCompound.getShort("PowerTicks");
+        this.powerAccum = tagCompound.getShort("PowerAccum");
         
         NBTTagList tagList = tagCompound.getTagList("Inventory");
 
@@ -195,7 +210,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
         super.writeToNBT(tagCompound);
         
         //tagCompound.setShort("Progress", (short)this.progressTime);
-        //tagCompound.setShort("PowerTicks", (short)this.powerTicks);
+        tagCompound.setShort("PowerAccum", (short)this.powerAccum);
         
         NBTTagList itemList = new NBTTagList();
 
@@ -252,7 +267,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 					
 					int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
 					
-					this.powerAccum = received;
+					this.powerAccum += received;
 				}
 				else
 				{
@@ -261,7 +276,9 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 			}
 		}
 		
-		this.powerAccum += 1000;
+		// for debugging purposes only
+		//this.powerAccum += 1000;
+		System.out.println("Power Accum: " + this.powerAccum);
 
 		if (this.powerAccum >= this.WATTS_PER_ACTION && !this.isDisabled() && this.hasWorkToDo())
 		{
@@ -291,16 +308,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 					workDone = true;
 					stateChanged = true;
 					
-					this.currentX++;
-					if(this.currentX > this.maxX)
-					{
-						this.currentX = this.minX;
-						this.currentZ++;
-						if(this.currentZ > this.maxZ)
-						{
-							this.currentZ = this.minZ;
-						}
-					}
+					advanceLocation();
 					
 					System.out.println("New location: " + this.currentX + ", " + this.currentZ);
 					
@@ -310,7 +318,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 			
 			if(!workDone)
 			{
-				System.out.println("But nothing can be done!");
+				advanceLocation();
 			}
 		}
         
@@ -326,6 +334,19 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
             sendProgressBarUpdate(2, this.currentZ);
         }
     }
+
+	private void advanceLocation() {
+		this.currentX++;
+		if(this.currentX > this.maxX)
+		{
+			this.currentX = this.minX;
+			this.currentZ++;
+			if(this.currentZ > this.maxZ)
+			{
+				this.currentZ = this.minZ;
+			}
+		}
+	}
 
 	@Override
     public int getStartInventorySide(ForgeDirection side)
