@@ -11,10 +11,15 @@ Work-in-progress specification:
   *   More energy means faster work rate
     *   Up to 5 actions per second
 *   Tiers:
-  *   Stone Worker: 3x3 area, 3 high, level above the work area MUST beclear
-  *   Iron Worker: 5x5 area, 3 high, level above the work area MUST beclear
-  *   Diamond Worker: 7x7 area, 5 high, level above the work area MUSTbe clear 
-  *   Recipe: Should require 1x Chest, 1x Circuit, 1x Motor, 1x Tiermaterial, Plating?
+  *   Stone Worker: 3x3 area, 3 high, level above the work area MUST be clear
+  *   Iron Worker: 5x5 area, 3 high, level above the work area MUST be clear
+  *   Diamond Worker: 7x7 area, 5 high, level above the work area MUST be clear 
+*   Recipe: Shape to be defined
+  *   1x Chest,
+  *   1x Circuit,
+  *   1x Motor,
+  *   1x Tier material,
+  *   Plating?
 *   GUI:
   *   3x3 storage space for inputs
   *   3x3 storage space for outputs

@@ -7,13 +7,16 @@ import java.util.EnumSet;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import universalelectricity.core.electricity.ElectricityConnections;
@@ -27,9 +30,10 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 {
 	// The amount of watts required by the
 	// electric furnace per tick
+	public static final double MAX_WATTS_STORAGE = 5000;
 	public static final double MAX_WATTS_PER_TICK = 500;
 	public static final double WATTS_PER_ACTION = 5000;
-	//public static final double WATTS_PER_IDLE= 450;
+	public static final double WATTS_PER_IDLE= 100;
 	
     private ItemStack[] inventory;
     
@@ -251,39 +255,36 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
     		this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata);        	
         }
 
-		ForgeDirection inputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() & 7);
-		TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
-
-		if (inputTile != null)
-		{
-			if (inputTile instanceof IConductor)
+        if(this.powerAccum < this.MAX_WATTS_STORAGE)
+        {
+			ForgeDirection inputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() & 7);
+			TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
+	
+			if (inputTile != null)
 			{
-				IConductor conductor = (IConductor) inputTile;
-				ElectricityNetwork network = conductor.getNetwork();
-				
-				if (this.hasWorkToDo())
+				if (inputTile instanceof IConductor)
 				{
-					network.startRequesting(this, MAX_WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+					IConductor conductor = (IConductor) inputTile;
+					ElectricityNetwork network = conductor.getNetwork();
 					
-					int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
-					
-					this.powerAccum += received;
-				}
-				else
-				{
-					network.stopRequesting(this);
+					if (this.hasWorkToDo())
+					{
+						network.startRequesting(this, MAX_WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+						
+						int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
+						
+						this.powerAccum += received;
+					}
+					else
+					{
+						network.stopRequesting(this);
+					}
 				}
 			}
-		}
+        }
 		
-		// for debugging purposes only
-		//this.powerAccum += 1000;
-		System.out.println("Power Accum: " + this.powerAccum);
-
 		if (this.powerAccum >= this.WATTS_PER_ACTION && !this.isDisabled() && this.hasWorkToDo())
-		{
-			System.out.println("Has work to do!");
-			
+		{			
 			boolean workDone = false;
 			for(int i=21; i < 24; i++)
 			{
@@ -318,6 +319,7 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 			
 			if(!workDone)
 			{
+				this.powerAccum -= this.WATTS_PER_IDLE;
 				advanceLocation();
 			}
 		}
@@ -582,5 +584,54 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
 				return y;
 		}
 		return -1;
+	}
+
+	public void addStackToOutputArea(ItemStack itemStack)
+	{
+		for(int i=9;i<18;i++)
+		{
+			ItemStack slot = inventory[i];
+			if(slot == null)
+				continue;
+			
+			if(slot.itemID != itemStack.itemID)
+				continue;
+			
+			int damage = itemStack.getItemDamage();
+			
+			if(damage >= 0 && slot.getItemDamage() != damage)
+				continue;
+			
+			if(slot.stackSize <= slot.getMaxStackSize())
+			{
+				int newSize = Math.min(slot.stackSize + itemStack.stackSize, slot.getMaxStackSize());
+				int howMany = newSize - slot.stackSize;
+				slot.stackSize = newSize;
+				itemStack.stackSize -= howMany;
+				
+				if(itemStack.stackSize == 0)
+					return;
+			}
+		}
+		
+		// partial stack not found, or not enough space, search for empty slots
+		for(int i=9;i<18;i++)
+		{
+			ItemStack slot = inventory[i];
+			if(slot == null)
+			{
+				ItemStack copy = itemStack.copy();
+				
+				int newSize = copy.stackSize; //Math.min(itemStack.stackSize, slot.getMaxStackSize());
+				int howMany = newSize;
+				copy.stackSize = newSize;
+				itemStack.stackSize -= howMany;
+					
+				setInventorySlotContents(i, copy);
+
+				if(itemStack.stackSize == 0)
+					return;				
+			}			
+		}
 	}
 }
