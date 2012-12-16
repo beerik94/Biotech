@@ -40,6 +40,31 @@ public class CommandCircuit extends Item
         setHasSubtypes(true);
     }
 
+    @SideOnly(Side.CLIENT)
+    public int getIconFromDamage(int par1)
+    {
+    	switch(par1)
+    	{
+    	case 1:
+    		return 0;
+    	case 2:
+    		return 1;
+    	case 3:
+    		return 2;
+
+    	case 4:
+    		return 17;
+    	case 5:
+    		return 16;
+
+    	case 6:
+    		return 32;
+    	case 7:
+    		return 33;
+    	}
+        return this.iconIndex;
+    }
+
     @Override
     public int getMetadata(int damageValue)
     {

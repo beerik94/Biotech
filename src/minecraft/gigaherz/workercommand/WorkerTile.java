@@ -255,29 +255,26 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
         {
             this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata);
         }
+        
+        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() & 7);
+        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
 
-        if (this.powerAccum < this.MAX_WATTS_STORAGE)
+        if (inputTile != null)
         {
-            ForgeDirection inputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() & 7);
-            TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
-
-            if (inputTile != null)
+            if (inputTile instanceof IConductor)
             {
-                if (inputTile instanceof IConductor)
-                {
-                    IConductor conductor = (IConductor) inputTile;
-                    ElectricityNetwork network = conductor.getNetwork();
+                IConductor conductor = (IConductor) inputTile;
+                ElectricityNetwork network = conductor.getNetwork();
 
-                    if (this.hasWorkToDo())
-                    {
-                        network.startRequesting(this, MAX_WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
-                        int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
-                        this.powerAccum += received;
-                    }
-                    else
-                    {
-                        network.stopRequesting(this);
-                    }
+                if (this.hasWorkToDo() && this.powerAccum < this.MAX_WATTS_STORAGE)
+                {
+                    network.startRequesting(this, MAX_WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+                    int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
+                    this.powerAccum += received;
+                }
+                else
+                {
+                    network.stopRequesting(this);
                 }
             }
         }
@@ -285,45 +282,50 @@ public class WorkerTile extends TileEntityElectricityReceiver implements IInvent
         if (this.powerAccum >= this.WATTS_PER_ACTION && !this.isDisabled() && this.hasWorkToDo())
         {
             boolean workDone = false;
+            
+            int ox = this.currentX;
+            int oz = this.currentZ;
+            boolean first=true;
 
-            for (int i = 21; i < 24; i++)
+            while(first || (this.currentX == ox && this.currentZ == oz))
             {
-                ItemStack stack = getStackInSlot(i);
+            	first = false;
+            	
+	            for (int i = 21; i < 24; i++)
+	            {
+	                ItemStack stack = getStackInSlot(i);
+	
+	                if (stack == null)
+	                    continue;
+	
+	                Item item = stack.getItem();
+	
+	                if (item == null || !(item instanceof CommandCircuit))
+	                    continue;
+	
+	                CommandCircuit circuit = (CommandCircuit)item;
+	
+	                if (!circuit.canDoWork(this, stack.getItemDamage()))
+	                    continue;
+	
+	                if (!circuit.doWork(this, stack.getItemDamage()))
+	                	continue;
 
-                if (stack == null)
-                {
-                    continue;
-                }
-
-                Item item = stack.getItem();
-
-                if (item == null || !(item instanceof CommandCircuit))
-                {
-                    continue;
-                }
-
-                CommandCircuit circuit = (CommandCircuit)item;
-
-                if (!circuit.canDoWork(this, stack.getItemDamage()))
-                {
-                    continue;
-                }
-
-                if (circuit.doWork(this, stack.getItemDamage()))
-                {
                     this.powerAccum -= this.WATTS_PER_ACTION;
                     workDone = true;
                     stateChanged = true;
-                    advanceLocation();
-                    System.out.println("New location: " + this.currentX + ", " + this.currentZ);
+	                advanceLocation();
                     break;
-                }
-            }
-
-            if (!workDone)
-            {
-                this.powerAccum -= this.WATTS_PER_IDLE;
-                advanceLocation();
+	            }
+	
+	            if (workDone)
+	            {
+	            	break;
+	            }
+	            else
+	            {
+	                advanceLocation();
+	            }
             }
         }
 

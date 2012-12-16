@@ -33,3 +33,5 @@ CHANGELOG
 /src/minecraft/mcp.png
 /src/minecraft/mcpmod.info
 /src/minecraft/railcraft/common/api/core/items/ICrowbar.java
+/nbproject/private/
+/build/
