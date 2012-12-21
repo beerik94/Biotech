@@ -1,10 +1,9 @@
 package gigaherz.workercommand;
 
+import gigaherz.workercommand.client.ClientPacketHandler;
+
 import java.io.File;
 
-import universalelectricity.core.UniversalElectricity;
-
-import gigaherz.workercommand.client.ClientPacketHandler;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
