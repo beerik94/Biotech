@@ -99,8 +99,6 @@ public class WorkerContainer extends Container
 
     public void updateCraftingResults()
     {
-        super.updateCraftingResults();
-
         for (int i = 0; i < this.crafters.size(); ++i)
         {
             ICrafting crafter = (ICrafting)this.crafters.get(i);
