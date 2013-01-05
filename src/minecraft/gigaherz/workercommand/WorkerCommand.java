@@ -28,13 +28,13 @@ import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-
-@Mod(modid = "WorkerCommand", name = "WorkerCommand", version = "0.1.0")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.1")
 @NetworkMod(clientSideRequired = true, serverSideRequired = false,
         clientPacketHandlerSpec = @SidedPacketHandler(channels = {"WorkerCommand" }, packetHandler = ClientPacketHandler.class),
         serverPacketHandlerSpec = @SidedPacketHandler(channels = {"WorkerCommand" }, packetHandler = ServerPacketHandler.class))
 public class WorkerCommand
 {
+	
     private final static int firstItemId = 24400;
     private final static int firstBlockId = 2450;
 
@@ -63,7 +63,7 @@ public class WorkerCommand
     public static ItemStack filler;
 
     // The instance of your mod that Forge uses.
-    @Instance("WorkerCommand")
+    @Instance("Biotech")
     public static WorkerCommand instance;
 
     // Says where the client and server 'proxy' code is loaded.
@@ -99,7 +99,7 @@ public class WorkerCommand
         GameRegistry.registerTileEntity(WorkerTile.class, "workerTile");
         MinecraftForge.setBlockHarvestLevel(worker, "pickaxe", 0);
         // Registration
-        GameRegistry.registerBlock(worker);
+        GameRegistry.registerBlock(worker, "Worker");
         LanguageRegistry.addName(worker, "Worker");
         // Tier 1
         LanguageRegistry.addName(planter, "Planter Command Circuit");
