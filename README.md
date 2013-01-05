@@ -1,6 +1,5 @@
 WorkerCommand
 =============
-NOTE: Under New OWNERSHIP! I now own this mod.
 
 Jenkins http://ken.wingedboot.com:8080/job/WorkerCommand/
 
@@ -9,6 +8,10 @@ Latest Working Build: http://ken.wingedboot.com:8080/job/WorkerCommand/lastSucce
 A Minecraft Forge mod based on Universal Electricity.
 
 Work-in-progress specification:
+
+## Authors
+
+* kaendfinger (New Owner)
 
 ## Worker Block
  
