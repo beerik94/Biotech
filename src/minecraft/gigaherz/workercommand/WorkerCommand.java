@@ -23,6 +23,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -71,7 +72,7 @@ public class WorkerCommand
     public static CommonProxy proxy;
 
     private GuiHandler guiHandler = new GuiHandler();
-
+    public static Property enableChatCommand;
     @PreInit
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -89,9 +90,14 @@ public class WorkerCommand
         tiller = circuit.getStack(1, 5);
         miner = circuit.getStack(1, 6);
         filler = circuit.getStack(1, 7);
+        Property enableChatCommand = Config.get("general", "enableChatCommand", true);
         Config.save();
     }
-
+    public static void initCommands(FMLServerStartingEvent event) {
+    	if (enableChatCommand.value == "true") {
+    		event.registerServerCommand(new CmdWorker());
+    	}
+    }
     @Init
     public void load(FMLInitializationEvent event)
     {
