@@ -11,7 +11,9 @@ Work-in-progress specification:
 
 ## Authors
 
-* kaendfinger (New Owner)
+* Kaendfinger
+* Gigahertz
+* Wiebbe
 
 ## Worker Block
  
