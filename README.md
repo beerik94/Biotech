@@ -7,7 +7,7 @@ The Biotech mod is a Minecraft mod focused on brining advanced agriculture syste
 ## Authors
 
 * Kaendfinger
-* Gigahertz
+* Gigaherz
 * Wiebbe
 
 ## Links
