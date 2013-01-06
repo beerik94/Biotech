@@ -17,7 +17,13 @@ Latest Working Build: http://ken.wingedboot.com:8080/job/WorkerCommand/lastSucce
 
 Work-in-progress specification:
 
-## Worker Block
+## Ideas
+
+Genetic Manipulation
+* DNA Manipulation Block
+  * Ability to through genetic manipulation to grow better crops and more efficient food sources
+  * Merge Mobs together and get new types of living things
+  * Mess with the DNA of a living things, GUI that allows moving niteogenous bases (Adenine, Cytosine, Guanine, Thymine) in a mob or plant to modifiy its characteristics.
  
 *   Receives energy and carries out the given commands
   *   If multiple commands are given, rotates through the ones thathave valid actions
