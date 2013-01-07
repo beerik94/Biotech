@@ -1,0 +1,14 @@
+{
+  "modid": "Biotech",
+  "name": "Biotech",
+  "description": "A Universal Electricity Agriculture mod",
+  "mcversion": "1.4.7",
+  "logoFile": "/atomiccraft.png",
+  "url": "https://github.com/calclavia/Biotech/",
+  "updateUrl": "",
+  "authors": ["kaendfinger", "gigaherz", "wiebbe"],
+  "credits": "Made by gigaherz, taken over by kaendfinger and wiebbe",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": []
+}
