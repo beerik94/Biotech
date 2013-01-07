@@ -1,7 +1,10 @@
 package gigaherz.biotech;
 
 import gigaherz.biotech.block.BasicWorkerBlockMachine;
+import gigaherz.biotech.block.BiotechBlockMachine;
 import gigaherz.biotech.common.CommonProxy;
+import gigaherz.biotech.item.BiotechItemBlock;
+import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
 
 import java.io.File;
@@ -49,6 +52,9 @@ public class Biotech
     private final static int firstBlockId = 2450;
 
     private final static int defaultWorkerBlockId = firstBlockId + 1;
+    
+    private final static int defaultBiotechBlockId = defaultWorkerBlockId + 1;
+    
     private final static int defaultCommandCircuitId = firstItemId + 1;
 
     public static final Configuration Config = new Configuration(new File(Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
@@ -58,6 +64,16 @@ public class Biotech
 
     // Block templates
     public static Block basicWorker;
+    
+
+    public static Block biotechBlockMachine;
+	//0 == Tiller
+	//1 == Foresting
+	//2 == Woodcutter
+	//3 == Crop Harvester
+	//4 == Fertilizer
+	//5 == Miner
+	//6 == Filler
 
     // Tier 1
     public static ItemStack planter;
@@ -108,6 +124,10 @@ public class Biotech
         tiller = circuit.getStack(1, 5);
         miner = circuit.getStack(1, 6);
         filler = circuit.getStack(1, 7);
+
+        prop = Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId);
+        
+        biotechBlockMachine = new BiotechBlockMachine(prop.getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
         
         Property enableChatCommand = Config.get("general", "enableChatCommand", true);
         
@@ -138,11 +158,21 @@ public class Biotech
     	ItemStack itemChest = new ItemStack(Block.chest, 1);
     	
         proxy.registerRenderers();
+        
         GameRegistry.registerTileEntity(BasicWorkerTileEntity.class, "basicWorkerTile");
+        GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
+        
         MinecraftForge.setBlockHarvestLevel(basicWorker, "pickaxe", 0);
         // Registration
         GameRegistry.registerBlock(basicWorker, "Basic Worker");
+        
+        
         LanguageRegistry.addName(basicWorker, "Basic Worker");
+        
+        GameRegistry.registerBlock(Biotech.biotechBlockMachine, BiotechItemBlock.class, "Basic Biotech Block");
+        
+        LanguageRegistry.addName(biotechBlockMachine, "Basic Biotech Block");
+        
         // Tier 1
         LanguageRegistry.addName(planter, "Planter Command Circuit");
         LanguageRegistry.addName(harvester, "Harvester Command Circuit");

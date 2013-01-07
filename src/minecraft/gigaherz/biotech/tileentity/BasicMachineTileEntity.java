@@ -1,6 +1,7 @@
 package gigaherz.biotech.tileentity;
 
 import gigaherz.biotech.Biotech;
+
 import gigaherz.biotech.CommandCircuit;
 
 import java.io.ByteArrayOutputStream;
@@ -33,35 +34,35 @@ import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 import cpw.mods.fml.common.network.PacketDispatcher;
 
-public class BasicWorkerTileEntity extends TileEntityElectricityReceiver implements IInventory, ISidedInventory, IPacketReceiver
-{
-    // The amount of watts required by the
-    // electric furnace per tick
-	
-	
-    public static final double MAX_WATTS_STORAGE = 5000;
-    public static final double MAX_WATTS_PER_TICK = 500;
-    public static final double WATTS_PER_ACTION = 5000;
-    public static final double WATTS_PER_IDLE = 100;
+// Default machine TileEntity
+// Has a power connection at the back
+// Has a powered state
+// Has an inventory
 
+public class BasicMachineTileEntity extends TileEntityElectricityReceiver implements IInventory, ISidedInventory, IPacketReceiver
+{
     private ItemStack[] inventory;
 
-    public boolean prevIsPowered, isPowered = false;
+    //How much power is stored?
+    private double electricityStored  = 0;
+    private double electricityMaxStored  = 5000;
     
-    public int powerAccum = 0;
-    public int currentX = 0;
-    public int currentZ = 0;
+    
+    //Is the macine currently powered, and did it change?
+    public boolean prevIsPowered, isPowered = false;
 
-    public int minX, maxX;
-    public int minZ, maxZ;
-
-    public BasicWorkerTileEntity()
+    private int facing;
+   
+    
+    public BasicMachineTileEntity()
     {
         super();
+        
         this.inventory = new ItemStack[24];
+        
         ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
     }
-
+    
     @Override
     public void initiate()
     {
@@ -71,48 +72,11 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
     public void refreshConnectorsAndWorkArea()
     {
         int orientation = this.getBlockMetadata() & 7;
-        ForgeDirection direction = ForgeDirection.getOrientation(orientation);
-        ElectricityConnections.registerConnector(this, EnumSet.of(direction));
         
+        ForgeDirection direction = ForgeDirection.getOrientation(orientation);
+        
+        ElectricityConnections.registerConnector(this, EnumSet.of(direction));
 
-        if (direction.offsetZ > 0)
-        {
-            this.minX = -2;
-            this.maxX =  2;
-            this.minZ = -5 * direction.offsetZ;
-            this.maxZ = -1 * direction.offsetZ;
-        }
-        else if (direction.offsetZ < 0)
-        {
-            this.minX = -2;
-            this.maxX =  2;
-            this.minZ = -1 * direction.offsetZ;
-            this.maxZ = -5 * direction.offsetZ;
-        }
-        else if (direction.offsetX > 0)
-        {
-            this.minZ = -2;
-            this.maxZ =  2;
-            this.minX = -5 * direction.offsetX;
-            this.maxX = -1 * direction.offsetX;
-        }
-        else if (direction.offsetX < 0)
-        {
-            this.minZ = -2;
-            this.maxZ =  2;
-            this.minX = -1 * direction.offsetX;
-            this.maxX = -5 * direction.offsetX;
-        }
-
-        if (this.currentX < this.minX || this.currentX > this.maxX)
-        {
-            this.currentX = this.minX;
-        }
-
-        if (this.currentZ < this.minZ || this.currentZ > this.maxZ)
-        {
-            this.currentZ = this.minZ;
-        }
     }
 
     @Override
@@ -206,8 +170,9 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
         super.readFromNBT(tagCompound);
         //this.progressTime = tagCompound.getShort("Progress");
         
+        this.facing = tagCompound.getShort("facing");
         this.isPowered = tagCompound.getBoolean("isPowered");
-        this.powerAccum = tagCompound.getShort("PowerAccum");
+        this.electricityStored = tagCompound.getDouble("electricityStored");
         NBTTagList tagList = tagCompound.getTagList("Inventory");
 
         for (int i = 0; i < tagList.tagCount(); i++)
@@ -228,9 +193,10 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
     {
         super.writeToNBT(tagCompound);
         //tagCompound.setShort("Progress", (short)this.progressTime);
-        
+
+        tagCompound.setShort("facing", (short)this.facing);
         tagCompound.setBoolean("isPowered", this.isPowered);
-        tagCompound.setShort("PowerAccum", (short)this.powerAccum);
+        tagCompound.setDouble("electricityStored", (double)this.electricityStored);
         NBTTagList itemList = new NBTTagList();
 
         for (int i = 0; i < inventory.length; i++)
@@ -283,121 +249,44 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
             this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata);
         }
         
+        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.facing + 2);
         
-        
-        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.getBlockMetadata() & 7);
         TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
-
-        if (inputTile != null)
-        {
-            if (inputTile instanceof IConductor)
-            {
-                IConductor conductor = (IConductor) inputTile;
-                ElectricityNetwork network = conductor.getNetwork();
-
-                if (this.hasWorkToDo() && this.powerAccum < this.MAX_WATTS_STORAGE)
-                {
-                    network.startRequesting(this, MAX_WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
-                    int received = (int)Math.floor(network.consumeElectricity(this).getWatts());
-
-                    this.powerAccum += received;
-                }
-                else
-                {
-                    network.stopRequesting(this);
-                }
-            }
-        }
-
-        if (this.powerAccum >= this.WATTS_PER_ACTION && !this.isDisabled() && this.hasWorkToDo())
-        {
-            boolean workDone = false;
-            
-            this.setPowered(true, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
-            
-            int ox = this.currentX;
-            int oz = this.currentZ;
-            boolean first=true;
-
-            while(first || (this.currentX == ox && this.currentZ == oz))
-            {
-            	first = false;
-            	
-	            for (int i = 21; i < 24; i++)
+		if(!worldObj.isRemote)
+		{
+	        if (inputTile != null)
+	        {
+	            if (inputTile instanceof IConductor)
 	            {
-	                ItemStack stack = getStackInSlot(i);
+	                IConductor conductor = (IConductor) inputTile;
+	                ElectricityNetwork network = conductor.getNetwork();
 	
-	                if (stack == null)
-	                    continue;
+	                if (this.electricityStored < this.electricityMaxStored)
+	                {
+	                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
+	                	
+	                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
 	
-	                Item item = stack.getItem();
-	
-	                if (item == null || !(item instanceof CommandCircuit))
-	                    continue;
-	
-	                CommandCircuit circuit = (CommandCircuit)item;
-	
-	                if (!circuit.canDoWork(this, stack.getItemDamage()))
-	                    continue;
-	
-	                if (!circuit.doWork(this, stack.getItemDamage()))
-	                	continue;
-
-                    this.powerAccum -= this.WATTS_PER_ACTION;
-                    workDone = true;
-                    stateChanged = true;
-	                advanceLocation();
-                    
-                    break;
+	                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
+	                    
+	                }
+					else if(electricityStored >= electricityMaxStored)
+	                {
+	                    network.stopRequesting(this);
+	                }
 	            }
-	
-	            if (workDone)
-	            {
-	            	break;
-	            }
-	            else
-	            {
-	            	this.setPowered(false, this.worldObj, this.xCoord, this.yCoord, this.zCoord);
-	            	advanceLocation();
-	            }
-            }
-        }
-
-        if (stateChanged)
-        {
-            this.onInventoryChanged();
-        }
-
-        if (this.ticks % 20 == 0)
-        {
-            sendProgressBarUpdate(0, this.powerAccum);
-            sendProgressBarUpdate(1, this.currentX);
-            sendProgressBarUpdate(2, this.currentZ);
-        }
+	        }
+		}
     }
 
-    private void advanceLocation()
-    {
-        this.currentX++;
 
-        if (this.currentX > this.maxX)
-        {
-            this.currentX = this.minX;
-            this.currentZ++;
-
-            if (this.currentZ > this.maxZ)
-            {
-                this.currentZ = this.minZ;
-            }
-        }
-    }
 
     @Override
     public int getStartInventorySide(ForgeDirection side)
     {
         ForgeDirection left, right;
 
-        switch (this.getBlockMetadata() & 7)
+        switch (this.facing)
         {
             case 2: // North
                 left = ForgeDirection.WEST;
@@ -448,7 +337,7 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
     {
         ForgeDirection left, right;
 
-        switch (this.getBlockMetadata() & 7)
+        switch (this.facing)
         {
             case 2: // North
                 left = ForgeDirection.WEST;
@@ -492,80 +381,6 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
         }
 
         return 0;
-    }
-
-    private void sendProgressBarUpdate(int bar, int value)
-    {
-        ByteArrayOutputStream bos = new ByteArrayOutputStream(8);
-        DataOutputStream outputStream = new DataOutputStream(bos);
-
-        try
-        {
-            outputStream.writeInt(this.worldObj.getWorldInfo().getDimension());
-            outputStream.writeInt(this.xCoord);
-            outputStream.writeInt(this.yCoord);
-            outputStream.writeInt(this.zCoord);
-            outputStream.writeInt(bar);
-            outputStream.writeInt(value);
-        }
-        catch (Exception ex)
-        {
-            ex.printStackTrace();
-        }
-
-        Packet250CustomPayload packet = new Packet250CustomPayload();
-        packet.channel = "WorkerCommand";
-        packet.data = bos.toByteArray();
-        packet.length = bos.size();
-        PacketDispatcher.sendPacketToAllAround(this.xCoord, this.yCoord, this.zCoord, 12, this.worldObj.provider.dimensionId, packet);
-    }
-
-    public void updateProgressBar(int par1, int par2)
-    {
-        //Worker.updateBlockState(this.isPowered(), this.worldObj, this.xCoord, this.yCoord, this.zCoord);
-        if (par1 == 0)
-        {
-            this.powerAccum = par2;
-        }
-
-        if (par1 == 1)
-        {
-            this.currentX = par2;
-        }
-
-        if (par1 == 0)
-        {
-            this.currentZ = par2;
-        }
-    }
-
-    private boolean hasWorkToDo()
-    {
-        for (int i = 21; i < 24; i++)
-        {
-            ItemStack stack = inventory[i];
-
-            if (stack == null)
-            {
-                continue;
-            }
-
-            Item item = stack.getItem();
-
-            if (item == null || !(item instanceof CommandCircuit))
-            {
-                continue;
-            }
-
-            CommandCircuit circuit = (CommandCircuit)item;
-
-            if (circuit.canDoWork(this, stack.getItemDamage()))
-            {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public boolean hasItemInInputArea(ItemStack itemStack)
@@ -669,19 +484,6 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
         return false;
     }
 
-    public int getTopY()
-    {
-        for (int y = 0; y < 4; y++)
-        {
-            if (this.worldObj.getBlockMaterial(this.xCoord + this.currentX, this.yCoord + y, this.zCoord + this.currentZ) == Material.air)
-            {
-                return y;
-            }
-        }
-
-        return -1;
-    }
-
     public void addStackToOutputArea(ItemStack itemStack)
     {
         for (int i = 9; i < 18; i++)
@@ -749,6 +551,7 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
 			if (this.worldObj.isRemote)
 			{
 				this.isPowered = dataStream.readBoolean();
+				this.facing = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -760,6 +563,31 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing);
+	}
+
+	public int getFacing() 
+	{
+		return facing;
+	}
+
+	public void setFacing(int facing) 
+	{
+		this.facing = facing;
+	}
+
+	public double getElectricityStored() 
+	{
+		return electricityStored;
+	}
+
+	public void setElectricityStored(double joules, Object... data)
+	{
+		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
 	}	
+	
+	public double getMaxJoules(Object... data) 
+	{
+		return electricityMaxStored;
+	}
 }

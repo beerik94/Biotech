@@ -122,8 +122,7 @@ public class CommandCircuit extends Item
         return false;
     }
 
-    private boolean hasSlotWithSpaceFor(BasicWorkerTileEntity workerTile,
-            ItemStack... stacks)
+    private boolean hasSlotWithSpaceFor(BasicWorkerTileEntity workerTile, ItemStack... stacks)
     {
         for (int i = 0; i < stacks.length; i++)
         {
