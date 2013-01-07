@@ -37,7 +37,7 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.1")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.2")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 
 public class Biotech
