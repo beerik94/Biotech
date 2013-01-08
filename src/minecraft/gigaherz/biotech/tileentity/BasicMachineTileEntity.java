@@ -52,7 +52,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
     public boolean prevIsPowered, isPowered = false;
 
     private int facing;
-   
     
     public BasicMachineTileEntity()
     {
@@ -71,9 +70,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 
     public void refreshConnectorsAndWorkArea()
     {
-        int orientation = this.getBlockMetadata() & 7;
-        
-        ForgeDirection direction = ForgeDirection.getOrientation(orientation);
+        ForgeDirection direction = ForgeDirection.getOrientation(this.facing);
         
         ElectricityConnections.registerConnector(this, EnumSet.of(direction));
 
