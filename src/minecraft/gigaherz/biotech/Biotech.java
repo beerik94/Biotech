@@ -8,16 +8,18 @@ import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.oredict.OreDictionary;
+import universalelectricity.prefab.network.ConnectionHandler;
+import universalelectricity.prefab.network.PacketManager;
+import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.Init;
@@ -30,12 +32,9 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
-import cpw.mods.fml.common.network.NetworkMod.SidedPacketHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-import universalelectricity.prefab.network.ConnectionHandler;
-import universalelectricity.prefab.network.PacketManager;
 
 @Mod(modid = "Biotech", name = "Biotech", version = "0.1.2")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
@@ -102,11 +101,14 @@ public class Biotech
     private GuiHandler guiHandler = new GuiHandler();
 
     public static BiotechCreativeTab tabBiotech = new BiotechCreativeTab();
-    
+    public static Logger biotechLogger = Logger.getLogger("Biotech");
     @PreInit
     public void preInit(FMLPreInitializationEvent event)
     {
-        Config.load();
+    	biotechLogger.setParent(FMLLog.getLogger());
+    	biotechLogger.info("Starting Biotech");
+    	biotechLogger.info("Loading config");
+    	Config.load();
         Property prop;
         
         prop = Config.getItem("gigaherz.biotech.CommandCircuit", defaultCommandCircuitId);
@@ -132,6 +134,7 @@ public class Biotech
         Property enableChatCommand = Config.get("general", "enableChatCommand", true);
         
         Config.save();
+        biotechLogger.info("Config loaded");
     }
 
     
@@ -141,14 +144,13 @@ public class Biotech
 		{
 			
 			event.registerServerCommand(new CmdWorker());
-			
+			biotechLogger.info("Biotech Command Enabled");
 		}
     }
     
     @Init
     public void load(FMLInitializationEvent event)
     {
-    	
     	ItemStack itemBasicCircuit =  new ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0);
     	
     	ItemStack itemMotor =  new ItemStack(OreDictionary.getOreID("motor"), 1 , 0);
@@ -193,7 +195,7 @@ public class Biotech
         bcCircuits[0].setItemDamage(0); //Basic Circuit
         bcCircuits[1].setItemDamage(1); //Advanced Circuit
         bcCircuits[2].setItemDamage(2); //Elite Circuit
-        
+        biotechLogger.info("Loading recipes");
         GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.seeds);
         GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.melonSeeds);
         GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.pumpkinSeeds);
@@ -225,6 +227,6 @@ public class Biotech
     @PostInit
     public void postInit(FMLPostInitializationEvent event)
     {
-        // Stub Method
+    	biotechLogger.info("Biotech fully loaded");
     }
 }
