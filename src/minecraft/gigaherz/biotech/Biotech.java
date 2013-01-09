@@ -38,7 +38,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.2")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.3")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 
 public class Biotech

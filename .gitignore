@@ -21,7 +21,6 @@
 CHANGELOG
 *.bat
 *.sh
-
 /src/minecraft/Start.java
 /src/minecraft/dan200/computer/api/IComputerAccess.java
 /src/minecraft/dan200/computer/api/IPeripheral.java
