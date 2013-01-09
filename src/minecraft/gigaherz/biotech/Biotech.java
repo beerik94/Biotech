@@ -4,8 +4,10 @@ import gigaherz.biotech.block.BasicWorkerBlockMachine;
 import gigaherz.biotech.block.BiotechBlockMachine;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.item.BiotechItemBlock;
+import gigaherz.biotech.item.CommandCircuit;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
+import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -163,6 +165,7 @@ public class Biotech
         
         GameRegistry.registerTileEntity(BasicWorkerTileEntity.class, "basicWorkerTile");
         GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
+        GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
         MinecraftForge.setBlockHarvestLevel(basicWorker, "pickaxe", 0);
         // Registration

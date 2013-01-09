@@ -4,6 +4,7 @@ import gigaherz.biotech.Biotech;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
+import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.util.List;
 import java.util.Random;
@@ -537,6 +538,7 @@ public class BiotechBlockMachine extends BlockMachine
     	switch(metadata)
     	{
     	case 0:
+    		return new TillingMachineTileEntity();
     	case 1:
     	case 2:
     	case 3:

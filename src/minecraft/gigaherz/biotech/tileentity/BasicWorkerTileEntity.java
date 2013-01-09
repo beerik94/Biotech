@@ -1,7 +1,7 @@
 package gigaherz.biotech.tileentity;
 
 import gigaherz.biotech.Biotech;
-import gigaherz.biotech.CommandCircuit;
+import gigaherz.biotech.item.CommandCircuit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -73,7 +73,6 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
         int orientation = this.getBlockMetadata() & 7;
         ForgeDirection direction = ForgeDirection.getOrientation(orientation);
         ElectricityConnections.registerConnector(this, EnumSet.of(direction));
-        
 
         if (direction.offsetZ > 0)
         {
