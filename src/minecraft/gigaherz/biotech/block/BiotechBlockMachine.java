@@ -500,27 +500,11 @@ public class BiotechBlockMachine extends BlockMachine
     @Override
     public boolean onMachineActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
     {
-        TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-
-        if (tileEntity == null || !(tileEntity instanceof BasicMachineTileEntity))
-        {
-            return false;
-        }
-
-        BasicMachineTileEntity basicEntity = (BasicMachineTileEntity)tileEntity;
-        
-        System.out.println("Facing:" + basicEntity.getFacing() + " side: " + side);
-        
-        if (tileEntity == null || player.isSneaking())
-        {
-            return false;
-        }
-
     	int metadata = world.getBlockMetadata(x, y, z);
     	
     	if(metadata == 0)
     	{
-    		if(player.isSneaking())
+    		if(!player.isSneaking())
     		{
     			player.openGui(Biotech.instance, 0, world, x, y, z);
     			return true;
@@ -550,6 +534,18 @@ public class BiotechBlockMachine extends BlockMachine
     @Override
     public TileEntity createTileEntity(World world, int metadata)
     {
-        return new BasicMachineTileEntity();
+    	switch(metadata)
+    	{
+    	case 0:
+    	case 1:
+    	case 2:
+    	case 3:
+    	case 4:
+    	case 5:
+    	case 6:
+    	default:
+    		return new BasicMachineTileEntity();
+    	}
+        
     }
 }
