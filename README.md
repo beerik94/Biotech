@@ -11,8 +11,8 @@ The Biotech mod is a Minecraft mod focused on brining advanced agriculture syste
 * Wiebbe
 
 ## Links
-Jenkins http://ken.wingedboot.com:8080/job/WorkerCommand/
+Jenkins http://ken.wingedboot.com:8080/job/Biotech/
 
-Latest Working Build: http://ken.wingedboot.com:8080/job/WorkerCommand/lastSuccessfulBuild/
+Latest Working Build: http://ken.wingedboot.com:8080/job/Biotech/lastSuccessfulBuild/
 
 Work-in-progress specification:
