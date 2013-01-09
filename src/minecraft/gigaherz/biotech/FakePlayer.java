@@ -7,7 +7,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
 
-class FakePlayer extends EntityPlayer
+public class FakePlayer extends EntityPlayer
 {
     public FakePlayer(World par1World)
     {
