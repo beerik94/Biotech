@@ -9,7 +9,6 @@ public class BiotechItemBlock extends ItemBlock
 	public BiotechItemBlock(int id)
 	{
 		super(id);
-		this.setMaxDamage(0);
 		this.setHasSubtypes(true);
 	}
 
@@ -22,7 +21,7 @@ public class BiotechItemBlock extends ItemBlock
 	@Override
 	public String getItemNameIS(ItemStack itemstack)
 	{
-		int metadata = 0;
+		int metadata = itemstack.getItemDamage();
 
 		return Block.blocksList[this.getBlockID()].getBlockName() + "." + metadata;
 	}

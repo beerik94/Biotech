@@ -44,7 +44,7 @@ public class BiotechBlockMachine extends BlockMachine
 	
     public BiotechBlockMachine(int id, int textureIndex)
     {
-        super("btMachine", id, UniversalElectricity.machine, Biotech.tabBiotech);
+        super("BiotechBlockMachine", id, UniversalElectricity.machine, Biotech.tabBiotech);
         
         this.blockIndexInTexture = textureIndex;
     }
@@ -388,7 +388,7 @@ public class BiotechBlockMachine extends BlockMachine
     	}
      	else 
      	{
-    		return 0;
+    		return 3;
     	}
     }
     
@@ -503,14 +503,19 @@ public class BiotechBlockMachine extends BlockMachine
     {
     	int metadata = world.getBlockMetadata(x, y, z);
     	
-    	if(metadata == 0)
-    	{
-    		if(!player.isSneaking())
-    		{
-    			player.openGui(Biotech.instance, 0, world, x, y, z);
-    			return true;
-    		}
-    	}
+    	TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
+    	
+		if (!world.isRemote)
+		{
+	    	if(metadata == 0)
+	    	{
+	    		if(!player.isSneaking())
+	    		{
+	    			player.openGui(Biotech.instance, 0, world, x, y, z);
+	    			return true;
+	    		}
+	    	}
+		}
     	/*
     	else if(metadata == 6)
     	{
@@ -521,10 +526,8 @@ public class BiotechBlockMachine extends BlockMachine
     		}
     	}
     	*/
-        return false;
+        return true;
     }
-
-
 
     @Override
     public boolean hasTileEntity(int metadata)
@@ -548,6 +551,7 @@ public class BiotechBlockMachine extends BlockMachine
     	default:
     		return new BasicMachineTileEntity();
     	}
-        
     }
+    
+    
 }

@@ -3,6 +3,7 @@ package gigaherz.biotech;
 import gigaherz.biotech.block.BasicWorkerBlockMachine;
 import gigaherz.biotech.block.BiotechBlockMachine;
 import gigaherz.biotech.common.CommonProxy;
+import gigaherz.biotech.item.BioCircuit;
 import gigaherz.biotech.item.BiotechItemBlock;
 import gigaherz.biotech.item.CommandCircuit;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
@@ -38,36 +39,61 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
+
 @Mod(modid = "Biotech", name = "Biotech", version = "0.1.3")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 
 public class Biotech
 {
+    // The instance of your mod that Forge uses.
+    @Instance("Biotech")
+    public static Biotech instance;
+	
+    // Texture file paths
 	public static final String FILE_PATH = "/resources/biotech/textures/";
 	public static final String BLOCK_TEXTURE_FILE = FILE_PATH + "block.png";
 	public static final String ITEM_TEXTURE_FILE = FILE_PATH + "items.png";
 
+	// Public channel used in all communication
 	public static final String CHANNEL = "Biotech";
 	
+	// First Item ID
     private final static int firstItemId = 24400;
+    
+    // First Block ID
     private final static int firstBlockId = 2450;
 
-    private final static int defaultWorkerBlockId = firstBlockId + 1;
+    // All Item ID's
+    private final static int defaultBioCircuitId = firstItemId + 1;
     
-    private final static int defaultBiotechBlockId = defaultWorkerBlockId + 1;
+    // All Block ID's
+    private final static int defaultBiotechBlockId = firstBlockId + 1;
     
-    private final static int defaultCommandCircuitId = firstItemId + 1;
-
+    // Default config loader
     public static final Configuration Config = new Configuration(new File(Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
 
     // Item templates
-    private static CommandCircuit circuit;
-
-    // Block templates
-    public static Block basicWorker;
+    public static BioCircuit bioCircuit;
+    // Metadata for BioCircuit
+    // 0 == unprogrammed
+    // 1 == wheatseeds 
+    // 2 == melonseeds 
+    // 3 == pumpkinseeds 
+    // 4 == carrots 
+    // 5 == potatoes
     
-
+    // Tilling machine Circuits
+    public static ItemStack bioCircuitEmpty;
+    public static ItemStack bioCircuitWheatSeeds;
+    public static ItemStack bioCircuitMelonSeeds;
+    public static ItemStack bioCircuitPumpkinSeeds;
+    public static ItemStack bioCircuitCarrots;
+    public static ItemStack bioCircuitPotatoes;
+    
+    
+    // Block templates
     public static Block biotechBlockMachine;
+    // Metadata for biotechBlockMachine
 	//0 == Tiller
 	//1 == Foresting
 	//2 == Woodcutter
@@ -76,34 +102,24 @@ public class Biotech
 	//5 == Miner
 	//6 == Filler
 
-    // Tier 1
-    public static ItemStack planter;
-    public static ItemStack harvester;
-    public static ItemStack woodcutter;
-
-    // Tier 2
-    public static ItemStack fertilizer;
-    public static ItemStack tiller;
-
-    // Tier 3
-    public static ItemStack miner;
-    public static ItemStack filler;
-
-    // The instance of your mod that Forge uses.
-    @Instance("Biotech")
-    public static Biotech instance;
-
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide = "gigaherz.biotech.client.ClientProxy", serverSide = "gigaherz.biotech.common.CommonProxy")
-    
     public static CommonProxy proxy;
 
+    // Chat commands
     public static Property enableChatCommand;
+
     
+    // Gui Handler
     private GuiHandler guiHandler = new GuiHandler();
 
+    // Biotech's own CreativeTab
     public static BiotechCreativeTab tabBiotech = new BiotechCreativeTab();
+    
+    // The logger for Biotech
     public static Logger biotechLogger = Logger.getLogger("Biotech");
+    
+    
     @PreInit
     public void preInit(FMLPreInitializationEvent event)
     {
@@ -113,29 +129,32 @@ public class Biotech
     	Config.load();
         Property prop;
         
-        prop = Config.getItem("gigaherz.biotech.CommandCircuit", defaultCommandCircuitId);
+		/**
+		 * Define the items and blocks.
+		 */
+        this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioCircuitId).getInt());
         
-        circuit = new CommandCircuit(prop.getInt());
-        
-        prop = Config.getBlock("gigaherz.biotech.Worker", defaultWorkerBlockId);
-        
-        basicWorker = new BasicWorkerBlockMachine(prop.getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-        
-        planter = circuit.getStack(1, 1);
-        harvester = circuit.getStack(1, 2);
-        woodcutter = circuit.getStack(1, 3);
-        fertilizer = circuit.getStack(1, 4);
-        tiller = circuit.getStack(1, 5);
-        miner = circuit.getStack(1, 6);
-        filler = circuit.getStack(1, 7);
+        this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
 
-        prop = Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId);
-        
-        biotechBlockMachine = new BiotechBlockMachine(prop.getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-        
+		/**
+		 * Define the subitems
+		 */
+        this.bioCircuitEmpty = bioCircuit.getStack(1, 0);
+        this.bioCircuitWheatSeeds = bioCircuit.getStack(1, 1);
+        this.bioCircuitMelonSeeds = bioCircuit.getStack(1, 2);
+        this.bioCircuitPumpkinSeeds = bioCircuit.getStack(1, 3);
+        this.bioCircuitCarrots = bioCircuit.getStack(1, 4);
+        this.bioCircuitPotatoes = bioCircuit.getStack(1, 5);
+
+		/**
+		 * Enable the chat commands
+		 */
         Property enableChatCommand = Config.get("general", "enableChatCommand", true);
         
+        //guiHandler.preInit();
+        
         Config.save();
+        
         biotechLogger.info("Config loaded");
     }
 
@@ -144,7 +163,6 @@ public class Biotech
     {
     if (enableChatCommand.value == "true") 
 		{
-			
 			event.registerServerCommand(new CmdWorker());
 			biotechLogger.info("Biotech Command Enabled");
 		}
@@ -153,41 +171,57 @@ public class Biotech
     @Init
     public void load(FMLInitializationEvent event)
     {
+    	proxy.registerRenderers();
+
+		/**
+		 * Handle the items that will be used in recipes.
+		 */
     	ItemStack itemBasicCircuit =  new ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0);
-    	
     	ItemStack itemMotor =  new ItemStack(OreDictionary.getOreID("motor"), 1 , 0);
-    	
     	ItemStack itemBronzePlate =  new ItemStack(OreDictionary.getOreID("plateBronze"), 1 , 0);
-    	
     	ItemStack itemChest = new ItemStack(Block.chest, 1);
-    	
-        proxy.registerRenderers();
-        
-        GameRegistry.registerTileEntity(BasicWorkerTileEntity.class, "basicWorkerTile");
+
+		/**
+		 * Register the TileEntity's
+		 */
         GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
+        
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
-        MinecraftForge.setBlockHarvestLevel(basicWorker, "pickaxe", 0);
-        // Registration
-        GameRegistry.registerBlock(basicWorker, "Basic Worker");
-        
-        
-        LanguageRegistry.addName(basicWorker, "Basic Worker");
-        
+		/**
+		 * Handle the blocks
+		 */
         GameRegistry.registerBlock(Biotech.biotechBlockMachine, BiotechItemBlock.class, "Basic Biotech Block");
+        GameRegistry.registerBlock(biotechBlockMachine, "BiotechMachine");
+        // Registration
         
-        LanguageRegistry.addName(biotechBlockMachine, "Basic Biotech Block");
+		/**
+		 * Handle localization and add names for all items
+		 */
+        //LanguageRegistry.addName(biotechBlockMachine, "Biotech Machine");
         
-        // Tier 1
-        LanguageRegistry.addName(planter, "Planter Command Circuit");
-        LanguageRegistry.addName(harvester, "Harvester Command Circuit");
-        LanguageRegistry.addName(woodcutter, "Woodcutter Command Circuit");
-        // Tier 2
-        LanguageRegistry.addName(fertilizer, "Fertilizer Command Circuit");
-        LanguageRegistry.addName(tiller, "Tiller Command Circuit");
-        // Tier 3
-        LanguageRegistry.addName(miner, "Miner Command Circuit");
-        LanguageRegistry.addName(filler, "Filler Command Circuit");
+		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
+
+		// Subitems
+        LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
+        LanguageRegistry.addName(bioCircuitWheatSeeds, "Bio Circuit - Wheat Seeds");
+        LanguageRegistry.addName(bioCircuitMelonSeeds, "Bio Circuit - Melon Seeds");
+        LanguageRegistry.addName(bioCircuitPumpkinSeeds, "Bio Circuit - Pumpkin Seeds");
+        LanguageRegistry.addName(bioCircuitCarrots, "Bio Circuit - Carrots");
+        LanguageRegistry.addName(bioCircuitPotatoes, "Bio Circuit - Potaties");
+
+        // Subblocks
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.0.name", "Tilling Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.1.name", "Foresting Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.3.name", "Harvesting Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
+        
+        /*
+         * Recipes will be added after the rest works a bit better need to think of some more recipes as well!
+         
         // Recipes
         ItemStack[] bcCircuits =
         {
@@ -195,6 +229,7 @@ public class Biotech
         		itemBasicCircuit,
         		itemBasicCircuit,
         };
+        
         bcCircuits[0].setItemDamage(0); //Basic Circuit
         bcCircuits[1].setItemDamage(1); //Advanced Circuit
         bcCircuits[2].setItemDamage(2); //Elite Circuit
@@ -223,7 +258,7 @@ public class Biotech
                 'c', itemMotor,
                 'd', itemBronzePlate
         );
-        
+        */
         NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
     }
 

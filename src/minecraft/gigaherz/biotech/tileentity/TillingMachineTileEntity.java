@@ -10,6 +10,7 @@ import java.util.EnumSet;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -41,6 +42,12 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TillingMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
+	public static final double WATTS_PER_ACTION = 500;
+	public static final double WATTS_PER_IDLE_ACTION = 25;
+	
+	// Time idle after a tick
+	public static final int IDLE_TIME_AFTER_ACTION = 100;
+	
     public int currentX = 0;
     public int currentZ = 0;
 
@@ -49,10 +56,181 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
 
     //TODO Add variables to indicate maximum workarea size. Should be based on CommandItem usage?
     
+    final ItemStack[] resourceStacks = new ItemStack[]
+    {
+        new ItemStack(Item.seeds, 1),
+        new ItemStack(Item.melonSeeds, 1),
+        new ItemStack(Item.pumpkinSeeds, 1),
+        new ItemStack(Item.carrot, 1),
+        new ItemStack(Item.potato, 1),
+    };
+    
+	private int idleTicks;
+    
     public TillingMachineTileEntity()
     {
         super();
       
+       
+    }
+    
+    @Override
+    public void updateEntity()
+    {
+        super.updateEntity();
+
+        if (this.worldObj.isRemote)
+        {
+            return;
+        }
+        
+        if(this.idleTicks > 0)
+        {
+        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_IDLE_ACTION);
+        	--this.idleTicks;
+        	return;
+        }
+        
+        while(canDoWork())
+        {
+	        this.setPowered(true);
+
+	        if(doWork())
+	        {
+	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
+	        	this.idleTicks = this.IDLE_TIME_AFTER_ACTION;
+	        	advanceLocation();
+	        	this.setPowered(false);
+	        	break;
+	        }
+	        else
+	        {
+	        	advanceLocation();
+	        	continue;
+	        }
+        }
+
+    	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_IDLE_ACTION);
+    	return;
+    }
+    
+    public boolean doWork()
+    {
+    	return true;
+    }
+    
+    public boolean canDoWork()
+    {
+    	ItemStack circuit = this.inventory[2];
+    	ItemStack resource = this.inventory[1];
+    	
+    	if(this.getElectricityStored() >= this.WATTS_PER_ACTION)
+    	{
+	    	if(hasBioCircuitInSlot() && hasResourcesInSlot())
+	    	{
+	    		if(hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
+	    		{
+	    			return true;
+	    		}
+	    		else if(hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+	    		{
+	    			return true;
+	    		}
+	    		else if(hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[3]))
+	    		{
+	    			return true;
+	    		}
+	    		else if(hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[4]))
+	    		{
+	    			return true;
+	    		}
+	    		else if(hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[5]))
+	    		{
+	    			return true;
+	    		}
+	    	}
+    	}
+    	
+    	return false;
+    }
+    
+    
+    
+    private boolean hasResourcesInSlot()
+    {
+    	ItemStack slot = this.inventory[1];
+    	
+    	if (slot == null)
+        {
+            return false;
+        }
+    	
+        for (int i = 0; i < resourceStacks.length; i++)
+        {
+            if (slot.itemID == resourceStacks[i].itemID)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public boolean hasBioCircuitInSlot()
+    {
+        ItemStack slot = this.inventory[2];
+
+        if (slot == null)
+        {
+            return false;
+        }
+
+        if (slot.itemID == Biotech.bioCircuitEmpty.itemID)
+        {
+            return true;
+        }
+
+        return false;
+    }
+    
+    public boolean hasResourceOfType(ItemStack itemStack)
+    {
+        ItemStack slot = this.inventory[2];
+
+        if (slot == null)
+        {
+            return false;
+        }
+
+        if (slot.itemID == itemStack.itemID)
+        {
+            if(slot.getItemDamage() == itemStack.getItemDamage())
+            {
+            	return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public boolean hasBioCircuitOfType(ItemStack itemStack)
+    {
+        ItemStack slot = this.inventory[2];
+
+        if (slot == null)
+        {
+            return false;
+        }
+
+        if (slot.itemID == itemStack.itemID)
+        {
+            if(slot.getItemDamage() == itemStack.getItemDamage())
+            {
+            	return true;
+            }
+        }
+
+        return false;
     }
     
     @Override
@@ -139,15 +317,6 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     public String getInvName()
     {
         return "TillingMachine";
-    }
-
-    @Override
-    public void updateEntity()
-    {
-        super.updateEntity();
-
-        
-  
     }
 
 }

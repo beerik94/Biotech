@@ -41,12 +41,13 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class BasicMachineTileEntity extends TileEntityElectricityReceiver implements IInventory, ISidedInventory, IPacketReceiver
 {
-    private ItemStack[] inventory;
+    protected ItemStack[] inventory;
 
     //How much power is stored?
     private double electricityStored  = 0;
     private double electricityMaxStored  = 5000;
     
+    private int playersUsing = 0;
     
     //Is the macine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
@@ -70,7 +71,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 
     public void refreshConnectorsAndWorkArea()
     {
-        ForgeDirection direction = ForgeDirection.getOrientation(this.facing);
+        ForgeDirection direction = ForgeDirection.getOrientation(this.facing + 2);
         
         ElectricityConnections.registerConnector(this, EnumSet.of(direction));
 
@@ -155,11 +156,18 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
         return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this && player.getDistanceSq(xCoord + 0.5, yCoord + 0.5, zCoord + 0.5) < 64;
     }
 
-    @Override
-    public void openChest() {}
+	@Override
+	public void openChest()
+	{
+		this.playersUsing++;
+	}
 
-    @Override
-    public void closeChest() {}
+	@Override
+	public void closeChest()
+	{
+		this.playersUsing--;
+	}
+
 
     @Override
     public void readFromNBT(NBTTagCompound tagCompound)
@@ -215,10 +223,10 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
     @Override
     public String getInvName()
     {
-        return "GrinderInventory";
+        return "BasicMachineInventory";
     }
 
-    public void setPowered(boolean powered, World world, int x, int y, int z)
+    public void setPowered(boolean powered)
     {
     	this.isPowered = powered;
     	
@@ -233,47 +241,44 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
     public void updateEntity()
     {
         super.updateEntity();
-
-        if (this.worldObj.isRemote)
-        {
-            return;
-        }
-
-        boolean stateChanged = false;
-
-        if (this.ticks == 1)
-        {
-            this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata);
-        }
         
-        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.facing + 2);
+        System.out.println("Remote: " + worldObj.isRemote + " playersUsing: " + this.playersUsing);
         
-        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
 		if(!worldObj.isRemote)
 		{
-	        if (inputTile != null)
-	        {
-	            if (inputTile instanceof IConductor)
-	            {
-	                IConductor conductor = (IConductor) inputTile;
-	                ElectricityNetwork network = conductor.getNetwork();
-	
-	                if (this.electricityStored < this.electricityMaxStored)
-	                {
-	                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
-	                	
-	                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-	
-	                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
-	                    
-	                }
-					else if(electricityStored >= electricityMaxStored)
-	                {
-	                    network.stopRequesting(this);
-	                }
-	            }
-	        }
+	        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.facing + 2);
+	        
+	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
+	        
+		        if (inputTile != null)
+		        {
+		            if (inputTile instanceof IConductor)
+		            {
+		                IConductor conductor = (IConductor) inputTile;
+		                ElectricityNetwork network = conductor.getNetwork();
+		
+		                if (this.electricityStored < this.electricityMaxStored)
+		                {
+		                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
+		                	
+		                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+		
+		                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
+		                    
+		                }
+						else if(electricityStored >= electricityMaxStored)
+		                {
+		                    network.stopRequesting(this);
+		                }
+		            }
+		        }
+		        
+				if (this.ticks % 3 == 0 && this.playersUsing > 0)
+				{
+					PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+				}
 		}
+		
     }
 
 
@@ -549,6 +554,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 			{
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
+				this.electricityStored = dataStream.readDouble();
 			}
 		}
 		catch (Exception e)
@@ -560,7 +566,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored);
 	}
 
 	public int getFacing() 
@@ -578,12 +584,12 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 		return electricityStored;
 	}
 
-	public void setElectricityStored(double joules, Object... data)
+	public void setElectricityStored(double joules)
 	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
+		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
 	}	
 	
-	public double getMaxJoules(Object... data) 
+	public double getMaxElectricity() 
 	{
 		return electricityMaxStored;
 	}
