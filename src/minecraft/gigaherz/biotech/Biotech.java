@@ -40,7 +40,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.5")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.6")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 
 public class Biotech
@@ -218,6 +218,9 @@ public class Biotech
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
+        
+        //CreativeTab
+        LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
         
         /*
          * Recipes will be added after the rest works a bit better need to think of some more recipes as well!
