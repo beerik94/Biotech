@@ -40,7 +40,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.4")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.5")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 
 public class Biotech
@@ -192,7 +192,7 @@ public class Biotech
 		 * Handle the blocks
 		 */
         GameRegistry.registerBlock(Biotech.biotechBlockMachine, BiotechItemBlock.class, "Basic Biotech Block");
-        GameRegistry.registerBlock(biotechBlockMachine, "BiotechMachine");
+        //GameRegistry.registerBlock(biotechBlockMachine, "BiotechMachine");
         // Registration
         
 		/**

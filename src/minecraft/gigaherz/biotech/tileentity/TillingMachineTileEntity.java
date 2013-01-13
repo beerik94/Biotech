@@ -46,10 +46,12 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
 	public static final double WATTS_PER_IDLE_ACTION = 25;
 	
 	// Time idle after a tick
-	public static final int IDLE_TIME_AFTER_ACTION = 100;
+	public static final int IDLE_TIME_AFTER_ACTION = 80;
+	public static final int IDLE_TIME_NO_ACTION = 40;
 	
     public int currentX = 0;
     public int currentZ = 0;
+    public int currentY = 0;
 
     public int minX, maxX;
     public int minZ, maxZ;
@@ -86,7 +88,9 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
         
         if(this.idleTicks > 0)
         {
-        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_IDLE_ACTION);
+            if (this.ticks % 20 == 0)
+            	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_IDLE_ACTION);
+        	
         	--this.idleTicks;
         	return;
         }
@@ -105,18 +109,62 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
 	        }
 	        else
 	        {
+	        	this.idleTicks = this.IDLE_TIME_NO_ACTION;
 	        	advanceLocation();
-	        	continue;
+	        	break;
 	        }
         }
 
-    	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_IDLE_ACTION);
     	return;
     }
     
+
+    public int getTopY()
+    {/*
+        for (int y = 0; y < 4; y++)
+        {
+            if (this.worldObj.getBlockMaterial(this.xCoord + this.currentX, this.yCoord + y, this.zCoord + this.currentZ) == Material.air)
+            {
+                return y - 1;
+            }
+        }
+
+        return -1;
+        */
+    	return this.yCoord - 1;
+    }
+
+    
     public boolean doWork()
     {
-    	return true;
+    	
+		Block tilledField = Block.tilledField;
+		Block cropsField = Block.crops;
+		
+		int blockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
+		
+		if((worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == Block.dirt.blockID || worldObj.getBlockId(currentX, getTopY(),  zCoord +  currentZ) == Block.grass.blockID) && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1,  zCoord + currentZ))
+		{
+            if (!worldObj.isRemote)
+            {
+            	worldObj.setBlock(xCoord + currentX, getTopY(),  zCoord + currentZ, tilledField.blockID);
+            	return true;
+            	//damageTool(hoeToolStacks);
+            }
+		}
+		else if(worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord +  currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord +  currentZ) != cropsField.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ))
+		{
+            if (!worldObj.isRemote)
+            {
+            	worldObj.setBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ, cropsField.blockID);
+            	return true;
+            }
+		}
+			
+		//this.tillingTimeTicks = 0;
+		//this.active = false;
+    	
+    	return false;
     }
     
     public boolean canDoWork()
@@ -195,7 +243,7 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     
     public boolean hasResourceOfType(ItemStack itemStack)
     {
-        ItemStack slot = this.inventory[2];
+        ItemStack slot = this.inventory[1];
 
         if (slot == null)
         {

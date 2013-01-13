@@ -60,7 +60,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
         
         this.inventory = new ItemStack[24];
         
-        ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
+        ElectricityConnections.registerConnector(this, EnumSet.allOf(ForgeDirection.class));
     }
     
     @Override
@@ -74,7 +74,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
         ForgeDirection direction = ForgeDirection.getOrientation(this.facing + 2);
         
         ElectricityConnections.registerConnector(this, EnumSet.of(direction));
-
     }
 
     @Override
@@ -242,7 +241,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
     {
         super.updateEntity();
         
-        System.out.println("Remote: " + worldObj.isRemote + " playersUsing: " + this.playersUsing);
+        //System.out.println("Remote: " + worldObj.isRemote + " playersUsing: " + this.playersUsing);
         
 		if(!worldObj.isRemote)
 		{
