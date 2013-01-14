@@ -56,6 +56,8 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     public int minX, maxX;
     public int minZ, maxZ;
 
+    private Block tilledField = Block.tilledField;
+    private Block wheatseedsField = Block.crops;
     //TODO Add variables to indicate maximum workarea size. Should be based on CommandItem usage?
     
     final ItemStack[] resourceStacks = new ItemStack[]
@@ -134,16 +136,104 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     	return this.yCoord - 1;
     }
 
+    public boolean canTill()
+    {
+    	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
+    	
+		if((currentBlockBlockid == Block.dirt.blockID || currentBlockBlockid == Block.grass.blockID) && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1,  zCoord + currentZ) && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1,  zCoord + currentZ))
+		{
+            return true;
+		}
+		else
+		{
+			return false;
+		}
+    }
+    
+    public boolean tillField ()
+    {
+    	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
+    	
+        if (!worldObj.isRemote && canTill())
+        {
+        	worldObj.setBlock(xCoord + currentX, getTopY(),  zCoord + currentZ, tilledField.blockID);
+        	
+        	//damageTool(hoeToolStacks);
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
+    }
+    
+    public boolean plantResource(ItemStack stack, Block placeBlock)
+    {
+    	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
+    	
+        if (!worldObj.isRemote && canPlant(stack, placeBlock))
+        {
+        	worldObj.setBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ, placeBlock.blockID);
+        	
+        	//damageTool(hoeToolStacks);
+        	return true;
+        }
+        else
+        {
+        	return false;
+        }
+    }
+    
+    public boolean canPlant(ItemStack stack, Block placeBlock)
+    {
+    	if(hasResourceOfType(stack))
+    	{
+    		if(worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord +  currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord +  currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ))
+       		{
+    			return true;
+            }
+    		else
+    		{
+    			return false;
+    		}
+    	}
+   		else
+   		{
+   			return false;
+    	}
+    }
     
     public boolean doWork()
     {
-    	
-		Block tilledField = Block.tilledField;
-		Block cropsField = Block.crops;
+		if(hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds))
+		{
+			if(canTill())
+			{
+				tillField();
+			}
+			else if(canPlant(resourceStacks[0], wheatseedsField))
+			{
+				plantResource(resourceStacks[0], wheatseedsField);
+			}
+		}
+		else if(hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+		{
+			return true;
+		}
+		else if(hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[3]))
+		{
+			return true;
+		}
+		else if(hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[4]))
+		{
+			return true;
+		}
+		else if(hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[5]))
+		{
+			return true;
+		}
 		
-		int blockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
-		
-		if((worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == Block.dirt.blockID || worldObj.getBlockId(currentX, getTopY(),  zCoord +  currentZ) == Block.grass.blockID) && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1,  zCoord + currentZ))
+		if(canTill())
 		{
             if (!worldObj.isRemote)
             {
@@ -152,14 +242,7 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
             	//damageTool(hoeToolStacks);
             }
 		}
-		else if(worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord +  currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord +  currentZ) != cropsField.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ))
-		{
-            if (!worldObj.isRemote)
-            {
-            	worldObj.setBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ, cropsField.blockID);
-            	return true;
-            }
-		}
+		
 			
 		//this.tillingTimeTicks = 0;
 		//this.active = false;
