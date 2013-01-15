@@ -28,6 +28,7 @@ import net.minecraftforge.common.ISidedInventory;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.implement.IConductor;
+import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
@@ -71,8 +72,29 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 
     public void refreshConnectorsAndWorkArea()
     {
-        ForgeDirection direction = ForgeDirection.getOrientation(this.facing + 2);
-        
+        int front = 0; 
+    	
+    	switch(this.getFacing())
+    	{
+    	case 2:
+    		front = 2;
+    		break;
+    	case 3:
+    		front = 3;
+    		break;
+    	case 4:
+    		front = 4;
+    		break;
+    	case 5:
+    		front = 5;
+    		break;
+    	default:
+    		front = 2;
+   			break;
+    	}
+
+    	ForgeDirection direction = ForgeDirection.getOrientation(front);
+    	
         ElectricityConnections.registerConnector(this, EnumSet.of(direction));
     }
 
@@ -245,9 +267,30 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
         
 		if(!worldObj.isRemote)
 		{
-	        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.facing + 2);
-	        
-	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
+	        int front = 0; 
+	    	
+	    	switch(this.getFacing())
+	    	{
+	    	case 2:
+	    		front = 2;
+	    		break;
+	    	case 3:
+	    		front = 3;
+	    		break;
+	    	case 4:
+	    		front = 4;
+	    		break;
+	    	case 5:
+	    		front = 5;
+	    		break;
+	    	default:
+	    		front = 2;
+	   			break;
+	    	}
+
+	    	ForgeDirection direction = ForgeDirection.getOrientation(front);
+
+	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
 	        
 		        if (inputTile != null)
 		        {
@@ -271,6 +314,20 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 		                }
 		            }
 		        }
+		        
+				if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
+				{
+					if (this.inventory[0].getItem() instanceof IItemElectric)
+					{
+						IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
+
+						if (electricItem.canProduceElectricity())
+						{
+							double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
+							this.setElectricityStored(this.electricityStored + joulesReceived);
+						}
+					}
+				}
 		        
 				if (this.ticks % 3 == 0 && this.playersUsing > 0)
 				{
