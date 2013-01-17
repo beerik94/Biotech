@@ -1,8 +1,11 @@
 /bin/*
+/client/*
+/common/*
 /conf/*
 /docs/*
 /eclipse/*
 /forge/*
+/fml/*
 /jars/*
 /lib/*
 /logs/*
@@ -21,6 +24,7 @@
 CHANGELOG
 *.bat
 *.sh
+*.txt
 /src/minecraft/Start.java
 /src/minecraft/dan200/computer/api/IComputerAccess.java
 /src/minecraft/dan200/computer/api/IPeripheral.java
@@ -35,3 +39,9 @@ CHANGELOG
 /nbproject/private/
 /build/
 .c9revisions
+/*/
+*.py
+*.pyc
+*.properties
+*.cmd
+*.py

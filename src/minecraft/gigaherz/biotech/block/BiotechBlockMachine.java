@@ -4,6 +4,7 @@ import gigaherz.biotech.Biotech;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
+import gigaherz.biotech.tileentity.TileEntityCowMilker;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.util.List;
@@ -32,6 +33,7 @@ public class BiotechBlockMachine extends BlockMachine
 	//4 == Fertilizer
 	//5 == Miner
 	//6 == Filler
+	//7 == Cow Milker
 	
 	public static final int TILLER_METADATA = 0;
 	public static final int FORESTER_METADATA = 1;
@@ -40,6 +42,7 @@ public class BiotechBlockMachine extends BlockMachine
 	public static final int FERTILIZER_METADATA = 4;
 	public static final int MINER_METADATA = 5;
 	public static final int FILLER_METADATA = 6;
+	public static final int COWMILKER_METADATA = 7;
 	
 	
     public BiotechBlockMachine(int id, int textureIndex)
@@ -169,6 +172,22 @@ public class BiotechBlockMachine extends BlockMachine
       		default:
       			return 3;
       		}
+    	}
+    	else if(meta == 7)
+    	{
+    		switch(side)
+    		{
+    		case 0:
+    			return 3;
+    		case 1:
+    			return 18;
+    		case 2:
+    			return 0;
+    		case 3:
+    			return 32;
+    		default:
+    			return 3;
+    		}
     	}
     	else 
     	{
@@ -386,6 +405,29 @@ public class BiotechBlockMachine extends BlockMachine
 	        	return 3;
 	        }
     	}
+    	else if(metadata == 7)
+    	{
+    		if(side == front)
+    		{
+    			return tileEntity.isPowered ? 16 : 0;
+    		}
+    		else if(side == back)
+    		{
+    			return 32;
+    		}
+    		else if(side == bottom)
+    		{
+    			return 3;
+    		}
+    		else if(side == top)
+    		{
+    			return 18;
+    		}
+    		else
+    		{
+    			return 3;
+    		}
+    	}
      	else 
      	{
     		return 3;
@@ -454,6 +496,7 @@ public class BiotechBlockMachine extends BlockMachine
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
 		list.add(new ItemStack(i, 1, 6));
+		list.add(new ItemStack(i, 1, 7));
 	}
     
     
@@ -504,28 +547,36 @@ public class BiotechBlockMachine extends BlockMachine
     	int metadata = world.getBlockMetadata(x, y, z);
     	
     	TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-    	
-		if (!world.isRemote)
-		{
-	    	if(metadata == 0)
+    	if(!world.isRemote)
+    	{
+	    	switch(metadata)
 	    	{
+	    	case 0:
+	    		if(!player.isSneaking())
+	    		{
+	    			player.openGui(Biotech.instance, 0, world, x, y, z);
+	    			return true;
+	    		}
+	    	case 1:
+	    	case 2:
+	    	case 3:
+	    	case 4:
+	    	case 5:
+	    	case 6:
+	    	case 7:
+	    		if(!player.isSneaking())
+				{
+					player.openGui(Biotech.instance, 1, world, x, y, z);
+					return true;
+				}
+	    	default:
 	    		if(!player.isSneaking())
 	    		{
 	    			player.openGui(Biotech.instance, 0, world, x, y, z);
 	    			return true;
 	    		}
 	    	}
-		}
-    	/*
-    	else if(metadata == 6)
-    	{
-    		if(!entityplayer.isSneaking())
-    		{
-    			entityplayer.openGui(Mekanism.instance, 14, world, x, y, z);
-    			return true;
-    		}
     	}
-    	*/
         return true;
     }
 
@@ -548,10 +599,10 @@ public class BiotechBlockMachine extends BlockMachine
     	case 4:
     	case 5:
     	case 6:
+    	case 7:
+    		return new TileEntityCowMilker();
     	default:
     		return new BasicMachineTileEntity();
     	}
     }
-    
-    
 }

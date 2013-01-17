@@ -2,12 +2,15 @@ package gigaherz.biotech;
 
 import gigaherz.biotech.block.BasicWorkerBlockMachine;
 import gigaherz.biotech.block.BiotechBlockMachine;
+import gigaherz.biotech.block.MilkFlowing;
+import gigaherz.biotech.block.MilkStill;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.item.BioCircuit;
 import gigaherz.biotech.item.BiotechItemBlock;
 import gigaherz.biotech.item.CommandCircuit;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
+import gigaherz.biotech.tileentity.TileEntityCowMilker;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.io.File;
@@ -19,7 +22,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
+import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
 import cpw.mods.fml.common.FMLLog;
@@ -93,6 +98,9 @@ public class Biotech
     
     // Block templates
     public static Block biotechBlockMachine;
+    public static Block milkMoving;
+    public static Block milkStill;
+    
     // Metadata for biotechBlockMachine
 	//0 == Tiller
 	//1 == Foresting
@@ -101,6 +109,14 @@ public class Biotech
 	//4 == Fertilizer
 	//5 == Miner
 	//6 == Filler
+    //7 == Cow Milker
+    
+    // Item Stack
+    public static ItemStack cobbleStack = new ItemStack(Block.cobblestone);
+	public static ItemStack plankStack = new ItemStack(Block.planks);
+    
+    // Liquid Stack Milk
+    public static LiquidStack milkLiquid;
 
     // Says where the client and server 'proxy' code is loaded.
     @SidedProxy(clientSide = "gigaherz.biotech.client.ClientProxy", serverSide = "gigaherz.biotech.common.CommonProxy")
@@ -135,7 +151,9 @@ public class Biotech
         this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioCircuitId).getInt());
         
         this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-
+        this.milkStill = new MilkStill(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 2).getInt(), 1);
+        this.milkMoving = new MilkFlowing(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 3).getInt(), 1);
+        
 		/**
 		 * Define the subitems
 		 */
@@ -188,10 +206,15 @@ public class Biotech
         
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
+        GameRegistry.registerTileEntity(TileEntityCowMilker.class, "CowMilkerTileEntity");
+        
 		/**
 		 * Handle the blocks
 		 */
         GameRegistry.registerBlock(Biotech.biotechBlockMachine, BiotechItemBlock.class, "Basic Biotech Block");
+        GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
+        GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
+        
         //GameRegistry.registerBlock(biotechBlockMachine, "BiotechMachine");
         // Registration
         
@@ -201,6 +224,8 @@ public class Biotech
         //LanguageRegistry.addName(biotechBlockMachine, "Biotech Machine");
         
 		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
+		LanguageRegistry.addName(milkMoving, "Milk(Flowing)");
+		LanguageRegistry.addName(milkStill, "Milk(Still)");
 
 		// Subitems
         LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
@@ -218,6 +243,7 @@ public class Biotech
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Cow Milker");
         
         //CreativeTab
         LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
@@ -262,6 +288,7 @@ public class Biotech
                 'd', itemBronzePlate
         );
         */
+        
         NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
     }
 
