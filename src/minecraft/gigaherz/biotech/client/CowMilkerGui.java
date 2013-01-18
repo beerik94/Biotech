@@ -19,7 +19,7 @@ public class CowMilkerGui extends GuiContainer
 {
 	private CowMilkerTileEntity tileEntity;
 
-	public static String COWMILKER_GUI = Biotech.FILE_PATH + "GuiCowMilker.png";
+	public static String COWMILKER_GUI = Biotech.FILE_PATH + "cowmilker.png";
 	
 	private int containerWidth;
 	private int containerHeight;

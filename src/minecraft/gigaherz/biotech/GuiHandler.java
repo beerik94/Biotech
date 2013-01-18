@@ -25,7 +25,7 @@ public class GuiHandler implements IGuiHandler
 		MinecraftForgeClient.preloadTexture(Biotech.ITEM_TEXTURE_FILE);
 		
 		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH + "tillingmachine.png");
-		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH + "GuiCowMilker.png");
+		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH + "cowmilker.png");
 		
 	}
 	
