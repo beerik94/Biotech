@@ -1,13 +1,14 @@
 package gigaherz.biotech;
 
-import gigaherz.biotech.client.GuiCowMilker;
+import gigaherz.biotech.client.CowMilkerGui;
 import gigaherz.biotech.client.TillingMachineGui;
 import gigaherz.biotech.client.WorkerGui;
 import gigaherz.biotech.container.BasicWorkerContainer;
+import gigaherz.biotech.container.CowMilkerContainer;
 import gigaherz.biotech.container.TillingMachineContainer;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
-import gigaherz.biotech.tileentity.TileEntityCowMilker;
+import gigaherz.biotech.tileentity.CowMilkerTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
@@ -38,9 +39,9 @@ public class GuiHandler implements IGuiHandler
 	    	switch(id)
 	    	{
 	    	case 0:
-	    		return new TillingMachineGui(player.inventory, (TillingMachineTileEntity) tileEntity);
+	    		return new TillingMachineContainer(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
-	    		return new GuiCowMilker((TileEntityCowMilker) tileEntity);
+	    		return new CowMilkerContainer(player.inventory, (CowMilkerTileEntity) tileEntity);
 	    	}
 	    	
 	    }
@@ -59,7 +60,7 @@ public class GuiHandler implements IGuiHandler
 	    	case 0:
 	    		return new TillingMachineGui(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
-	    		return new GuiCowMilker((TileEntityCowMilker) tileEntity);
+	    		return new CowMilkerGui(player.inventory, (CowMilkerTileEntity) tileEntity);
 	    	}
 	    	
 	    }

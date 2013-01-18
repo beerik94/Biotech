@@ -1,8 +1,8 @@
 package gigaherz.biotech.client;
 
 import gigaherz.biotech.Biotech;
-import gigaherz.biotech.tileentity.TileEntityCowMilker;
-import gigaherz.biotech.container.ContainerCowMilker;
+import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.container.CowMilkerContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
@@ -15,18 +15,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class GuiCowMilker extends GuiContainer
+public class CowMilkerGui extends GuiContainer
 {
-	private TileEntityCowMilker tileEntity;
+	private CowMilkerTileEntity tileEntity;
 
 	public static String COWMILKER_GUI = Biotech.FILE_PATH + "GuiCowMilker.png";
 	
 	private int containerWidth;
 	private int containerHeight;
 
-	public GuiCowMilker(TileEntityCowMilker tileEntity)
+	public CowMilkerGui(InventoryPlayer inventory, CowMilkerTileEntity tileEntity)
 	{
-		super(new ContainerCowMilker(tileEntity));
+		super(new CowMilkerContainer(inventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}

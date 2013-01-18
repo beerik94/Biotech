@@ -11,13 +11,13 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
 
-public class MilkFlowing extends BlockFluid implements ILiquid {
+public class MilkFlowingBlock extends BlockFluid implements ILiquid {
 
 	int numAdjacentSources = 0;
 	boolean isOptimalFlowDirection[] = new boolean[4];
 	int flowCost[] = new int[4];
 
-	public MilkFlowing(int id, int textureIndex) {
+	public MilkFlowingBlock(int id, int textureIndex) {
 		super(id, Material.water);
 		setCreativeTab(Biotech.tabBiotech);
 		setHardness(100F);
@@ -233,7 +233,7 @@ public class MilkFlowing extends BlockFluid implements ILiquid {
 
 	@Override
 	public int stillLiquidId() {
-		return Biotech.milkStill.blockID;
+		return this.blockID;
 	}
 
 	@Override

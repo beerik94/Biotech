@@ -28,7 +28,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 
-public class TileEntityCowMilker extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
 	private ItemStack[] inventory;
 	
@@ -49,7 +49,7 @@ public class TileEntityCowMilker extends BasicMachineTileEntity implements IInve
 	private int facing;
 	private int playersUsing = 0;
 	
-	public TileEntityCowMilker()
+	public CowMilkerTileEntity()
 	{
 		super();
 		

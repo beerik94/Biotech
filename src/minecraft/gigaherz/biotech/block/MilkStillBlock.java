@@ -7,9 +7,9 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
 
-public class MilkStill extends BlockStationary implements ILiquid {
+public class MilkStillBlock extends BlockStationary implements ILiquid {
 
-	public MilkStill(int id, int textureIndex) {
+	public MilkStillBlock(int id, int textureIndex) {
 		super(id, Material.water);
 		setCreativeTab(Biotech.tabBiotech);
 		setHardness(100F);
@@ -26,7 +26,7 @@ public class MilkStill extends BlockStationary implements ILiquid {
 
 	@Override
 	public int stillLiquidId() {
-		return Biotech.milkStill.blockID;
+		return this.blockID;
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 package gigaherz.biotech.container;
 
-import gigaherz.biotech.tileentity.TileEntityCowMilker;
+import gigaherz.biotech.tileentity.CowMilkerTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,25 +12,25 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.SlotElectricItem;
 
-public class ContainerCowMilker extends Container
+public class CowMilkerContainer extends Container
 {
-	private TileEntityCowMilker tileEntity;
+	private CowMilkerTileEntity tileEntity;
 
-	public ContainerCowMilker(TileEntityCowMilker te)
+	public CowMilkerContainer(InventoryPlayer inventory, CowMilkerTileEntity te)
 	{
 		this.tileEntity = te;
 
 		// Electric Input Slot
 		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
 
-		// Slot for seeds
-		this.addSlotToContainer(new Slot(tileEntity, 1, 144, 7));
+		// Slot for empty bucket
+		this.addSlotToContainer(new Slot(tileEntity, 1, 146, 17));
 		
-		// Slot BioCircuit
+		// Slot for upgrade
 		this.addSlotToContainer(new Slot(tileEntity, 2, 7, 7));
 		
-		// Slot Hoe tool
-		this.addSlotToContainer(new Slot(tileEntity, 3, 144, 27));
+		// Slot for filled bucket
+		this.addSlotToContainer(new Slot(tileEntity, 3, 146, 52));
 
 		tileEntity.openChest();
 	}
