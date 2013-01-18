@@ -2,15 +2,15 @@ package gigaherz.biotech;
 
 import gigaherz.biotech.block.BasicWorkerBlockMachine;
 import gigaherz.biotech.block.BiotechBlockMachine;
-import gigaherz.biotech.block.MilkFlowingBlock;
-import gigaherz.biotech.block.MilkStillBlock;
+import gigaherz.biotech.block.MilkFlowing;
+import gigaherz.biotech.block.MilkStill;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.item.BioCircuit;
 import gigaherz.biotech.item.BiotechItemBlock;
 import gigaherz.biotech.item.CommandCircuit;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
-import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.tileentity.TileEntityCowMilker;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.io.File;
@@ -151,8 +151,8 @@ public class Biotech
         this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioCircuitId).getInt());
         
         this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-        this.milkStill = new MilkStillBlock(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 2).getInt(), 1);
-        this.milkMoving = new MilkFlowingBlock(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 3).getInt(), 1);
+        this.milkStill = new MilkStill(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 2).getInt(), 1);
+        this.milkMoving = new MilkFlowing(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 3).getInt(), 1);
         
 		/**
 		 * Define the subitems
@@ -206,7 +206,7 @@ public class Biotech
         
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
-        GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
+        GameRegistry.registerTileEntity(TileEntityCowMilker.class, "CowMilkerTileEntity");
         
 		/**
 		 * Handle the blocks

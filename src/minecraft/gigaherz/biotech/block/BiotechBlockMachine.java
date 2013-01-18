@@ -4,7 +4,7 @@ import gigaherz.biotech.Biotech;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
-import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.tileentity.TileEntityCowMilker;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.util.List;
@@ -600,7 +600,7 @@ public class BiotechBlockMachine extends BlockMachine
     	case 5:
     	case 6:
     	case 7:
-    		return new CowMilkerTileEntity();
+    		return new TileEntityCowMilker();
     	default:
     		return new BasicMachineTileEntity();
     	}
