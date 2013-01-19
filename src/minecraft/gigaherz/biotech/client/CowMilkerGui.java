@@ -57,7 +57,8 @@ public class CowMilkerGui extends GuiContainer
 		this.fontRenderer.drawString("Status: " + displayText, 32, 18, 0x00CD00);
 		this.fontRenderer.drawString("Voltage: " + ElectricInfo.getDisplayShort(this.tileEntity.getVoltage(), ElectricUnit.VOLTAGE), 32, 28, 0x00CD00);
 		this.fontRenderer.drawString("Storage: " + ElectricInfo.getDisplayShort(this.tileEntity.getElectricityStored(), ElectricUnit.JOULES), 32, 38, 0x00CD00);
-
+		this.fontRenderer.drawString("MilkStored: " + this.tileEntity.milkStored, 32, 48, 0x00CD00);
+		
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
     }
 
@@ -85,6 +86,6 @@ public class CowMilkerGui extends GuiContainer
 		
 		//Biotech.biotechLogger.info(Double.toString(this.tileEntity.getElectricityStored()));
 		
-		this.drawTexturedModalRect(containerWidth + 125, containerHeight + 15 + 51 - scale, 176, 51 - scale, 8, scale);
+		this.drawTexturedModalRect(containerWidth + 125, containerHeight + 15 + 52 - scale, 176, 52 - scale, 8, scale);
     }
 }

@@ -38,6 +38,9 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 {
 	private ItemStack Inventory[];
 	
+	private int tickCounter;
+	private int scantickCounter;
+	
 	protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
 	
 	public static final double WATTS_PER_ACTION = 500;
@@ -109,28 +112,28 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 		int zminrange = zCoord- getScanRange();
 		int zmaxrange = zCoord+ getScanRange()+1;
 		
-		List<EntityLiving> scannedLivinglist = worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(xminrange, xmaxrange, yminrange, ymaxrange, zminrange, zmaxrange));
+		List<EntityCow> scannedCowslist = worldObj.getEntitiesWithinAABB(EntityCow.class, AxisAlignedBB.getBoundingBox(xminrange, yminrange, zminrange, xmaxrange, ymaxrange, zmaxrange));
 	
-		for(EntityLiving Living : scannedLivinglist)
+		for(EntityCow Living : scannedCowslist)
 		{
-			if(Living instanceof EntityCow)
+			if(!CowList.contains(Living))
 			{
-				int distance = (int) Math.round(Vector3.distance(new Vector3(this), new Vector3(Living)));
-				
-				if(distance > getScanRange())
-				{
-					CowList.add(Living);
-				}
+				CowList.add(Living);
 			}
 		}	
 	}
 	
 	public void milkCows()
 	{		
+		
 		//if(this.getElectricityStored() > WATTS_PER_ACTION)
 		//{
 			milkStored += cowMilk;
-			CowList.remove(1);
+			if(CowList.size() != 0)
+			{
+				CowList.remove(1);
+			}
+
 		//}
 		
 		
@@ -139,16 +142,16 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public int getScanRange() {
 		if (getStackInSlot(2) != null) {
 			if (getStackInSlot(1).getItem() == Biotech.RangeUpgrade) {
-				return (getStackInSlot(1).stackSize+3);
+				return (getStackInSlot(1).stackSize+5);
 			}
 		}
-		return 3;
+		return 5;
 	}
 	
 	@Override
     public void updateEntity()
     {
-        if (worldObj.isRemote == false)
+        if (!worldObj.isRemote)
         {
 	        if(this.idleTicks > 0)
 	        {
@@ -161,21 +164,41 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        
 	        if(this.isRedstoneSignal())
 	        {
-	        	scanCows();
+	        	if(scantickCounter == 50)
+	        	{
+	        		scanCows();
+	        		scantickCounter = 0;
+	        	}
 	        	if(CowList.size() == 0)
 	        	{
 	        		return;
 	        	}
-	        	else
+	        	else if(tickCounter == 100)
 	        	{
 	        		milkCows();
+	        		tickCounter = 0;
 	        	}
+	            tickCounter++;
+	            scantickCounter++;
 	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 	        }
 	        cowMilk += milkIntRandom;
+	        if(milkStored >= milkMaxStored)
+	        {
+	        	milkStored = milkMaxStored;
+	        }
+	        if(tickCounter >= 150)
+	        {
+	        	tickCounter = 0;
+	        }
+	        if(scantickCounter >= 100)
+	        {
+	        	tickCounter = 0;
+	        }
 	        
         }
         System.out.println(CowList);
+        System.out.println(tickCounter);
         super.updateEntity();
     }
 	
