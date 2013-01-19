@@ -81,10 +81,10 @@ public class CowMilkerGui extends GuiContainer
             this.drawTexturedModalRect(x + 86, y + 54, 176, 0, 8, 8);
         }
          */
-		int scale = (int) (((double) this.tileEntity.getElectricityStored() / (double) this.tileEntity.getMaxElectricity()) * 52);
+		int scale = (int) ((this.tileEntity.milkStored / this.tileEntity.milkMaxStored) * 51);
 		
 		//Biotech.biotechLogger.info(Double.toString(this.tileEntity.getElectricityStored()));
 		
-		this.drawTexturedModalRect(containerWidth + 165, containerHeight + 17 + 52 - scale, 176, 52 - scale, 4, scale);
+		this.drawTexturedModalRect(containerWidth + 125, containerHeight + 15 + 51 - scale, 176, 51 - scale, 8, scale);
     }
 }

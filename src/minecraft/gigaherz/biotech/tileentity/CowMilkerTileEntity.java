@@ -2,10 +2,15 @@ package gigaherz.biotech.tileentity;
 
 import gigaherz.biotech.Biotech;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
+import java.util.Random;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -17,6 +22,7 @@ import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
@@ -30,12 +36,27 @@ import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
-	private ItemStack[] inventory;
+	private ItemStack Inventory[];
+	
+	protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
+	
+	public static final double WATTS_PER_ACTION = 500;
+	public static final double WATTS_PER_IDLE_ACTION = 25;
+	
+	// Time idle after a tick
+	public static final int IDLE_TIME_AFTER_ACTION = 80;
+	public static final int IDLE_TIME_NO_ACTION = 40;
 	
 	//How much power is stored?
     private double electricityStored  = 0;
     private double electricityMaxStored  = 5000;
     
+    //How much milk is stored?
+    public static int milkStored = 0;
+    public static int milkMaxStored = 3000;
+    private static int cowMilk = 10;
+    private static int milkIntRandom;
+    private static Random milkRandom = new Random();
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
@@ -43,19 +64,24 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	/**
 	 * The ItemStacks that hold the items currently being used in the cow milker
 	 */
-	private ItemStack[] topSlot = new ItemStack[1];
-	private Item[] bottomSlot = new Item[1];
+	private ItemStack[] lefttopSlot = new ItemStack[4];
+	private Item[] leftbottomSlot = new Item[1];
 
 	private int facing;
 	private int playersUsing = 0;
+	private int idleTicks;
+	
 	
 	public CowMilkerTileEntity()
 	{
 		super();
-		
-		this.inventory = new ItemStack[24];
-		
+		Inventory = new ItemStack[36];
 		ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
+	
+		for(int idx = 1; idx <= 10; ++idx)
+		{
+			milkIntRandom = milkRandom.nextInt(30);
+		}
 	}
 	
 	@Override
@@ -73,6 +99,93 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 		ElectricityConnections.registerConnector(this, EnumSet.of(direction));
 	}
 
+	public void scanCows()
+	{
+		
+		int xminrange = xCoord- getScanRange();
+		int xmaxrange = xCoord+ getScanRange()+1;
+		int yminrange = yCoord- getScanRange();
+		int ymaxrange = yCoord+ getScanRange()+1;
+		int zminrange = zCoord- getScanRange();
+		int zmaxrange = zCoord+ getScanRange()+1;
+		
+		List<EntityLiving> scannedLivinglist = worldObj.getEntitiesWithinAABB(EntityLiving.class, AxisAlignedBB.getBoundingBox(xminrange, xmaxrange, yminrange, ymaxrange, zminrange, zmaxrange));
+	
+		for(EntityLiving Living : scannedLivinglist)
+		{
+			if(Living instanceof EntityCow)
+			{
+				int distance = (int) Math.round(Vector3.distance(new Vector3(this), new Vector3(Living)));
+				
+				if(distance > getScanRange())
+				{
+					CowList.add(Living);
+				}
+			}
+		}	
+	}
+	
+	public void milkCows()
+	{		
+		//if(this.getElectricityStored() > WATTS_PER_ACTION)
+		//{
+			milkStored += cowMilk;
+			CowList.remove(1);
+		//}
+		
+		
+	}
+	
+	public int getScanRange() {
+		if (getStackInSlot(2) != null) {
+			if (getStackInSlot(1).getItem() == Biotech.RangeUpgrade) {
+				return (getStackInSlot(1).stackSize+3);
+			}
+		}
+		return 3;
+	}
+	
+	@Override
+    public void updateEntity()
+    {
+        if (worldObj.isRemote == false)
+        {
+	        if(this.idleTicks > 0)
+	        {
+	            if (this.ticks % 40 == 0)
+	            	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_IDLE_ACTION);
+	        	
+	        	--this.idleTicks;
+	        	return;
+	        }
+	        
+	        if(this.isRedstoneSignal())
+	        {
+	        	scanCows();
+	        	if(CowList.size() == 0)
+	        	{
+	        		return;
+	        	}
+	        	else
+	        	{
+	        		milkCows();
+	        	}
+	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
+	        }
+	        cowMilk += milkIntRandom;
+	        
+        }
+        System.out.println(CowList);
+        super.updateEntity();
+    }
+	
+	public boolean isRedstoneSignal(){
+		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) ||
+		    worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+			return true;
+		return false;
+	}
+	
 	@Override
 	public int getSizeInventory()
 	{
@@ -228,53 +341,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     		prevIsPowered = isPowered;
     		PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj);
     	}
-    }
-	
-	@Override
-    public void updateEntity()
-    {
-        super.updateEntity();
-
-        if (this.worldObj.isRemote)
-        {
-            return;
-        }
-
-        boolean stateChanged = false;
-
-        if (this.ticks == 1)
-        {
-            this.worldObj.setBlockMetadataWithNotify(this.xCoord, this.yCoord, this.zCoord, this.blockMetadata);
-        }
-        
-        ForgeDirection inputDirection = ForgeDirection.getOrientation(this.facing + 2);
-        
-        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), inputDirection);
-		if(!worldObj.isRemote)
-		{
-	        if (inputTile != null)
-	        {
-	            if (inputTile instanceof IConductor)
-	            {
-	                IConductor conductor = (IConductor) inputTile;
-	                ElectricityNetwork network = conductor.getNetwork();
-
-	                if (this.electricityStored < this.electricityMaxStored)
-	                {
-	                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
-
-	                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-
-	                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
-
-	                }
-					else if(electricityStored >= electricityMaxStored)
-	                {
-	                    network.stopRequesting(this);
-	                }
-	            }
-	        }
-		}
     }
 	
 	@Override

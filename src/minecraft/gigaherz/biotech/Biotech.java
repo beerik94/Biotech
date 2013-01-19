@@ -95,6 +95,8 @@ public class Biotech
     public static ItemStack bioCircuitCarrots;
     public static ItemStack bioCircuitPotatoes;
     
+    // Cow Milker Upgrades [Not yet implemented but needs to be defined for CowMilkerTileEntity to work]
+    public static Item RangeUpgrade;
     
     // Block templates
     public static Block biotechBlockMachine;
