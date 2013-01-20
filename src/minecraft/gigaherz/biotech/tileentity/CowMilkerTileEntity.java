@@ -58,8 +58,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     public static int milkStored = 0;
     public static int milkMaxStored = 3000;
     private static int cowMilk = 10;
-    private static int milkIntRandom;
-    private static Random milkRandom = new Random();
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
@@ -80,11 +78,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 		super();
 		Inventory = new ItemStack[36];
 		ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
-	
-		for(int idx = 1; idx <= 10; ++idx)
-		{
-			milkIntRandom = milkRandom.nextInt(30);
-		}
 	}
 	
 	@Override
@@ -131,7 +124,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 			milkStored += cowMilk;
 			if(CowList.size() != 0)
 			{
-				CowList.remove(1);
+				CowList.remove(0);
+				cowMilk = 10;
 			}
 
 		//}
@@ -164,25 +158,21 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        
 	        if(this.isRedstoneSignal())
 	        {
-	        	if(scantickCounter == 50)
+	        	if(scantickCounter >= 40)
 	        	{
 	        		scanCows();
 	        		scantickCounter = 0;
 	        	}
-	        	if(CowList.size() == 0)
-	        	{
-	        		return;
-	        	}
-	        	else if(tickCounter == 100)
+	        	if(CowList.size() != 0 && tickCounter >= 100)
 	        	{
 	        		milkCows();
 	        		tickCounter = 0;
 	        	}
+	        	
 	            tickCounter++;
 	            scantickCounter++;
 	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 	        }
-	        cowMilk += milkIntRandom;
 	        if(milkStored >= milkMaxStored)
 	        {
 	        	milkStored = milkMaxStored;
@@ -195,10 +185,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        {
 	        	tickCounter = 0;
 	        }
-	        
         }
-        System.out.println(CowList);
-        System.out.println(tickCounter);
         super.updateEntity();
     }
 	

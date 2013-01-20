@@ -22,6 +22,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
+import net.minecraftforge.liquids.LiquidContainerData;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
@@ -209,6 +212,13 @@ public class Biotech
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
         GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
+        
+        /**
+         * Register Milk as a Liquid
+         */
+        milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk", new LiquidStack(milkStill, 1));
+        LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Milk", LiquidContainerRegistry.BUCKET_VOLUME),
+				new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
         
 		/**
 		 * Handle the blocks
