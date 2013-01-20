@@ -42,12 +42,12 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 
 public class TillingMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
-	public static final double WATTS_PER_ACTION = 500;
+	public static final double WATTS_PER_ACTION = 200;
 	public static final double WATTS_PER_IDLE_ACTION = 25;
 	
 	// Time idle after a tick
-	public static final int IDLE_TIME_AFTER_ACTION = 80;
-	public static final int IDLE_TIME_NO_ACTION = 40;
+	public static final int IDLE_TIME_AFTER_ACTION = 60;
+	public static final int IDLE_TIME_NO_ACTION = 30;
 	
     public int currentX = 0;
     public int currentZ = 0;
@@ -57,21 +57,16 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     public int minZ, maxZ;
 
     private Block tilledField = Block.tilledField;
-    private Block wheatseedsField = Block.crops;
-    private Block melonStemField = Block.melonStem;
-    private Block pumpkinStemField = Block.pumpkinStem;
-    private Block carrotField = Block.carrot;
-    private Block potatoField = Block.potato;
     
     //TODO Add variables to indicate maximum workarea size. Should be based on CommandItem usage?
     
-    final ItemStack[] resourceStacks = new ItemStack[]
+    final ItemStack[] hoeToolStacks = new ItemStack[]
     {
-        new ItemStack(Item.seeds, 1),
-        new ItemStack(Item.melonSeeds, 1),
-        new ItemStack(Item.pumpkinSeeds, 1),
-        new ItemStack(Item.carrot, 1),
-        new ItemStack(Item.potato, 1),
+        new ItemStack(Item.hoeWood, 1),
+        new ItemStack(Item.hoeStone, 1),
+        new ItemStack(Item.hoeSteel, 1),
+        new ItemStack(Item.hoeGold, 1),
+        new ItemStack(Item.hoeDiamond, 1)
     };
     
 	private int idleTicks;
@@ -163,7 +158,8 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
         {
         	worldObj.setBlock(xCoord + currentX, getTopY(),  zCoord + currentZ, tilledField.blockID);
         	
-        	//damageTool(hoeToolStacks);
+        	damageTool(hoeToolStacks);
+        	
         	return true;
         }
         else
@@ -172,160 +168,52 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
         }
     }
     
-    public boolean plantResource(ItemStack stack, Block placeBlock)
-    {
-    	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
-    	
-        if (!worldObj.isRemote && canPlant(stack, placeBlock))
-        {
-        	worldObj.setBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ, placeBlock.blockID);
-        	decrStackSize(1, 1);
-        	return true;
-        }
-        else
-        {
-        	return false;
-        }
-    }
-    
-    public boolean canPlant(ItemStack stack, Block placeBlock)
-    {
-    	if(hasResourceOfType(stack))
-    	{
-    		if(hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) || hasBioCircuitOfType(Biotech.bioCircuitCarrots) || hasBioCircuitOfType(Biotech.bioCircuitPotatoes))
-    		{
-        		if(worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord +  currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord +  currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ))
-           		{
-        			return true;
-                }
-        		else
-        		{
-        			return false;
-        		}
-    		}
-    		else if(hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
-    		{
-        		if(worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord +  currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord +  currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ))
-           		{
-        			return true;
-                }
-        		else
-        		{
-        			return false;
-        		}
-    		}
-    		else if(hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
-    		{
-        		if(worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord +  currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord +  currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord +  currentZ))
-           		{
-        			return true;
-                }
-        		else
-        		{
-        			return false;
-        		}
-    		}
-    		else
-    		{
-    			return false;
-    		}
-    	}
-   		else
-   		{
-   			return false;
-    	}
-    }
-    
+      
     public boolean doWork()
     {
-		if(hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
+		if(canTill() && hasToolInSlot())
 		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[0], wheatseedsField))
-			{
-				return plantResource(resourceStacks[0], wheatseedsField);
-			}
+			return tillField();
 		}
-		else if(hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
-		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[1], melonStemField))
-			{
-				return plantResource(resourceStacks[1], melonStemField);
-			}
-		}
-		else if(hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
-		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[2], pumpkinStemField))
-			{
-				return plantResource(resourceStacks[2], pumpkinStemField);
-			}
-		}
-		else if(hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
-		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[3], carrotField))
-			{
-				return plantResource(resourceStacks[3], carrotField);
-			}
-		}
-		else if(hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
-		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[4], potatoField))
-			{
-				return plantResource(resourceStacks[4], potatoField);
-			}
-		}
-    	
-    	return false;
+
+		return false;
     }
+    
+	public void damageTool(ItemStack... stacks)
+	{
+        for (int i = 0; i < stacks.length; i++)
+        {
+            ItemStack slot = getStackInSlot(1);
+
+            if (slot == null)
+            {
+                continue;
+            }
+
+            if (slot.itemID == stacks[i].itemID)
+            {
+				if(slot.getItemDamage() >= slot.getMaxDamage())
+				{
+					decrStackSize(1, 1);
+				}
+				else
+				{
+					slot.setItemDamage(slot.getItemDamage() + 10);
+				}
+			}
+		}
+	}
     
     public boolean canDoWork()
     {
     	ItemStack circuit = this.inventory[2];
-    	ItemStack resource = this.inventory[1];
+    	ItemStack tools = this.inventory[1];
     	
     	if(this.getElectricityStored() >= this.WATTS_PER_ACTION)
     	{
-	    	if(hasBioCircuitInSlot() && hasResourcesInSlot())
+	    	if(hasToolInSlot())
 	    	{
-	    		if(hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
-	    		{
 	    			return true;
-	    		}
-	    		else if(hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
-	    		{
-	    			return true;
-	    		}
-	    		else if(hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
-	    		{
-	    			return true;
-	    		}
-	    		else if(hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
-	    		{
-	    			return true;
-	    		}
-	    		else if(hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
-	    		{
-	    			return true;
-	    		}
 	    	}
     	}
     	
@@ -334,7 +222,7 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     
     
     
-    private boolean hasResourcesInSlot()
+    private boolean hasToolInSlot()
     {
     	ItemStack slot = this.inventory[1];
     	
@@ -343,9 +231,9 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
             return false;
         }
     	
-        for (int i = 0; i < resourceStacks.length; i++)
+        for (int i = 0; i < hoeToolStacks.length; i++)
         {
-            if (slot.itemID == resourceStacks[i].itemID)
+            if (slot.itemID == hoeToolStacks[i].itemID)
             {
                 return true;
             }
@@ -353,64 +241,7 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
 
         return false;
     }
-    
-    public boolean hasBioCircuitInSlot()
-    {
-        ItemStack slot = this.inventory[2];
 
-        if (slot == null)
-        {
-            return false;
-        }
-
-        if (slot.itemID == Biotech.bioCircuitEmpty.itemID)
-        {
-            return true;
-        }
-
-        return false;
-    }
-    
-    public boolean hasResourceOfType(ItemStack itemStack)
-    {
-        ItemStack slot = this.inventory[1];
-
-        if (slot == null)
-        {
-            return false;
-        }
-
-        if (slot.itemID == itemStack.itemID)
-        {
-            if(slot.getItemDamage() == itemStack.getItemDamage())
-            {
-            	return true;
-            }
-        }
-
-        return false;
-    }
-    
-    public boolean hasBioCircuitOfType(ItemStack itemStack)
-    {
-        ItemStack slot = this.inventory[2];
-
-        if (slot == null)
-        {
-            return false;
-        }
-
-        if (slot.itemID == itemStack.itemID)
-        {
-            if(slot.getItemDamage() == itemStack.getItemDamage())
-            {
-            	return true;
-            }
-        }
-
-        return false;
-    }
-    
     @Override
     public void refreshConnectorsAndWorkArea()
     {

@@ -5,6 +5,7 @@ import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
 import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.util.List;
@@ -27,7 +28,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BiotechBlockMachine extends BlockMachine
 {
 	//0 == Tiller
-	//1 == Foresting
+	//1 == Planter
 	//2 == Woodcutter
 	//3 == Crop Harvester
 	//4 == Fertilizer
@@ -36,7 +37,7 @@ public class BiotechBlockMachine extends BlockMachine
 	//7 == Cow Milker
 	
 	public static final int TILLER_METADATA = 0;
-	public static final int FORESTER_METADATA = 1;
+	public static final int PLANTER_METADATA = 1;
 	public static final int WOODCUTTER_METADATA = 2;
 	public static final int CROPPER_METADATA = 3;
 	public static final int FERTILIZER_METADATA = 4;
@@ -558,6 +559,11 @@ public class BiotechBlockMachine extends BlockMachine
 	    			return true;
 	    		}
 	    	case 1:
+	    		if(!player.isSneaking())
+	    		{
+	    			player.openGui(Biotech.instance, 2, world, x, y, z);
+	    			return true;
+	    		}
 	    	case 2:
 	    	case 3:
 	    	case 4:
@@ -594,6 +600,7 @@ public class BiotechBlockMachine extends BlockMachine
     	case 0:
     		return new TillingMachineTileEntity();
     	case 1:
+    		return new PlantingMachineTileEntity();
     	case 2:
     	case 3:
     	case 4:

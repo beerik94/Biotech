@@ -40,7 +40,7 @@ import cpw.mods.fml.common.network.PacketDispatcher;
 // Has a powered state
 // Has an inventory
 
-public class ForestingMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+public class PlantingMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
 	public static final double WATTS_PER_ACTION = 500;
 	public static final double WATTS_PER_IDLE_ACTION = 25;
@@ -76,7 +76,7 @@ public class ForestingMachineTileEntity extends BasicMachineTileEntity implement
     
 	private int idleTicks;
     
-    public ForestingMachineTileEntity()
+    public PlantingMachineTileEntity()
     {
         super();
     }
@@ -141,37 +141,6 @@ public class ForestingMachineTileEntity extends BasicMachineTileEntity implement
     	return this.yCoord - 1;
     }
 
-    public boolean canTill()
-    {
-    	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
-    	
-		if((currentBlockBlockid == Block.dirt.blockID || currentBlockBlockid == Block.grass.blockID) && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1,  zCoord + currentZ) && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1,  zCoord + currentZ))
-		{
-            return true;
-		}
-		else
-		{
-			return false;
-		}
-    }
-    
-    public boolean tillField ()
-    {
-    	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
-    	
-        if (!worldObj.isRemote && canTill())
-        {
-        	worldObj.setBlock(xCoord + currentX, getTopY(),  zCoord + currentZ, tilledField.blockID);
-        	
-        	//damageTool(hoeToolStacks);
-        	return true;
-        }
-        else
-        {
-        	return false;
-        }
-    }
-    
     public boolean plantResource(ItemStack stack, Block placeBlock)
     {
     	int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
@@ -240,55 +209,35 @@ public class ForestingMachineTileEntity extends BasicMachineTileEntity implement
     {
 		if(hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
 		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[0], wheatseedsField))
+			if(canPlant(resourceStacks[0], wheatseedsField))
 			{
 				return plantResource(resourceStacks[0], wheatseedsField);
 			}
 		}
 		else if(hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
 		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[1], melonStemField))
+			if(canPlant(resourceStacks[1], melonStemField))
 			{
 				return plantResource(resourceStacks[1], melonStemField);
 			}
 		}
 		else if(hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
 		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[2], pumpkinStemField))
+			if(canPlant(resourceStacks[2], pumpkinStemField))
 			{
 				return plantResource(resourceStacks[2], pumpkinStemField);
 			}
 		}
 		else if(hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
 		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[3], carrotField))
+			if(canPlant(resourceStacks[3], carrotField))
 			{
 				return plantResource(resourceStacks[3], carrotField);
 			}
 		}
 		else if(hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
 		{
-			if(canTill())
-			{
-				return tillField();
-			}
-			else if(canPlant(resourceStacks[4], potatoField))
+			if(canPlant(resourceStacks[4], potatoField))
 			{
 				return plantResource(resourceStacks[4], potatoField);
 			}

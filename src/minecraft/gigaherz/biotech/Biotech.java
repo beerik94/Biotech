@@ -11,6 +11,7 @@ import gigaherz.biotech.item.CommandCircuit;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
 import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
 import java.io.File;
@@ -206,6 +207,8 @@ public class Biotech
 		 */
         GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
         
+        GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
+        
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
         GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
@@ -239,7 +242,7 @@ public class Biotech
 
         // Subblocks
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.0.name", "Tilling Machine");
-        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.1.name", "Foresting Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.1.name", "Planting Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.3.name", "Harvesting Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");

@@ -1,12 +1,15 @@
 package gigaherz.biotech;
 
 import gigaherz.biotech.client.CowMilkerGui;
+import gigaherz.biotech.client.PlantingMachineGui;
 import gigaherz.biotech.client.TillingMachineGui;
 import gigaherz.biotech.client.WorkerGui;
 import gigaherz.biotech.container.BasicWorkerContainer;
 import gigaherz.biotech.container.CowMilkerContainer;
+import gigaherz.biotech.container.PlantingMachineContainer;
 import gigaherz.biotech.container.TillingMachineContainer;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
+import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 import gigaherz.biotech.tileentity.CowMilkerTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,6 +28,7 @@ public class GuiHandler implements IGuiHandler
 		MinecraftForgeClient.preloadTexture(Biotech.ITEM_TEXTURE_FILE);
 		
 		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH + "tillingmachine.png");
+		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH + "plantingmachine.png");
 		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH + "cowmilker.png");
 		
 	}
@@ -42,6 +46,8 @@ public class GuiHandler implements IGuiHandler
 	    		return new TillingMachineContainer(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
 	    		return new CowMilkerContainer(player.inventory, (CowMilkerTileEntity) tileEntity);
+	    	case 2:
+	    		return new PlantingMachineContainer(player.inventory, (PlantingMachineTileEntity) tileEntity);
 	    	}
 	    	
 	    }
@@ -61,6 +67,8 @@ public class GuiHandler implements IGuiHandler
 	    		return new TillingMachineGui(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
 	    		return new CowMilkerGui(player.inventory, (CowMilkerTileEntity) tileEntity);
+	    	case 2:
+	    		return new PlantingMachineGui(player.inventory, (PlantingMachineTileEntity) tileEntity);
 	    	}
 	    	
 	    }

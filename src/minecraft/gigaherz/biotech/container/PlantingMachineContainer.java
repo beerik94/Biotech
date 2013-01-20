@@ -1,5 +1,6 @@
 package gigaherz.biotech.container;
 
+import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -12,26 +13,23 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.SlotElectricItem;
 
-public class TillingMachineContainer extends Container
+public class PlantingMachineContainer extends Container
 {
-	private TillingMachineTileEntity tileEntity;
+	private PlantingMachineTileEntity tileEntity;
 
-	public TillingMachineContainer(InventoryPlayer par1InventoryPlayer, TillingMachineTileEntity te)
+	public PlantingMachineContainer(InventoryPlayer par1InventoryPlayer, PlantingMachineTileEntity te)
 	{
 		this.tileEntity = te;
 
 		// Electric Input Slot
 		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
 
-		// Slot for tools
+		// Slot for seeds
 		this.addSlotToContainer(new Slot(tileEntity, 1, 144, 7));
 		
 		// Slot BioCircuit
 		this.addSlotToContainer(new Slot(tileEntity, 2, 7, 7));
-		
-		// Slot for water bucket
-		this.addSlotToContainer(new Slot(tileEntity, 3, 144, 27));
-		
+
 		int var3;
 
 		for (var3 = 0; var3 < 3; ++var3)
