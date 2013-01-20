@@ -43,8 +43,12 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	
 	protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
 	
+	// Watts being used per action / idle action
 	public static final double WATTS_PER_ACTION = 500;
 	public static final double WATTS_PER_IDLE_ACTION = 25;
+	
+	// Watts being used per pump action
+	public static final double WATTS_PER_PUMP_ACTION = 100;
 	
 	// Time idle after a tick
 	public static final int IDLE_TIME_AFTER_ACTION = 80;
@@ -119,16 +123,15 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public void milkCows()
 	{		
 		
-		//if(this.getElectricityStored() > WATTS_PER_ACTION)
-		//{
+		if(this.getElectricityStored() > WATTS_PER_ACTION)
+		{
 			milkStored += cowMilk;
 			if(CowList.size() != 0)
 			{
 				CowList.remove(0);
 				cowMilk = 10;
 			}
-
-		//}
+		}
 		
 		
 	}
