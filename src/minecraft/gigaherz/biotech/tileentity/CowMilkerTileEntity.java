@@ -29,6 +29,7 @@ import net.minecraftforge.common.ISidedInventory;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.implement.IConductor;
+import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
@@ -36,7 +37,7 @@ import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
-	private ItemStack Inventory[];
+	protected ItemStack[] inventory;
 	
 	private int tickCounter;
 	private int scantickCounter;
@@ -44,20 +45,16 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
 	
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_ACTION = 500;
-	public static final double WATTS_PER_IDLE_ACTION = 25;
+	public static final double WATTS_PER_ACTION = 1500;
+	public static final double WATTS_PER_IDLE_ACTION = 500;
 	
 	// Watts being used per pump action
-	public static final double WATTS_PER_PUMP_ACTION = 100;
+	public static final double WATTS_PER_PUMP_ACTION = 250;
 	
 	// Time idle after a tick
 	public static final int IDLE_TIME_AFTER_ACTION = 80;
 	public static final int IDLE_TIME_NO_ACTION = 40;
-	
-	//How much power is stored?
-    private double electricityStored  = 0;
-    private double electricityMaxStored  = 5000;
-    
+
     //How much milk is stored?
     public static int milkStored = 0;
     public static int milkMaxStored = 3000;
@@ -76,11 +73,19 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	private int playersUsing = 0;
 	private int idleTicks;
 	
+    public int currentX = 0;
+    public int currentZ = 0;
+    public int currentY = 0;
+	
+    public int minX, maxX;
+    public int minZ, maxZ;
+	
 	
 	public CowMilkerTileEntity()
 	{
 		super();
-		Inventory = new ItemStack[36];
+		this.inventory = new ItemStack[36];
+		
 		ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
 	}
 	
@@ -90,14 +95,52 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
         refreshConnectorsAndWorkArea();
     }
 	
-	public void refreshConnectorsAndWorkArea()
-	{
-		int orientation = this.getBlockMetadata();	   
-		
-		ForgeDirection direction = ForgeDirection.getOrientation(orientation);
-		
-		ElectricityConnections.registerConnector(this, EnumSet.of(direction));
-	}
+	@Override
+    public void refreshConnectorsAndWorkArea()
+    {
+    	super.refreshConnectorsAndWorkArea();
+    	
+    	ForgeDirection direction = ForgeDirection.getOrientation(getFacing());
+    	
+        if (direction.offsetZ > 0)
+        {
+            this.minX = -2;
+            this.maxX =  2;
+            this.minZ = -5 * direction.offsetZ;
+            this.maxZ = -1 * direction.offsetZ;
+        }
+        else if (direction.offsetZ < 0)
+        {
+            this.minX = -2;
+            this.maxX =  2;
+            this.minZ = -1 * direction.offsetZ;
+            this.maxZ = -5 * direction.offsetZ;
+        }
+        else if (direction.offsetX > 0)
+        {
+            this.minZ = -2;
+            this.maxZ =  2;
+            this.minX = -5 * direction.offsetX;
+            this.maxX = -1 * direction.offsetX;
+        }
+        else if (direction.offsetX < 0)
+        {
+            this.minZ = -2;
+            this.maxZ =  2;
+            this.minX = -1 * direction.offsetX;
+            this.maxX = -5 * direction.offsetX;
+        }
+
+        if (this.currentX < this.minX || this.currentX > this.maxX)
+        {
+            this.currentX = this.minX;
+        }
+
+        if (this.currentZ < this.minZ || this.currentZ > this.maxZ)
+        {
+            this.currentZ = this.minZ;
+        }
+    }
 
 	public void scanCows()
 	{
@@ -123,13 +166,14 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public void milkCows()
 	{		
 		
-		if(this.getElectricityStored() > WATTS_PER_ACTION)
+		if(this.getElectricityStored() >= WATTS_PER_ACTION)
 		{
 			milkStored += cowMilk;
 			if(CowList.size() != 0)
 			{
 				CowList.remove(0);
 				cowMilk = 10;
+	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 			}
 		}
 		
@@ -161,6 +205,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        
 	        if(this.isRedstoneSignal())
 	        {
+	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
 	        	{
 	        		scanCows();
@@ -170,11 +215,11 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        	{
 	        		milkCows();
 	        		tickCounter = 0;
+	        		this.idleTicks = this.IDLE_TIME_AFTER_ACTION;
+	        		this.setPowered(false);
 	        	}
-	        	
 	            tickCounter++;
 	            scantickCounter++;
-	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 	        }
 	        if(milkStored >= milkMaxStored)
 	        {
@@ -187,7 +232,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        if(scantickCounter >= 100)
 	        {
 	        	tickCounter = 0;
-	        }
+	        }	        
         }
         super.updateEntity();
     }
@@ -198,145 +243,21 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 			return true;
 		return false;
 	}
-	
-	@Override
-	public int getSizeInventory()
-	{
-		return this.inventory.length;
-	}
-	   
-	@Override
-    public ItemStack getStackInSlot(int slotIndex)
-    {
-        if (slotIndex >= this.inventory.length)
-        {
-            System.out.println("Tried to access slot " + slotIndex);
-            return null;
-        }
 
-        return this.inventory[slotIndex];
-    }
-	
-	@Override
-    public void setInventorySlotContents(int slot, ItemStack stack)
-    {
-        this.inventory[slot] = stack;
-
-        if (stack != null && stack.stackSize > getInventoryStackLimit())
-        {
-            stack.stackSize = getInventoryStackLimit();
-        }
-    }
-
-	@Override
-    public ItemStack decrStackSize(int slotIndex, int amount)
-    {
-        ItemStack stack = getStackInSlot(slotIndex);
-
-        if (stack != null)
-        {
-            if (stack.stackSize <= amount)
-            {
-                setInventorySlotContents(slotIndex, null);
-            }
-            else
-            {
-                stack = stack.splitStack(amount);
-
-                if (stack.stackSize == 0)
-                {
-                    setInventorySlotContents(slotIndex, null);
-                }
-            }
-        }
-
-        return stack;
-    }
-	
-	@Override
-    public ItemStack getStackInSlotOnClosing(int slotIndex)
-    {
-        ItemStack stack = getStackInSlot(slotIndex);
-
-        if (stack != null)
-        {
-            setInventorySlotContents(slotIndex, null);
-        }
-
-        return stack;
-    }
-	
-	@Override
-    public int getInventoryStackLimit()
-    {
-        return 64;
-    }	
-
-	@Override
-	public void openChest()
-	{
-		if (!this.worldObj.isRemote)
-		{
-			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 15);
-		}
-		this.playersUsing++;
-	}
-
-	@Override
-	public void closeChest()
-	{
-		this.playersUsing--;
-	}
-	
 	@Override
     public void readFromNBT(NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
         //this.progressTime = tagCompound.getShort("Progress");
-        
-        this.facing = tagCompound.getShort("facing");
-        this.isPowered = tagCompound.getBoolean("isPowered");
-        this.electricityStored = tagCompound.getDouble("electricityStored");
-        NBTTagList tagList = tagCompound.getTagList("Inventory");
 
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-            byte slot = tag.getByte("Slot");
-
-            if (slot >= 0 && slot < inventory.length)
-            {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-            }
-        }
     }
 
-   
     @Override
     public void writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
         //tagCompound.setShort("Progress", (short)this.progressTime);
 
-        tagCompound.setShort("facing", (short)this.facing);
-        tagCompound.setBoolean("isPowered", this.isPowered);
-        tagCompound.setDouble("electricityStored", (double)this.electricityStored);
-        NBTTagList itemList = new NBTTagList();
-
-        for (int i = 0; i < inventory.length; i++)
-        {
-            ItemStack stack = inventory[i];
-
-            if (stack != null)
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                stack.writeToNBT(tag);
-                itemList.appendTag(tag);
-            }
-        }
-
-        tagCompound.setTag("Inventory", itemList);
     }
 
     @Override
@@ -344,332 +265,4 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     {
         return "Cow Milker";
     }
-	
-	public void setPowered(boolean powered, World world, int x, int y, int z)
-    {
-    	this.isPowered = powered;
-    	
-    	if(prevIsPowered != powered)
-    	{
-    		prevIsPowered = isPowered;
-    		PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj);
-    	}
-    }
-	
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer)
-	{
-		return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this ? false : par1EntityPlayer.getDistanceSq(this.xCoord + 0.5D, this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
-	}
-
-	@Override
-    public int getStartInventorySide(ForgeDirection side)
-    {
-        ForgeDirection left, right;
-
-        switch (this.facing)
-        {
-            case 2: // North
-                left = ForgeDirection.WEST;
-                right = ForgeDirection.EAST;
-                break;
-
-            case 3: // South
-                left = ForgeDirection.EAST;
-                right = ForgeDirection.WEST;
-                break;
-
-            case 4: // West
-                left = ForgeDirection.NORTH;
-                right = ForgeDirection.SOUTH;
-                break;
-
-            case 5: // East
-                left = ForgeDirection.SOUTH;
-                right = ForgeDirection.NORTH;
-                break;
-
-            default:
-                left = ForgeDirection.WEST;
-                right = ForgeDirection.EAST;
-                break;
-        }
-
-        if (side == left)
-        {
-            return 0;
-        }
-
-        if (side == right)
-        {
-            return 9;
-        }
-
-        if (side == ForgeDirection.UP)
-        {
-            return 18;
-        }
-
-        return 0;
-    }
-
-    @Override
-    public int getSizeInventorySide(ForgeDirection side)
-    {
-        ForgeDirection left, right;
-
-        switch (this.facing)
-        {
-            case 2: // North
-                left = ForgeDirection.WEST;
-                right = ForgeDirection.EAST;
-                break;
-
-            case 3: // South
-                left = ForgeDirection.EAST;
-                right = ForgeDirection.WEST;
-                break;
-
-            case 4: // West
-                left = ForgeDirection.NORTH;
-                right = ForgeDirection.SOUTH;
-                break;
-
-            case 5: // East
-                left = ForgeDirection.SOUTH;
-                right = ForgeDirection.NORTH;
-                break;
-
-            default:
-                left = ForgeDirection.WEST;
-                right = ForgeDirection.EAST;
-                break;
-        }
-
-        if (side == left)
-        {
-            return 9;
-        }
-
-        if (side == right)
-        {
-            return 9;
-        }
-
-        if (side == ForgeDirection.UP)
-        {
-            return 3;
-        }
-
-        return 0;
-    }
-	
-    public boolean hasItemInInputArea(ItemStack itemStack)
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            ItemStack slot = inventory[i];
-
-            if (slot == null)
-            {
-                continue;
-            }
-
-            if (slot.itemID != itemStack.itemID)
-            {
-                continue;
-            }
-
-            int damage = itemStack.getItemDamage();
-
-            if (damage < 0 || slot.getItemDamage() == damage)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean hasAnyBlockInInputArea()
-    {
-        for (int i = 0; i < 9; i++)
-        {
-            ItemStack slot = inventory[i];
-
-            if (slot == null)
-            {
-                continue;
-            }
-
-            Item item = slot.getItem();
-
-            if (item instanceof ItemBlock)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean hasSpaceInOutputAreaForItem(ItemStack itemStack)
-    {
-        for (int i = 9; i < 18; i++)
-        {
-            ItemStack slot = inventory[i];
-
-            if (slot == null)
-            {
-                return true;
-            }
-
-            if (slot.itemID != itemStack.itemID)
-            {
-                continue;
-            }
-
-            int damage = itemStack.getItemDamage();
-
-            if (damage >= 0 && slot.getItemDamage() != damage)
-            {
-                continue;
-            }
-
-            if (slot.stackSize + itemStack.stackSize <= slot.getMaxStackSize())
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public boolean hasToolInToolArea(ItemStack itemStack)
-    {
-        for (int i = 18; i < 21; i++)
-        {
-            ItemStack slot = inventory[i];
-
-            if (slot == null)
-            {
-                continue;
-            }
-
-            if (slot.itemID == itemStack.itemID)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public void addStackToOutputArea(ItemStack itemStack)
-    {
-        for (int i = 9; i < 18; i++)
-        {
-            ItemStack slot = inventory[i];
-
-            if (slot == null)
-            {
-                continue;
-            }
-
-            if (slot.itemID != itemStack.itemID)
-            {
-                continue;
-            }
-
-            int damage = itemStack.getItemDamage();
-
-            if (damage >= 0 && slot.getItemDamage() != damage)
-            {
-                continue;
-            }
-
-            if (slot.stackSize <= slot.getMaxStackSize())
-            {
-                int newSize = Math.min(slot.stackSize + itemStack.stackSize, slot.getMaxStackSize());
-                int howMany = newSize - slot.stackSize;
-                slot.stackSize = newSize;
-                itemStack.stackSize -= howMany;
-
-                if (itemStack.stackSize == 0)
-                {
-                    return;
-                }
-            }
-        }
-
-        // partial stack not found, or not enough space, search for empty slots
-        for (int i = 9; i < 18; i++)
-        {
-            ItemStack slot = inventory[i];
-
-            if (slot == null)
-            {
-                ItemStack copy = itemStack.copy();
-                int newSize = copy.stackSize; //Math.min(itemStack.stackSize, slot.getMaxStackSize());
-                int howMany = newSize;
-                copy.stackSize = newSize;
-                itemStack.stackSize -= howMany;
-                setInventorySlotContents(i, copy);
-
-                if (itemStack.stackSize == 0)
-                {
-                    return;
-                }
-            }
-        }
-    }
-
-	@Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
-				this.isPowered = dataStream.readBoolean();
-				this.facing = dataStream.readInt();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing);
-	}
-
-	public int getFacing() 
-	{
-		return facing;
-	}
-
-	public void setFacing(int facing) 
-	{
-		this.facing = facing;
-	}
-
-	public double getElectricityStored() 
-	{
-		return electricityStored;
-	}
-
-	public void setElectricityStored(double joules, Object... data)
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxJoules()), 0);
-	}	
-
-	public double getMaxJoules(Object... data) 
-	{
-		return electricityMaxStored;
-	}
-	
 }
