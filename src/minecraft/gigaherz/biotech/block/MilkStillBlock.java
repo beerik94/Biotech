@@ -11,7 +11,6 @@ public class MilkStillBlock extends BlockStationary implements ILiquid {
 
 	public MilkStillBlock(int id, int textureIndex) {
 		super(id, Material.water);
-		setCreativeTab(Biotech.tabBiotech);
 		setHardness(100F);
 		setLightOpacity(3);
 		setBlockName("Milk(Still)");
