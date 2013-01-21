@@ -83,7 +83,7 @@ public class CowMilkerGui extends GuiContainer
             this.drawTexturedModalRect(x + 86, y + 54, 176, 0, 8, 8);
         }
          */
-		int scale = (int) (((double) this.tileEntity.milkStored / this.tileEntity.milkMaxStored) * 100);
+		int scale = (int) (((double) this.tileEntity.milkStored / this.tileEntity.milkMaxStored) * 1000);
 		
 		int time = (int)50;
 		
