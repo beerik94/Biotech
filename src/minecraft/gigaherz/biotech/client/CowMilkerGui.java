@@ -24,9 +24,9 @@ public class CowMilkerGui extends GuiContainer
 	private int containerWidth;
 	private int containerHeight;
 
-	public CowMilkerGui(InventoryPlayer inventory, CowMilkerTileEntity tileEntity)
+	public CowMilkerGui(InventoryPlayer playerInventory, CowMilkerTileEntity tileEntity)
 	{
-		super(new CowMilkerContainer(inventory, tileEntity));
+		super(new CowMilkerContainer(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}

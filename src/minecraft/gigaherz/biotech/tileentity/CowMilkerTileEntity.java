@@ -37,8 +37,6 @@ import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
-	protected ItemStack[] inventory;
-	
 	private int tickCounter;
 	private int scantickCounter;
 	
@@ -84,9 +82,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public CowMilkerTileEntity()
 	{
 		super();
-		this.inventory = new ItemStack[36];
-		
-		ElectricityConnections.registerConnector(this, EnumSet.noneOf(ForgeDirection.class));
 	}
 	
 	@Override
@@ -249,7 +244,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     {
         super.readFromNBT(tagCompound);
         //this.progressTime = tagCompound.getShort("Progress");
-
+        this.milkStored = tagCompound.getInteger("milkStored");        
     }
 
     @Override
@@ -257,7 +252,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     {
         super.writeToNBT(tagCompound);
         //tagCompound.setShort("Progress", (short)this.progressTime);
-
+        tagCompound.setInteger("milkStored", (int)this.milkStored);
     }
 
     @Override
