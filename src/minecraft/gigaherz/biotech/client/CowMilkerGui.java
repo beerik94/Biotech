@@ -57,7 +57,7 @@ public class CowMilkerGui extends GuiContainer
 		this.fontRenderer.drawString("Status: " + displayText, 32, 17, 0x00CD00);
 		this.fontRenderer.drawString("Voltage: " + ElectricInfo.getDisplayShort(this.tileEntity.getVoltage(), ElectricUnit.VOLTAGE), 32, 27, 0x00CD00);
 		this.fontRenderer.drawString("Storage: " + ElectricInfo.getDisplayShort(this.tileEntity.getElectricityStored(), ElectricUnit.JOULES), 32, 37, 0x00CD00);
-		this.fontRenderer.drawString("Milk: " + this.tileEntity.milkStored + "/" + this.tileEntity.milkMaxStored, 32, 47, 0x00CD00);
+		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 32, 47, 0x00CD00);
 		this.fontRenderer.drawString("Range: " + this.tileEntity.getScanRange(), 32, 57, 0x00CD00);
 		
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
@@ -83,7 +83,7 @@ public class CowMilkerGui extends GuiContainer
             this.drawTexturedModalRect(x + 86, y + 54, 176, 0, 8, 8);
         }
          */
-		int scale = (int) (((double) this.tileEntity.milkStored / this.tileEntity.milkMaxStored) * 1000);
+		int scale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 1000);
 		
 		int time = (int)50;
 		

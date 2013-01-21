@@ -54,8 +54,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public static final int IDLE_TIME_NO_ACTION = 40;
 
     //How much milk is stored?
-    public int milkStored = 0;
-    public int milkMaxStored = 3000;
+    private int milkStored = 0;
+    private int milkMaxStored = 3000;
     private int cowMilk = 10;
     
     public boolean bucketIn = false;
@@ -161,14 +161,12 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	
 	public void milkCows()
 	{		
-		
 		if(this.getElectricityStored() >= WATTS_PER_ACTION)
 		{
-			milkStored += cowMilk;
 			if(CowList.size() != 0)
 			{
 				CowList.remove(0);
-				cowMilk = 300;
+				this.setMilkStored(this.getMilkStored() + this.cowMilk);
 	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 			}
 		}
@@ -262,5 +260,20 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     public String getInvName()
     {
         return "Cow Milker";
+    }
+    
+    public int getMilkStored()
+    {
+    	return this.milkStored;
+    }
+    
+    public void setMilkStored(int amount)
+	{
+		this.milkStored = amount;
+	}
+    
+    public int getMaxMilk()
+    {
+    	return this.milkMaxStored;
     }
 }
