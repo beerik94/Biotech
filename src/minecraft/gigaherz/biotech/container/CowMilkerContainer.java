@@ -1,5 +1,7 @@
 package gigaherz.biotech.container;
 
+import gigaherz.biotech.slots.emptybucketSlot;
+import gigaherz.biotech.slots.milkbucketSlot;
 import gigaherz.biotech.tileentity.CowMilkerTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -23,14 +25,14 @@ public class CowMilkerContainer extends Container
 		// Electric Input Slot
 		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
 
-		// Slot for empty bucket
-		this.addSlotToContainer(new Slot(tileEntity, 1, 146, 17));
-		
 		// Slot for upgrade
-		this.addSlotToContainer(new Slot(tileEntity, 2, 7, 7));
-		
+		this.addSlotToContainer(new Slot(tileEntity, 1, 7, 7));
+
+		// Slot for empty bucket
+		this.addSlotToContainer(new emptybucketSlot(tileEntity, 2, 145, 16));
+			
 		// Slot for filled bucket
-		this.addSlotToContainer(new Slot(tileEntity, 3, 146, 52));
+		this.addSlotToContainer(new milkbucketSlot(tileEntity, 3, 145, 51));
 
 		int var3;
 
@@ -87,10 +89,6 @@ public class CowMilkerContainer extends Container
 				if (var4.getItem() instanceof IItemElectric)
 				{
 					if (!this.mergeItemStack(var4, 0, 1, false)) { return null; }
-				}
-				else if (var4.itemID == net.minecraft.item.Item.hoeWood.itemID) //not working
-				{ 
-					if (!this.mergeItemStack(var4, 1, 1, false)) { return null; }
 				}
 				else if (par1 >= 3 && par1 < 30)
 				{

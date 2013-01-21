@@ -58,6 +58,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     public static int milkMaxStored = 3000;
     private static int cowMilk = 10;
     
+    public static boolean bucketIn = false;
+    
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
 
@@ -139,7 +141,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 
 	public void scanCows()
 	{
-		
 		int xminrange = xCoord- getScanRange();
 		int xmaxrange = xCoord+ getScanRange()+1;
 		int yminrange = yCoord- getScanRange();
@@ -167,7 +168,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 			if(CowList.size() != 0)
 			{
 				CowList.remove(0);
-				cowMilk = 10;
+				cowMilk = 300;
 	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 			}
 		}
@@ -176,12 +177,14 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	}
 	
 	public int getScanRange() {
-		if (getStackInSlot(2) != null) {
-			if (getStackInSlot(1).getItem() == Biotech.RangeUpgrade) {
+		if (getStackInSlot(1) != null) 
+		{
+			if (getStackInSlot(1).getItem() == Biotech.rangeUpgrade) 
+			{
 				return (getStackInSlot(1).stackSize+5);
 			}
 		}
-		return 5;
+		return 3;
 	}
 	
 	@Override

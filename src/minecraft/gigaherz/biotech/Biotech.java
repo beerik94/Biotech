@@ -8,6 +8,7 @@ import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.item.BioCircuit;
 import gigaherz.biotech.item.BiotechItemBlock;
 import gigaherz.biotech.item.CommandCircuit;
+import gigaherz.biotech.item.RangeUpgrade;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
 import gigaherz.biotech.tileentity.CowMilkerTileEntity;
@@ -73,7 +74,7 @@ public class Biotech
     private final static int firstBlockId = 2450;
 
     // All Item ID's
-    private final static int defaultBioCircuitId = firstItemId + 1;
+    private final static int defaultBioItemId = firstItemId + 1;
     
     // All Block ID's
     private final static int defaultBiotechBlockId = firstBlockId + 1;
@@ -100,7 +101,7 @@ public class Biotech
     public static ItemStack bioCircuitPotatoes;
     
     // Cow Milker Upgrades [Not yet implemented but needs to be defined for CowMilkerTileEntity to work]
-    public static Item RangeUpgrade;
+    public static Item rangeUpgrade;
     
     // Block templates
     public static Block biotechBlockMachine;
@@ -154,11 +155,12 @@ public class Biotech
 		/**
 		 * Define the items and blocks.
 		 */
-        this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioCircuitId).getInt());
+        this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioItemId).getInt());
         
         this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
         this.milkMoving = new MilkFlowingBlock(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 2).getInt(), 1);
         this.milkStill = new MilkStillBlock(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 3).getInt(), 1);
+        this.rangeUpgrade = new RangeUpgrade(Config.getItem("gigaherz.biotech.RangeUpgrade", defaultBioItemId + 1).getInt());
         
 		/**
 		 * Define the subitems
@@ -238,10 +240,14 @@ public class Biotech
 		 */
         //LanguageRegistry.addName(biotechBlockMachine, "Biotech Machine");
         
-		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
+        //Blocks
+        
 		LanguageRegistry.addName(milkMoving, "Milk(Flowing)");
 		LanguageRegistry.addName(milkStill, "Milk(Still)");
-
+		
+		// Items
+		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
+		LanguageRegistry.addName(rangeUpgrade, "Range Upgrade");
 		// Subitems
         LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
         LanguageRegistry.addName(bioCircuitWheatSeeds, "Bio Circuit - Wheat Seeds");
