@@ -54,11 +54,11 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public static final int IDLE_TIME_NO_ACTION = 40;
 
     //How much milk is stored?
-    public static int milkStored = 0;
-    public static int milkMaxStored = 3000;
-    private static int cowMilk = 10;
+    public int milkStored = 0;
+    public int milkMaxStored = 3000;
+    private int cowMilk = 10;
     
-    public static boolean bucketIn = false;
+    public boolean bucketIn = false;
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
