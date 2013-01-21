@@ -14,10 +14,14 @@ import java.util.Random;
 import net.minecraft.block.material.Material;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.MathHelper;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import universalelectricity.core.UniversalElectricity;
@@ -456,33 +460,6 @@ public class BiotechBlockMachine extends BlockMachine
 	            world.spawnParticle("reddust", (double)(sx + o2), (double)sy, (double)(sz - o1), 0.0D, 0.0D, 0.0D);
 	            world.spawnParticle("reddust", (double)(sx + o2), (double)sy, (double)(sz + o1), 0.0D, 0.0D, 0.0D);
 	        }
-		}
-    }
-
-    @Override
-    public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entity)
-    {
-        TileEntity tile = world.getBlockTileEntity(x, y, z);
-
-			if (tile instanceof BasicMachineTileEntity)
-			{
-				BasicMachineTileEntity tileEntity = (BasicMachineTileEntity) tile;
-					
-		        int side = MathHelper.floor_double((double)(entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
-		        int change = 3;
-		        
-		        switch(side)
-		        {
-		        	case 0: change = 2; break;
-		        	case 1: change = 5; break;
-		        	case 2: change = 3; break;
-		        	case 3: change = 4; break;
-		        }
-
-		        //System.out.println("onBlockPlacedBy: " + change);
-		        
-		        tileEntity.setFacing((short)change);
-	        
 		}
     }
 

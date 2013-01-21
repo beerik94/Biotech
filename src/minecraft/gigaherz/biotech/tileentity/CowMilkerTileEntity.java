@@ -87,12 +87,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	}
 	
 	@Override
-    public void initiate()
-    {
-        refreshConnectorsAndWorkArea();
-    }
-	
-	@Override
     public void refreshConnectorsAndWorkArea()
     {
     	super.refreshConnectorsAndWorkArea();
@@ -168,7 +162,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 			if(CowList.size() != 0)
 			{
 				CowList.remove(0);
-				cowMilk = 300;
+				cowMilk = 10;
 	        	this.setElectricityStored(this.getElectricityStored() - this.WATTS_PER_ACTION);
 			}
 		}
