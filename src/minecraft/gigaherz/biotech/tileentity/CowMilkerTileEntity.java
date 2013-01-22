@@ -72,12 +72,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
 
-	/**
-	 * The ItemStacks that hold the items currently being used in the cow milker
-	 */
-	private ItemStack[] lefttopSlot = new ItemStack[4];
-	private Item[] leftbottomSlot = new Item[1];
-
 	private int facing;
 	private int playersUsing = 0;
 	private int idleTicks;
@@ -213,20 +207,22 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        }
 	        if(milkStored >= 30)
 	        {
-	        	ItemStack slot2 = this.inventory[2];
-	        	ItemStack slot3 = this.inventory[3];
-	        	if(slot2 != null && slot3 == null)
+	        	if(inventory[2] != null && inventory[3] == null)
 	        	{
 	        		
 	        		this.bucketIn = true;
 	        		if(bucketTime >= bucketTimeMax)
 	        		{
-	        			slot2.stackSize -= 1;
-	        			if(slot2.stackSize == 0){
-	        				slot2.stackSize = (Integer) null;
+	        			if(inventory[2].stackSize >= 2)
+	        			{
+	        				inventory[2].stackSize -= 1;
 	        			}
-	        			slot3 = new ItemStack(Item.bucketMilk);
-	        			slot3.stackSize += 1;
+	        			else
+	        			{
+	        				inventory[2] = null;
+	        			}
+	        			ItemStack bMilk = new ItemStack(Item.bucketMilk);
+	        			inventory[3] = (bMilk);
 	        			milkStored -= 30;
 	        			bucketTime = 0;
 	        			this.bucketIn = false;
