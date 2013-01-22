@@ -29,10 +29,10 @@ public class CowMilkerContainer extends Container
 		this.addSlotToContainer(new Slot(tileEntity, 1, 7, 7));
 
 		// Slot for empty bucket
-		this.addSlotToContainer(new emptybucketSlot(tileEntity, 2, 145, 16));
+		this.addSlotToContainer(new emptybucketSlot(tileEntity, 2, 152, 16));
 			
 		// Slot for filled bucket
-		this.addSlotToContainer(new milkbucketSlot(tileEntity, 3, 145, 51));
+		this.addSlotToContainer(new milkbucketSlot(tileEntity, 3, 152, 51));
 
 		int var3;
 

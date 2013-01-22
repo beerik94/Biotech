@@ -45,13 +45,19 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
 	
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_TICK = 300;
+	public static final double WATTS_PER_TICK = 250;
+	public static final double WATTS_PER_IDLE_TICK = 25;
+	
+	// Time idle after a tick
+	public static final int IDLE_TIME_AFTER_ACTION = 60;
+	public static final int IDLE_TIME_NO_ACTION = 30;
 	
 	// Watts being used per pump action
 	public static final double WATTS_PER_PUMP_ACTION = 50;
 	
-	//Joules Received
-	public double joulesReceived = 0;
+	//How much power is stored?
+    private double electricityStored  = 0;
+    private double electricityMaxStored  = 5000;
 	
     //How much milk is stored?
     private int milkStored = 0;
@@ -60,6 +66,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     
     private boolean isMilking = false;
     public boolean bucketIn = false;
+	public int bucketTimeMax = 100;
+	public int bucketTime = 0;
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
@@ -166,7 +174,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 		{
 			CowList.remove(0);
 			this.setMilkStored(this.getMilkStored() + this.cowMilk);
-			isMilking = true;
 		}
 	}
 
@@ -197,12 +204,39 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	        	if(CowList.size() != 0 && tickCounter >= 100)
 	        	{
 	        		milkCows();
+	    			isMilking = true;
 	        		tickCounter = 0;
 	        		this.setPowered(false);
 	        	}
 	            tickCounter++;
 	            scantickCounter++;
 	        }
+	        if(milkStored >= 30)
+	        {
+	        	ItemStack slot2 = this.inventory[2];
+	        	ItemStack slot3 = this.inventory[3];
+	        	if(slot2 != null && slot3 == null)
+	        	{
+	        		
+	        		this.bucketIn = true;
+	        		if(bucketTime >= bucketTimeMax)
+	        		{
+	        			slot2.stackSize -= 1;
+	        			if(slot2.stackSize == 0){
+	        				slot2.stackSize = (Integer) null;
+	        			}
+	        			slot3 = new ItemStack(Item.bucketMilk);
+	        			slot3.stackSize += 1;
+	        			milkStored -= 30;
+	        			bucketTime = 0;
+	        			this.bucketIn = false;
+	        		}
+	        	}
+	        }
+	        if(bucketTime < bucketTimeMax)
+    		{
+    			bucketTime++;
+    		}
 	        if(milkStored >= milkMaxStored)
 	        {
 	        	milkStored = milkMaxStored;
@@ -219,55 +253,74 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-        }
         
-        int front = 0; 
-    	
-    	switch(this.getFacing())
-    	{
-    	case 2:
-    		front = 2;
-    		break;
-    	case 3:
-    		front = 3;
-    		break;
-    	case 4:
-    		front = 4;
-    		break;
-    	case 5:
-    		front = 5;
-    		break;
-    	default:
-    		front = 2;
-   			break;
-    	}
-        
-        ForgeDirection direction = ForgeDirection.getOrientation(front);
+	        int front = 0; 
+	    	
+	    	switch(this.getFacing())
+	    	{
+	    	case 2:
+	    		front = 2;
+	    		break;
+	    	case 3:
+	    		front = 3;
+	    		break;
+	    	case 4:
+	    		front = 4;
+	    		break;
+	    	case 5:
+	    		front = 5;
+	    		break;
+	    	default:
+	    		front = 2;
+	   			break;
+	    	}
+	    	
+	    	ForgeDirection direction = ForgeDirection.getOrientation(front);
+	
+	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
+	        
+	        ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
+	        
+	        if (inputTile != null)
+	        {   
+                if (this.electricityStored < this.electricityMaxStored)
+                {
+                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
+                	
+                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
 
-        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
-        
-        ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
-    	if (network != null)
-        {
-    		if(this.isMilking)
-    	    {
-	        	network.startRequesting(this, WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
-				ElectricityPack electricityPack = network.consumeElectricity(this);
-				this.joulesReceived = Math.max(Math.min(this.joulesReceived + electricityPack.getWatts(), WATTS_PER_TICK), 0);
-
-				if (UniversalElectricity.isVoltageSensitive)
+                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
+                    
+                    if (UniversalElectricity.isVoltageSensitive)
+    				{
+                    	ElectricityPack electricityPack = network.consumeElectricity(this);
+    					if (electricityPack.voltage > this.getVoltage())
+    					{
+    						this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
+    					}
+    				}
+                    
+                }
+				else if(electricityStored >= electricityMaxStored)
+                {
+                    network.stopRequesting(this);
+                }
+	        }
+	        
+			if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
+			{
+				if (this.inventory[0].getItem() instanceof IItemElectric)
 				{
-					if (electricityPack.voltage > this.getVoltage())
+					IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
+
+					if (electricItem.canProduceElectricity())
 					{
-						this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
+						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
+						this.setElectricityStored(this.electricityStored + joulesReceived);
 					}
 				}
 			}
-			else
-			{
-				network.stopRequesting(this);
-			}
-	    }
+        }
         super.updateEntity();
     }
 	
@@ -287,6 +340,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
         this.facing = tagCompound.getShort("facing");
         this.isPowered = tagCompound.getBoolean("isPowered");
         this.milkStored = tagCompound.getInteger("milkStored");  
+        this.electricityStored = tagCompound.getDouble("electricityStored");
         NBTTagList tagList = tagCompound.getTagList("Inventory");
 
         for (int i = 0; i < tagList.tagCount(); i++)
@@ -310,6 +364,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
         tagCompound.setShort("facing", (short)this.facing);
         tagCompound.setBoolean("isPowered", this.isPowered);
         tagCompound.setInteger("milkStored", (int)this.milkStored);
+        tagCompound.setDouble("electricityStored", this.electricityStored);
         NBTTagList itemList = new NBTTagList();
 
         for (int i = 0; i < inventory.length; i++)
@@ -344,6 +399,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.milkStored = dataStream.readInt();
+				this.electricityStored = dataStream.readDouble();
 			}
 		}
 		catch (Exception e)
@@ -355,7 +411,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored, this.electricityStored);
 	}
     
     public int getMilkStored()
@@ -372,4 +428,19 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     {
     	return this.milkMaxStored;
     }
+    
+    public double getElectricityStored() 
+	{
+		return electricityStored;
+	}
+
+	public void setElectricityStored(double joules)
+	{
+		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
+	}	
+	
+	public double getMaxElectricity() 
+	{
+		return electricityMaxStored;
+	}
 }
