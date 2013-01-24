@@ -158,8 +158,8 @@ public class Biotech
         this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioItemId).getInt());
         
         this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-        this.milkMoving = new MilkFlowingBlock(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 2).getInt(), 3);
-        this.milkStill = new MilkStillBlock(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 3).getInt(), 3);
+        this.milkMoving = new MilkFlowingBlock(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 2).getInt(), 4);
+        this.milkStill = new MilkStillBlock(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 3).getInt(), 4);
         this.rangeUpgrade = new RangeUpgrade(Config.getItem("gigaherz.biotech.RangeUpgrade", defaultBioItemId + 1).getInt());
         
 		/**

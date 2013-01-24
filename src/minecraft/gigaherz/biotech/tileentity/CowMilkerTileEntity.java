@@ -409,6 +409,16 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	{
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored, this.electricityStored);
 	}
+	
+	public int getFacing() 
+	{
+		return facing;
+	}
+
+	public void setFacing(int facing) 
+	{
+		this.facing = facing;
+	}
     
     public int getMilkStored()
     {
