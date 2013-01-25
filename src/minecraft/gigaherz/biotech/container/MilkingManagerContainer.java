@@ -1,8 +1,8 @@
 package gigaherz.biotech.container;
 
-import gigaherz.biotech.slots.emptybucketSlot;
-import gigaherz.biotech.slots.milkbucketSlot;
-import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.slots.emptyBucketSlot;
+import gigaherz.biotech.slots.milkBucketSlot;
+import gigaherz.biotech.tileentity.MilkingManagerTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -14,11 +14,11 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.SlotElectricItem;
 
-public class CowMilkerContainer extends Container
+public class MilkingManagerContainer extends Container
 {
-	private CowMilkerTileEntity tileEntity;
+	private MilkingManagerTileEntity tileEntity;
 
-	public CowMilkerContainer(InventoryPlayer par1InventoryPlayer, CowMilkerTileEntity te)
+	public MilkingManagerContainer(InventoryPlayer par1InventoryPlayer, MilkingManagerTileEntity te)
 	{
 		this.tileEntity = te;
 
@@ -29,10 +29,10 @@ public class CowMilkerContainer extends Container
 		this.addSlotToContainer(new Slot(tileEntity, 1, 7, 7));
 
 		// Slot for empty bucket
-		this.addSlotToContainer(new emptybucketSlot(tileEntity, 2, 152, 16));
+		this.addSlotToContainer(new emptyBucketSlot(tileEntity, 2, 152, 16));
 			
 		// Slot for filled bucket
-		this.addSlotToContainer(new milkbucketSlot(tileEntity, 3, 152, 51));
+		this.addSlotToContainer(new milkBucketSlot(tileEntity, 3, 152, 51));
 
 		int var3;
 

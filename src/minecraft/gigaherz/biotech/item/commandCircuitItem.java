@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class CommandCircuit extends Item
+public class commandCircuitItem extends Item
 {
     private final static String[] subNames =
     {
@@ -34,7 +34,7 @@ public class CommandCircuit extends Item
         "miner", "filler",
     };
 
-    public CommandCircuit(int id)
+    public commandCircuitItem(int id)
     {
         super(id);
         // Constructor Configuration

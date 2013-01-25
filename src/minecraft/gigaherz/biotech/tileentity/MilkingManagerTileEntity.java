@@ -37,7 +37,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 
-public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
 	private int tickCounter;
 	private int scantickCounter;
@@ -84,7 +84,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
     public int minZ, maxZ;
 	
 	
-	public CowMilkerTileEntity()
+	public MilkingManagerTileEntity()
 	{
 		super();
 	}
@@ -174,7 +174,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IInve
 	public int getScanRange() {
 		if (getStackInSlot(1) != null) 
 		{
-			if (getStackInSlot(1).getItem() == Biotech.rangeUpgrade) 
+			
+			if (inventory[1].isItemEqual(new ItemStack(Biotech.bioCircuit, 1, 7)))
 			{
 				return (getStackInSlot(1).stackSize+5);
 			}

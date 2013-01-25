@@ -5,13 +5,13 @@ import gigaherz.biotech.block.BiotechBlockMachine;
 import gigaherz.biotech.block.MilkFlowingBlock;
 import gigaherz.biotech.block.MilkStillBlock;
 import gigaherz.biotech.common.CommonProxy;
-import gigaherz.biotech.item.BioCircuit;
-import gigaherz.biotech.item.BiotechItemBlock;
-import gigaherz.biotech.item.CommandCircuit;
-import gigaherz.biotech.item.RangeUpgrade;
+import gigaherz.biotech.item.bioCircuitItem;
+import gigaherz.biotech.item.biotechItemBlock;
+import gigaherz.biotech.item.commandCircuitItem;
+import gigaherz.biotech.item.rangeUpgradeItem;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
-import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.tileentity.MilkingManagerTileEntity;
 import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
@@ -83,7 +83,7 @@ public class Biotech
     public static final Configuration Config = new Configuration(new File(Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
 
     // Item templates
-    public static BioCircuit bioCircuit;
+    public static bioCircuitItem bioCircuit;
     // Metadata for BioCircuit
     // 0 == unprogrammed
     // 1 == wheatseeds 
@@ -99,9 +99,7 @@ public class Biotech
     public static ItemStack bioCircuitPumpkinSeeds;
     public static ItemStack bioCircuitCarrots;
     public static ItemStack bioCircuitPotatoes;
-    
-    // Cow Milker Upgrades [Not yet implemented but needs to be defined for CowMilkerTileEntity to work]
-    public static Item rangeUpgrade;
+    public static ItemStack bioCircuitRangeUpgrade;
     
     // Block templates
     public static Block biotechBlockMachine;
@@ -116,11 +114,7 @@ public class Biotech
 	//4 == Fertilizer
 	//5 == Miner
 	//6 == Filler
-    //7 == Cow Milker
-    
-    // Item Stack
-    public static ItemStack cobbleStack = new ItemStack(Block.cobblestone);
-	public static ItemStack plankStack = new ItemStack(Block.planks);
+    //7 == Milking Manager
     
     // Liquid Stack Milk
     public static LiquidStack milkLiquid;
@@ -155,12 +149,11 @@ public class Biotech
 		/**
 		 * Define the items and blocks.
 		 */
-        this.bioCircuit = new BioCircuit(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioItemId).getInt());
+        this.bioCircuit = new bioCircuitItem(Config.getItem("gigaherz.biotech.BioCircuit", defaultBioItemId).getInt());
         
         this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("gigaherz.biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
         this.milkMoving = new MilkFlowingBlock(Config.getBlock("gigaherz.biotech.MilkFlowing", defaultBiotechBlockId + 2).getInt(), 4);
         this.milkStill = new MilkStillBlock(Config.getBlock("gigaherz.biotech.MilkStill", defaultBiotechBlockId + 3).getInt(), 4);
-        this.rangeUpgrade = new RangeUpgrade(Config.getItem("gigaherz.biotech.RangeUpgrade", defaultBioItemId + 1).getInt());
         
 		/**
 		 * Define the subitems
@@ -171,6 +164,7 @@ public class Biotech
         this.bioCircuitPumpkinSeeds = bioCircuit.getStack(1, 3);
         this.bioCircuitCarrots = bioCircuit.getStack(1, 4);
         this.bioCircuitPotatoes = bioCircuit.getStack(1, 5);
+        this.bioCircuitRangeUpgrade = bioCircuit.getStack(1, 6);
 
 		/**
 		 * Enable the chat commands
@@ -216,7 +210,7 @@ public class Biotech
         
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
         
-        GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
+        GameRegistry.registerTileEntity(MilkingManagerTileEntity.class, "MilkingManagerTileEntity");
         
         /**
          * Register Milk as a Liquid
@@ -228,7 +222,7 @@ public class Biotech
 		/**
 		 * Handle the blocks
 		 */
-        GameRegistry.registerBlock(Biotech.biotechBlockMachine, BiotechItemBlock.class, "Basic Biotech Block");
+        GameRegistry.registerBlock(Biotech.biotechBlockMachine, biotechItemBlock.class, "Basic Biotech Block");
         GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
         GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
         
@@ -247,7 +241,6 @@ public class Biotech
 		
 		// Items
 		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
-		LanguageRegistry.addName(rangeUpgrade, "Range Upgrade");
 		// Subitems
         LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
         LanguageRegistry.addName(bioCircuitWheatSeeds, "Bio Circuit - Wheat Seeds");
@@ -255,6 +248,7 @@ public class Biotech
         LanguageRegistry.addName(bioCircuitPumpkinSeeds, "Bio Circuit - Pumpkin Seeds");
         LanguageRegistry.addName(bioCircuitCarrots, "Bio Circuit - Carrots");
         LanguageRegistry.addName(bioCircuitPotatoes, "Bio Circuit - Potaties");
+        LanguageRegistry.addName(bioCircuitRangeUpgrade, "Bio Circuit - Range Upgrade");
 
         // Subblocks
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.0.name", "Tilling Machine");
@@ -264,7 +258,7 @@ public class Biotech
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
-        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Cow Milker");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Milking Manager");
         
         //CreativeTab
         LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");

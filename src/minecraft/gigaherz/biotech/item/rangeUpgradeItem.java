@@ -6,10 +6,10 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class RangeUpgrade extends Item
+public class rangeUpgradeItem extends Item
 {
 
-	public RangeUpgrade(int id) {
+	public rangeUpgradeItem(int id, int textureIndex) {
 		super(id);
 
 		setMaxStackSize(64);

@@ -2,7 +2,7 @@ package gigaherz.biotech.tileentity;
 
 import gigaherz.biotech.Biotech;
 
-import gigaherz.biotech.item.CommandCircuit;
+import gigaherz.biotech.item.commandCircuitItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

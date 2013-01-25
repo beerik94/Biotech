@@ -1,7 +1,7 @@
 package gigaherz.biotech.tileentity;
 
 import gigaherz.biotech.Biotech;
-import gigaherz.biotech.item.CommandCircuit;
+import gigaherz.biotech.item.commandCircuitItem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -331,10 +331,10 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
 	
 	                Item item = stack.getItem();
 	
-	                if (item == null || !(item instanceof CommandCircuit))
+	                if (item == null || !(item instanceof commandCircuitItem))
 	                    continue;
 	
-	                CommandCircuit circuit = (CommandCircuit)item;
+	                commandCircuitItem circuit = (commandCircuitItem)item;
 	
 	                if (!circuit.canDoWork(this, stack.getItemDamage()))
 	                    continue;
@@ -551,12 +551,12 @@ public class BasicWorkerTileEntity extends TileEntityElectricityReceiver impleme
 
             Item item = stack.getItem();
 
-            if (item == null || !(item instanceof CommandCircuit))
+            if (item == null || !(item instanceof commandCircuitItem))
             {
                 continue;
             }
 
-            CommandCircuit circuit = (CommandCircuit)item;
+            commandCircuitItem circuit = (commandCircuitItem)item;
 
             if (circuit.canDoWork(this, stack.getItemDamage()))
             {

@@ -4,9 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 
-public class BiotechItemBlock extends ItemBlock
+public class biotechItemBlock extends ItemBlock
 {
-	public BiotechItemBlock(int id)
+	public biotechItemBlock(int id)
 	{
 		super(id);
 		this.setHasSubtypes(true);

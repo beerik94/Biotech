@@ -4,7 +4,8 @@ import gigaherz.biotech.Biotech;
 import gigaherz.biotech.common.CommonProxy;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
-import gigaherz.biotech.tileentity.CowMilkerTileEntity;
+import gigaherz.biotech.tileentity.MilkingMachineTileEntity;
+import gigaherz.biotech.tileentity.MilkingManagerTileEntity;
 import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 
@@ -34,7 +35,8 @@ public class BiotechBlockMachine extends BlockMachine
 	//4 == Fertilizer
 	//5 == Miner
 	//6 == Filler
-	//7 == Cow Milker
+	//7 == Milk Manager
+	//8 == Milking Machine
 	
 	public static final int TILLER_METADATA = 0;
 	public static final int PLANTER_METADATA = 1;
@@ -43,7 +45,8 @@ public class BiotechBlockMachine extends BlockMachine
 	public static final int FERTILIZER_METADATA = 4;
 	public static final int MINER_METADATA = 5;
 	public static final int FILLER_METADATA = 6;
-	public static final int COWMILKER_METADATA = 7;
+	public static final int MILK_MANAGER_METADATA = 7;
+	public static final int MILK_MACHINE_METADATA = 8;
 	
 	
     public BiotechBlockMachine(int id, int textureIndex)
@@ -175,6 +178,22 @@ public class BiotechBlockMachine extends BlockMachine
       		}
     	}
     	else if(meta == 7)
+    	{
+    		switch(side)
+    		{
+    		case 0:
+    			return 3;
+    		case 1:
+    			return 18;
+    		case 2:
+    			return 0;
+    		case 3:
+    			return 32;
+    		default:
+    			return 3;
+    		}
+    	}
+    	else if(meta == 8)
     	{
     		switch(side)
     		{
@@ -429,6 +448,29 @@ public class BiotechBlockMachine extends BlockMachine
     			return 3;
     		}
     	}
+    	else if(metadata == 8)
+    	{
+    		if(side == front)
+    		{
+    			return tileEntity.isPowered ? 16 : 0;
+    		}
+    		else if(side == back)
+    		{
+    			return 32;
+    		}
+    		else if(side == bottom)
+    		{
+    			return 3;
+    		}
+    		else if(side == top)
+    		{
+    			return 18;
+    		}
+    		else
+    		{
+    			return 3;
+    		}
+    	}
      	else 
      	{
     		return 3;
@@ -498,6 +540,7 @@ public class BiotechBlockMachine extends BlockMachine
 		list.add(new ItemStack(i, 1, 5));
 		list.add(new ItemStack(i, 1, 6));
 		list.add(new ItemStack(i, 1, 7));
+		list.add(new ItemStack(i, 1, 8));
 	}
     
     
@@ -581,6 +624,12 @@ public class BiotechBlockMachine extends BlockMachine
 	    			player.openGui(Biotech.instance, 0, world, x, y, z);
 	    			return true;
 	    		}
+	    	case 8:
+	    		if(!player.isSneaking())
+	    		{
+	    			player.openGui(Biotech.instance, 3, world, x, y, z);
+	    			return true;
+	    		}
 	    	}
     	}
         return true;
@@ -607,7 +656,9 @@ public class BiotechBlockMachine extends BlockMachine
     	case 5:
     	case 6:
     	case 7:
-    		return new CowMilkerTileEntity();
+    		return new MilkingManagerTileEntity();
+    	case 8:
+    		return new MilkingMachineTileEntity();
     	default:
     		return new BasicMachineTileEntity();
     	}

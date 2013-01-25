@@ -1,8 +1,8 @@
 package gigaherz.biotech.client;
 
 import gigaherz.biotech.Biotech;
-import gigaherz.biotech.tileentity.CowMilkerTileEntity;
-import gigaherz.biotech.container.CowMilkerContainer;
+import gigaherz.biotech.tileentity.MilkingManagerTileEntity;
+import gigaherz.biotech.container.MilkingManagerContainer;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
@@ -15,18 +15,18 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CowMilkerGui extends GuiContainer
+public class MilkingManagerGui extends GuiContainer
 {
-	private CowMilkerTileEntity tileEntity;
+	private MilkingManagerTileEntity tileEntity;
 
-	public static String COWMILKER_GUI = Biotech.FILE_PATH + "cowmilker.png";
+	public static String MILKINGMANAGER_GUI = Biotech.FILE_PATH + "milkingmanager.png";
 	
 	private int containerWidth;
 	private int containerHeight;
 
-	public CowMilkerGui(InventoryPlayer playerInventory, CowMilkerTileEntity tileEntity)
+	public MilkingManagerGui(InventoryPlayer playerInventory, MilkingManagerTileEntity tileEntity)
 	{
-		super(new CowMilkerContainer(playerInventory, tileEntity));
+		super(new MilkingManagerContainer(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}
@@ -69,7 +69,7 @@ public class CowMilkerGui extends GuiContainer
 	@Override
     protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
     {
-        int picture = mc.renderEngine.getTexture(this.COWMILKER_GUI);
+        int picture = mc.renderEngine.getTexture(this.MILKINGMANAGER_GUI);
         GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.mc.renderEngine.bindTexture(picture);
         
