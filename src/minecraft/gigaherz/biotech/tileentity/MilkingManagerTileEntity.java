@@ -42,7 +42,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	private int tickCounter;
 	private int scantickCounter;
 	
-	protected List<EntityLiving> MachineList = new ArrayList<EntityLiving>();
+	protected List<MilkingMachineTileEntity> MachineList = new ArrayList<MilkingMachineTileEntity>();
 	
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 250;
@@ -55,7 +55,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	// Watts being used per pump action
 	public static final double WATTS_PER_PUMP_ACTION = 50;
 	
-	public static boolean isRedstonePowered = false;
+	public boolean isRedstonePowered = false;
 	
 	//How much power is stored?
     private double electricityStored  = 0;
@@ -144,7 +144,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
         }
     }
 
-	public void scanForMilkers()
+	public void scanForMachines()
 	{
 		int xminrange = xCoord- getScanRange();
 		int xmaxrange = xCoord+ getScanRange()+1;
@@ -153,31 +153,35 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 		int zminrange = zCoord- getScanRange();
 		int zmaxrange = zCoord+ getScanRange()+1;
 		/*
-		List<EntityCow> scannedCowslist = worldObj.getEntitiesWithinAABB(EntityCow.class, AxisAlignedBB.getBoundingBox(xminrange, yminrange, zminrange, xmaxrange, ymaxrange, zmaxrange));
-
-		for(EntityCow Living : scannedCowslist)
+		for(xminrange < xmaxrange)
 		{
-			if(!CowList.contains(Living))
+			
+		}
+		
+		//List<MilkingMachineTileEntity> scannedMachineslist = worldObj.getEntitiesWithinAABB(MilkingMachineTileEntity.class, AxisAlignedBB.getBoundingBox(xminrange, yminrange, zminrange, xmaxrange, ymaxrange, zmaxrange));
+		
+		for(MilkingMachineTileEntity machine : scannedMachineslist)
+		{
+			if(!MachineList.contains(machine))
 			{
-				CowList.add(Living);
+				MachineList.add(machine);
 			}
-		}	
+		}
 		*/
 	}
-	
+	/*
 	public void milkCows()
-	{		
+	{
 		if(MachineList.size() != 0)
 		{
 			//CowList.remove(0);
 			//this.setMilkStored(this.getMilkStored() + this.cowMilk);
 		}
 	}
-
+	*/
 	public int getScanRange() {
 		if (getStackInSlot(1) != null) 
 		{
-			
 			if (inventory[1].isItemEqual(new ItemStack(Biotech.bioCircuit, 1, 7)))
 			{
 				return (getStackInSlot(1).stackSize+5);
@@ -196,11 +200,21 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
 	        	{
-	        		scanForMilkers();
+	        		scanForMachines();
 	        		scantickCounter = 0;
 	        	}
+	        	int i = 0;
+				while(i < MachineList.size())
+				{
+					MilkingMachineTileEntity machine = MachineList.get(i);
+					System.out.println("Redstone: " + machine.ReceivedRedstone);
+					machine.ReceivedRedstone = true;
+					i++;
+				}
+				System.out.println("Machines: " + MachineList);
+				
 	        	/*
-	        	if(CowList.size() != 0 && tickCounter >= 100)
+	        	if(MachineList.size() != 0 && tickCounter >= 100)
 	        	{
 	        		milkCows();
 	    			isMilking = true;

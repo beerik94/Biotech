@@ -56,6 +56,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
+    public boolean ReceivedRedstone = false;
 
 	private int facing;
 	private int playersUsing = 0;
@@ -167,7 +168,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		
         if (!worldObj.isRemote)
         {	        
-	        if(this.CheckRedstonePowered())
+	        if(this.ReceivedRedstone)
 	        {
 	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
@@ -269,15 +270,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         }
         super.updateEntity();
     }
-	
-	public boolean CheckRedstonePowered()
-	{		
-		if(MilkingManagerTileEntity.isRedstonePowered)
-		{
-			return true;
-		}
-		return false;
-	}
 
 	@Override
     public void readFromNBT(NBTTagCompound tagCompound)
