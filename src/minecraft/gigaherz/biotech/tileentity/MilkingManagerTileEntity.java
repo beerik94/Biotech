@@ -42,7 +42,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	private int tickCounter;
 	private int scantickCounter;
 	
-	protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
+	protected List<EntityLiving> MachineList = new ArrayList<EntityLiving>();
 	
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 250;
@@ -54,6 +54,8 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	
 	// Watts being used per pump action
 	public static final double WATTS_PER_PUMP_ACTION = 50;
+	
+	public static boolean isRedstonePowered = false;
 	
 	//How much power is stored?
     private double electricityStored  = 0;
@@ -142,7 +144,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
         }
     }
 
-	public void scanCows()
+	public void scanForMilkers()
 	{
 		int xminrange = xCoord- getScanRange();
 		int xmaxrange = xCoord+ getScanRange()+1;
@@ -150,9 +152,9 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 		int ymaxrange = yCoord+ getScanRange()+1;
 		int zminrange = zCoord- getScanRange();
 		int zmaxrange = zCoord+ getScanRange()+1;
-		
+		/*
 		List<EntityCow> scannedCowslist = worldObj.getEntitiesWithinAABB(EntityCow.class, AxisAlignedBB.getBoundingBox(xminrange, yminrange, zminrange, xmaxrange, ymaxrange, zmaxrange));
-	
+
 		for(EntityCow Living : scannedCowslist)
 		{
 			if(!CowList.contains(Living))
@@ -160,14 +162,15 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 				CowList.add(Living);
 			}
 		}	
+		*/
 	}
 	
 	public void milkCows()
 	{		
-		if(CowList.size() != 0)
+		if(MachineList.size() != 0)
 		{
-			CowList.remove(0);
-			this.setMilkStored(this.getMilkStored() + this.cowMilk);
+			//CowList.remove(0);
+			//this.setMilkStored(this.getMilkStored() + this.cowMilk);
 		}
 	}
 
@@ -193,9 +196,10 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
 	        	{
-	        		scanCows();
+	        		scanForMilkers();
 	        		scantickCounter = 0;
 	        	}
+	        	/*
 	        	if(CowList.size() != 0 && tickCounter >= 100)
 	        	{
 	        		milkCows();
@@ -203,7 +207,8 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	        		tickCounter = 0;
 	        		this.setPowered(false);
 	        	}
-	            tickCounter++;
+	        	*/
+	            //tickCounter++;
 	            scantickCounter++;
 	        }
 	        if(milkStored >= 30)
@@ -322,9 +327,11 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     }
 	
 	public boolean isRedstoneSignal(){
-		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) ||
-		    worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+		{
+			this.isRedstonePowered = true;
 			return true;
+		}
 		return false;
 	}
 
@@ -383,7 +390,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     @Override
     public String getInvName()
     {
-        return "Cow Milker";
+        return "Milking Manager";
     }
     
     @Override

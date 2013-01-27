@@ -57,7 +57,7 @@ public class bioCircuitItem extends Item
     	case 5:
     		return 5; //potatoes
     	case 6:
-    		return 6; //Range Upgrade
+    		return 8; //Range Upgrade
 
     	}
         return this.iconIndex;

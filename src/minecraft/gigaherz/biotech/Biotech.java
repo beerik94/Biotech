@@ -11,6 +11,7 @@ import gigaherz.biotech.item.commandCircuitItem;
 import gigaherz.biotech.item.rangeUpgradeItem;
 import gigaherz.biotech.tileentity.BasicMachineTileEntity;
 import gigaherz.biotech.tileentity.BasicWorkerTileEntity;
+import gigaherz.biotech.tileentity.MilkingMachineTileEntity;
 import gigaherz.biotech.tileentity.MilkingManagerTileEntity;
 import gigaherz.biotech.tileentity.PlantingMachineTileEntity;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
@@ -30,6 +31,7 @@ import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import universalelectricity.core.UniversalElectricity;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
 import cpw.mods.fml.common.FMLLog;
@@ -48,7 +50,6 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
-
 
 @Mod(modid = "Biotech", name = "Biotech", version = "0.1.7")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
@@ -140,6 +141,8 @@ public class Biotech
     @PreInit
     public void preInit(FMLPreInitializationEvent event)
     {
+    	UniversalElectricity.register(this, UniversalElectricity.MAJOR_VERSION, UniversalElectricity.MINOR_VERSION, UniversalElectricity.REVISION_VERSION, true);
+    	
     	biotechLogger.setParent(FMLLog.getLogger());
     	biotechLogger.info("Starting Biotech");
     	biotechLogger.info("Loading config");
@@ -212,6 +215,8 @@ public class Biotech
         
         GameRegistry.registerTileEntity(MilkingManagerTileEntity.class, "MilkingManagerTileEntity");
         
+        GameRegistry.registerTileEntity(MilkingMachineTileEntity.class, "MilkingMachineTileEntity");
+        
         /**
          * Register Milk as a Liquid
          */
@@ -259,6 +264,7 @@ public class Biotech
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Milking Manager");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.8.name", "Milking Machine");
         
         //CreativeTab
         LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
