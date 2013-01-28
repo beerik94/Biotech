@@ -19,12 +19,12 @@ public class MilkingMachineContainer extends Container
 {
 	private MilkingMachineTileEntity tileEntity;
 
-	public MilkingMachineContainer(InventoryPlayer par1InventoryPlayer, MilkingMachineTileEntity te)
+	public MilkingMachineContainer(InventoryPlayer par1InventoryPlayer, MilkingMachineTileEntity tileEntity)
 	{
-		this.tileEntity = te;
+		this.tileEntity = tileEntity;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
+		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 16));
 
 		int var3;
 
@@ -76,11 +76,6 @@ public class MilkingMachineContainer extends Container
 				{
 					if (!this.mergeItemStack(var4, 0, 1, false)) { return null; }
 				}
-				else if (par1 >= 3 && par1 < 30)
-				{
-					if (!this.mergeItemStack(var4, 30, 39, false)) { return null; }
-				}
-				else if (par1 >= 30 && par1 < 39 && !this.mergeItemStack(var4, 3, 30, false)) { return null; }
 			}
 			else if (!this.mergeItemStack(var4, 3, 39, false)) { return null; }
 

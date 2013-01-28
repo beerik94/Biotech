@@ -128,7 +128,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         }
     }
 
-	public void scanForMilkers()
+	public void scanForCows()
 	{
 		int xminrange = xCoord- getScanRange();
 		int xmaxrange = xCoord+ getScanRange()+1;
@@ -153,8 +153,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{		
 		if(CowList.size() != 0)
 		{
-			
-			
+			CowList.remove(0);
 		}
 	}
 
@@ -173,10 +172,9 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
 	        	{
-	        		scanForMilkers();
+	        		scanForCows();
 	        		scantickCounter = 0;
 	        	}
-	        	/*
 	        	if(CowList.size() != 0 && tickCounter >= 100)
 	        	{
 	        		milkCows();
@@ -184,8 +182,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        		tickCounter = 0;
 	        		this.setPowered(false);
 	        	}
-	        	*/
-	            //tickCounter++;
+	            tickCounter++;
 	            scantickCounter++;
 	        }
 	        if(tickCounter >= 150)
@@ -270,6 +267,11 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         }
         super.updateEntity();
     }
+	
+	public boolean GetRedstoneSignal()
+	{
+		return ReceivedRedstone;
+	}
 
 	@Override
     public void readFromNBT(NBTTagCompound tagCompound)
@@ -337,6 +339,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
+				this.ReceivedRedstone = dataStream.readBoolean();
 			}
 		}
 		catch (Exception e)
@@ -348,7 +351,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.ReceivedRedstone);
 	}
 	
 	public int getFacing() 
