@@ -2,7 +2,7 @@ package gigaherz.biotech.tileentity;
 
 import gigaherz.biotech.Biotech;
 
-import gigaherz.biotech.item.commandCircuitItem;
+import gigaherz.biotech.item.CommandCircuit;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -60,7 +60,7 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
     
     //TODO Add variables to indicate maximum workarea size. Should be based on CommandItem usage?
     
-    final ItemStack[] hoeToolStacks = new ItemStack[]
+    public static final ItemStack[] hoeToolStacks = new ItemStack[]
     {
         new ItemStack(Item.hoeWood, 1),
         new ItemStack(Item.hoeStone, 1),
@@ -240,6 +240,53 @@ public class TillingMachineTileEntity extends BasicMachineTileEntity implements 
         }
 
         return false;
+    }
+
+    @Override
+    public void refreshConnectorsAndWorkArea()
+    {
+    	super.refreshConnectorsAndWorkArea();
+    	
+    	ForgeDirection direction = ForgeDirection.getOrientation(getFacing());
+    	
+        if (direction.offsetZ > 0)
+        {
+            this.minX = -2;
+            this.maxX =  2;
+            this.minZ = -5 * direction.offsetZ;
+            this.maxZ = -1 * direction.offsetZ;
+        }
+        else if (direction.offsetZ < 0)
+        {
+            this.minX = -2;
+            this.maxX =  2;
+            this.minZ = -1 * direction.offsetZ;
+            this.maxZ = -5 * direction.offsetZ;
+        }
+        else if (direction.offsetX > 0)
+        {
+            this.minZ = -2;
+            this.maxZ =  2;
+            this.minX = -5 * direction.offsetX;
+            this.maxX = -1 * direction.offsetX;
+        }
+        else if (direction.offsetX < 0)
+        {
+            this.minZ = -2;
+            this.maxZ =  2;
+            this.minX = -1 * direction.offsetX;
+            this.maxX = -5 * direction.offsetX;
+        }
+
+        if (this.currentX < this.minX || this.currentX > this.maxX)
+        {
+            this.currentX = this.minX;
+        }
+
+        if (this.currentZ < this.minZ || this.currentZ > this.maxZ)
+        {
+            this.currentZ = this.minZ;
+        }
     }
     
     private void advanceLocation()

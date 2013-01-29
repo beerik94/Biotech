@@ -1,5 +1,6 @@
 package gigaherz.biotech.container;
 
+import gigaherz.biotech.slots.tillingToolSlot;
 import gigaherz.biotech.tileentity.TillingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -24,7 +25,7 @@ public class TillingMachineContainer extends Container
 		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
 
 		// Slot for tools
-		this.addSlotToContainer(new Slot(tileEntity, 1, 144, 7));
+		this.addSlotToContainer(new tillingToolSlot(tileEntity, 1, 144, 7));
 		
 		// Slot BioCircuit
 		this.addSlotToContainer(new Slot(tileEntity, 2, 7, 7));
