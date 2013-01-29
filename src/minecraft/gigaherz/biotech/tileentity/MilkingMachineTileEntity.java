@@ -74,59 +74,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		super();
 	}
-	
-	@Override
-    public void initiate()
-    {
-        refreshConnectorsAndWorkArea();
-    }
-	
-	@Override
-    public void refreshConnectorsAndWorkArea()
-    {
-    	super.refreshConnectorsAndWorkArea();
-    	
-    	ForgeDirection direction = ForgeDirection.getOrientation(getFacing());
-    	
-        if (direction.offsetZ > 0)
-        {
-            this.minX = -2;
-            this.maxX =  2;
-            this.minZ = -5 * direction.offsetZ;
-            this.maxZ = -1 * direction.offsetZ;
-        }
-        else if (direction.offsetZ < 0)
-        {
-            this.minX = -2;
-            this.maxX =  2;
-            this.minZ = -1 * direction.offsetZ;
-            this.maxZ = -5 * direction.offsetZ;
-        }
-        else if (direction.offsetX > 0)
-        {
-            this.minZ = -2;
-            this.maxZ =  2;
-            this.minX = -5 * direction.offsetX;
-            this.maxX = -1 * direction.offsetX;
-        }
-        else if (direction.offsetX < 0)
-        {
-            this.minZ = -2;
-            this.maxZ =  2;
-            this.minX = -1 * direction.offsetX;
-            this.maxX = -5 * direction.offsetX;
-        }
-
-        if (this.currentX < this.minX || this.currentX > this.maxX)
-        {
-            this.currentX = this.minX;
-        }
-
-        if (this.currentZ < this.minZ || this.currentZ > this.maxZ)
-        {
-            this.currentZ = this.minZ;
-        }
-    }
 
 	public void scanForCows()
 	{
@@ -203,19 +150,19 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	    	switch(this.getFacing())
 	    	{
 	    	case 2:
-	    		front = 2;
-	    		break;
-	    	case 3:
 	    		front = 3;
 	    		break;
-	    	case 4:
-	    		front = 4;
+	    	case 3:
+	    		front = 2;
 	    		break;
-	    	case 5:
+	    	case 4:
 	    		front = 5;
 	    		break;
+	    	case 5:
+	    		front = 4;
+	    		break;
 	    	default:
-	    		front = 2;
+	    		front = 3;
 	   			break;
 	    	}
 	    	

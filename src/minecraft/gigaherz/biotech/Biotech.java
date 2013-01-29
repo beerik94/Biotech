@@ -240,12 +240,12 @@ public class Biotech
         //LanguageRegistry.addName(biotechBlockMachine, "Biotech Machine");
         
         //Blocks
-        
 		LanguageRegistry.addName(milkMoving, "Milk(Flowing)");
 		LanguageRegistry.addName(milkStill, "Milk(Still)");
 		
 		// Items
 		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
+		
 		// Subitems
         LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
         LanguageRegistry.addName(bioCircuitWheatSeeds, "Bio Circuit - Wheat Seeds");

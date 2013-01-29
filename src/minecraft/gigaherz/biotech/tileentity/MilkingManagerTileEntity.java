@@ -26,6 +26,11 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidDictionary;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
@@ -37,7 +42,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
 
-public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, ITankContainer
 {
 	private int tickCounter;
 	private int scantickCounter;
@@ -69,6 +74,11 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     public boolean bucketIn = false;
 	public int bucketTimeMax = 100;
 	public int bucketTime = 0;
+	
+	// Amount of milliBuckets of internal storage
+	private static final int MILK_CAPACITY_MILLIBUCKET = 3000;
+	private int milkContentsMilliBuckets = 0;
+	private ILiquidTank internalLiquidTank;
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
@@ -84,64 +94,19 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     public int minX, maxX;
     public int minZ, maxZ;
 	
+    
+    /**
+	 * note this set once at construction and never changed because a the manager can only accept the kind of liquid it is designed for
+	 */
+	private final LiquidStack requiredLiquid;
 	
 	public MilkingManagerTileEntity()
 	{
 		super();
+		this.requiredLiquid = LiquidDictionary.getLiquid("milk", 1);
+		internalLiquidTank = new LiquidTank(requiredLiquid, MILK_CAPACITY_MILLIBUCKET, this);
+		
 	}
-	
-	@Override
-    public void initiate()
-    {
-        refreshConnectorsAndWorkArea();
-    }
-	
-	@Override
-    public void refreshConnectorsAndWorkArea()
-    {
-    	super.refreshConnectorsAndWorkArea();
-    	
-    	ForgeDirection direction = ForgeDirection.getOrientation(getFacing());
-    	
-        if (direction.offsetZ > 0)
-        {
-            this.minX = -2;
-            this.maxX =  2;
-            this.minZ = -5 * direction.offsetZ;
-            this.maxZ = -1 * direction.offsetZ;
-        }
-        else if (direction.offsetZ < 0)
-        {
-            this.minX = -2;
-            this.maxX =  2;
-            this.minZ = -1 * direction.offsetZ;
-            this.maxZ = -5 * direction.offsetZ;
-        }
-        else if (direction.offsetX > 0)
-        {
-            this.minZ = -2;
-            this.maxZ =  2;
-            this.minX = -5 * direction.offsetX;
-            this.maxX = -1 * direction.offsetX;
-        }
-        else if (direction.offsetX < 0)
-        {
-            this.minZ = -2;
-            this.maxZ =  2;
-            this.minX = -1 * direction.offsetX;
-            this.maxX = -5 * direction.offsetX;
-        }
-
-        if (this.currentX < this.minX || this.currentX > this.maxX)
-        {
-            this.currentX = this.minX;
-        }
-
-        if (this.currentZ < this.minZ || this.currentZ > this.maxZ)
-        {
-            this.currentZ = this.minZ;
-        }
-    }
 
 	public void scanForMachines()
 	{
@@ -269,19 +234,19 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	    	switch(this.getFacing())
 	    	{
 	    	case 2:
-	    		front = 2;
-	    		break;
-	    	case 3:
 	    		front = 3;
 	    		break;
-	    	case 4:
-	    		front = 4;
+	    	case 3:
+	    		front = 2;
 	    		break;
-	    	case 5:
+	    	case 4:
 	    		front = 5;
 	    		break;
+	    	case 5:
+	    		front = 4;
+	    		break;
 	    	default:
-	    		front = 2;
+	    		front = 3;
 	   			break;
 	    	}
 	    	
@@ -438,17 +403,17 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     
     public int getMilkStored()
     {
-    	return this.milkStored;
+    	return this.milkContentsMilliBuckets;
     }
     
     public void setMilkStored(int amount)
 	{
-		this.milkStored = amount;
+		this.milkContentsMilliBuckets = amount;
 	}
     
     public int getMaxMilk()
     {
-    	return this.milkMaxStored;
+    	return this.MILK_CAPACITY_MILLIBUCKET;
     }
     
     public double getElectricityStored() 
@@ -474,5 +439,70 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public int getMachineSize()
 	{
 		return MachineListSize;
+	}
+
+	@Override
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
+		boolean isValidResource = isValidLiquid(from, resource);
+
+		int availibleCapactity = MILK_CAPACITY_MILLIBUCKET
+				- milkContentsMilliBuckets;
+		int inputAmount = resource.amount;
+		if (inputAmount <= availibleCapactity) {
+			if (doFill) {
+				this.milkContentsMilliBuckets += inputAmount;
+			}
+			return inputAmount;
+		} else {
+			if (doFill) {
+				this.milkContentsMilliBuckets = MILK_CAPACITY_MILLIBUCKET;
+			}
+			return availibleCapactity;
+		}
+	}
+	
+	/**
+	 * @param from
+	 * @param resource
+	 */
+	private boolean isValidLiquid(ForgeDirection from, LiquidStack resource) {
+		if (resource == null
+				|| (from != ForgeDirection.DOWN)) {
+			return false;
+		}
+
+		return this.requiredLiquid.isLiquidEqual(resource);
+	}
+
+	@Override
+	public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
+		// there is only 1 tank so ignore tank index and do a valid fill
+		return fill(ForgeDirection.DOWN, resource, doFill);
+	}
+
+	@Override
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ILiquidTank[] getTanks(ForgeDirection direction) {
+		return new ILiquidTank[] { getTank(direction, this.requiredLiquid) };
+	}
+
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
+		if ((direction == ForgeDirection.DOWN)
+				&& type.isLiquidEqual(this.requiredLiquid)) {
+			return this.internalLiquidTank;
+		}
+		return null;
 	}
 }

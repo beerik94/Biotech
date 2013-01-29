@@ -74,9 +74,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -90,9 +90,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -106,9 +106,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -122,9 +122,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -138,9 +138,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -154,9 +154,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -170,9 +170,9 @@ public class BiotechBlockMachine extends BlockMachine
       		case 1:
       			return 18;
       		case 2:
-      			return 0;
-      		case 3:
       			return 32;
+      		case 3:
+      			return 0;
       		default:
       			return 3;
       		}
@@ -186,9 +186,9 @@ public class BiotechBlockMachine extends BlockMachine
     		case 1:
     			return 18;
     		case 2:
-    			return 0;
-    		case 3:
     			return 32;
+    		case 3:
+    			return 3;
     		default:
     			return 3;
     		}
@@ -202,9 +202,9 @@ public class BiotechBlockMachine extends BlockMachine
     		case 1:
     			return 18;
     		case 2:
-    			return 0;
-    		case 3:
     			return 32;
+    		case 3:
+    			return 3;
     		default:
     			return 3;
     		}
@@ -225,8 +225,8 @@ public class BiotechBlockMachine extends BlockMachine
 
     	//System.out.println("getBlockTexture: " + tileEntity.getFacing());
     	
-		int front = 2;
-		int back = 3;
+		int front = 3;
+		int back = 2;
 		int left = 5;
 		int right = 4;
 		int top = 1;
@@ -235,26 +235,26 @@ public class BiotechBlockMachine extends BlockMachine
     	switch(tileEntity.getFacing())
     	{
     	case 2:
-    		front = 2;
-    		back = 3;
+    		front = 3;
+    		back = 2;
     		left = 5;
     		right = 4;
     		break;
     	case 3:
-    		front = 3;
-    		back = 2;
+    		front = 2;
+    		back = 3;
     		left = 4;
     		right = 5;
     		break;
     	case 4:
-    		front = 4;
-    		back = 5;
+    		front = 5;
+    		back = 4;
     		left = 2;
     		right = 3;
     		break;
     	case 5:
-    		front = 5;
-    		back = 4;
+    		front = 4;
+    		back = 5;
     		left = 3;
     		right = 2;
     		break;
@@ -268,11 +268,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -291,11 +291,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -314,11 +314,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -337,11 +337,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -360,11 +360,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -383,11 +383,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -406,11 +406,11 @@ public class BiotechBlockMachine extends BlockMachine
     	{
 	        if(side == front)
 	        {
-	        	return tileEntity.isPowered ? 16 : 0;
+	        	return tileEntity.isPowered ? 48 : 32;
 	        }
 	        else if(side == back)
 	        {		
-	      			return 32;
+	      			return 0;
 	        }
 	        else if(side == bottom)
 	        {
@@ -429,15 +429,15 @@ public class BiotechBlockMachine extends BlockMachine
     	{
     		if(side == front)
     		{
-    			return tileEntity.isPowered ? 16 : 0;
+    			return tileEntity.isPowered ? 48 : 32;
     		}
     		else if(side == back)
     		{
-    			return 32;
+    			return 3;
     		}
     		else if(side == bottom)
     		{
-    			return 3;
+    			return 19;
     		}
     		else if(side == top)
     		{
@@ -452,15 +452,15 @@ public class BiotechBlockMachine extends BlockMachine
     	{
     		if(side == front)
     		{
-    			return tileEntity.isPowered ? 16 : 0;
+    			return tileEntity.isPowered ? 48 : 32;
     		}
     		else if(side == back)
     		{
-    			return 32;
+    			return 3;
     		}
     		else if(side == bottom)
     		{
-    			return 3;
+    			return 19;
     		}
     		else if(side == top)
     		{
@@ -515,16 +515,14 @@ public class BiotechBlockMachine extends BlockMachine
 		        
 		        switch(side)
 		        {
-		        	case 0: change = 2; break;
-		        	case 1: change = 5; break;
-		        	case 2: change = 3; break;
-		        	case 3: change = 4; break;
+		        	case 0: change = 3; break;
+		        	case 1: change = 4; break;
+		        	case 2: change = 2; break;
+		        	case 3: change = 5; break;
 		        }
-
 		        //System.out.println("onBlockPlacedBy: " + change);
 		        
 		        tileEntity.setFacing((short)change);
-	        
 		}
     }
 
@@ -562,19 +560,19 @@ public class BiotechBlockMachine extends BlockMachine
         switch (basicEntity.getFacing())
         {
             case 2:
-            	basicEntity.setFacing((short)4);
-                break;
-
-            case 5:
-            	basicEntity.setFacing((short)2);
-                break;
-
-            case 3:
             	basicEntity.setFacing((short)5);
                 break;
 
-            case 4:
+            case 5:
             	basicEntity.setFacing((short)3);
+                break;
+
+            case 3:
+            	basicEntity.setFacing((short)4);
+                break;
+
+            case 4:
+            	basicEntity.setFacing((short)2);
                 break;
         }
 

@@ -77,19 +77,19 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
     	switch(this.getFacing())
     	{
     	case 2:
-    		front = 2;
-    		break;
-    	case 3:
     		front = 3;
     		break;
-    	case 4:
-    		front = 4;
+    	case 3:
+    		front = 2;
     		break;
-    	case 5:
+    	case 4:
     		front = 5;
     		break;
+    	case 5:
+    		front = 4;
+    		break;
     	default:
-    		front = 2;
+    		front = 3;
    			break;
     	}
 
@@ -272,19 +272,19 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
 	    	switch(this.getFacing())
 	    	{
 	    	case 2:
-	    		front = 2;
-	    		break;
-	    	case 3:
 	    		front = 3;
 	    		break;
-	    	case 4:
-	    		front = 4;
+	    	case 3:
+	    		front = 2;
 	    		break;
-	    	case 5:
+	    	case 4:
 	    		front = 5;
 	    		break;
+	    	case 5:
+	    		front = 4;
+	    		break;
 	    	default:
-	    		front = 2;
+	    		front = 3;
 	   			break;
 	    	}
 
