@@ -3,6 +3,12 @@ package biotech.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
+import liquidmechanics.api.IColorCoded;
+import liquidmechanics.api.IPressure;
+import liquidmechanics.api.helpers.ColorCode;
+import liquidmechanics.api.helpers.LiquidData;
+import liquidmechanics.api.helpers.LiquidHandler;
+
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,7 +33,7 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 
-public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver
+public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure
 {
 	private int tickCounter;
 	private int scantickCounter;
@@ -119,7 +125,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        		scanForCows();
 	        		scantickCounter = 0;
 	        	}
-	        	if(CowList.size() != 0 && tickCounter >= 100)
+	        	if(CowList.size() != 0 && tickCounter >= 100 /*&& PipeIsConnected*/ )
 	        	{
 	        		milkCows();
 	    			isMilking = true;
@@ -321,5 +327,36 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public double getMaxElectricity() 
 	{
 		return electricityMaxStored;
+	}
+
+	@Override
+	public ColorCode getColor() 
+	{
+		return ColorCode.WHITE;
+	}
+
+	@Override
+	public void setColor(Object obj) 
+	{
+		
+	}
+
+	@Override
+	public int presureOutput(LiquidData type, ForgeDirection dir) 
+	{
+		if(dir == ForgeDirection.DOWN && type == LiquidHandler.milk)
+		{
+			return 100;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	@Override
+	public boolean canPressureToo(LiquidData type, ForgeDirection dir) 
+	{
+		return false;
 	}
 }

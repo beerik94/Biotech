@@ -21,6 +21,7 @@
 /src/minecraft/paulscode/*
 /src/minecraft/universalelectricity/*
 /src/minecraft/basiccomponents/*
+/src/minecraft/liquidmechanics/*
 CHANGELOG
 *.bat
 *.sh

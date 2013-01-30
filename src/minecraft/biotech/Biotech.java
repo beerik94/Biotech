@@ -77,6 +77,7 @@ public class Biotech
     public static final Configuration Config = new Configuration(new File(Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
 
     // Item templates
+    public static Item biotechPotionItem;
     public static bioCircuitItem bioCircuit;
     // Metadata for BioCircuit
     // 0 == unprogrammed

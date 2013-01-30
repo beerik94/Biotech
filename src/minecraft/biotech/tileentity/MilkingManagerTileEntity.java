@@ -3,6 +3,12 @@ package biotech.tileentity;
 import java.util.ArrayList;
 import java.util.List;
 
+import liquidmechanics.api.IColorCoded;
+import liquidmechanics.api.IPressure;
+import liquidmechanics.api.helpers.ColorCode;
+import liquidmechanics.api.helpers.LiquidData;
+import liquidmechanics.api.helpers.LiquidHandler;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -31,7 +37,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, ITankContainer
+public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, ITankContainer, IColorCoded, IPressure
 {
 	private int tickCounter;
 	private int scantickCounter;
@@ -149,6 +155,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
         {	        
 	        if(this.isRedstoneSignal())
 	        {
+	        	this.setMilkStored(1000);
 	        	setMachineSize();
 	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
@@ -482,16 +489,46 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	}
 
 	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) {
+	public ILiquidTank[] getTanks(ForgeDirection direction) 
+	{
 		return new ILiquidTank[] { getTank(direction, this.requiredLiquid) };
 	}
 
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
+	{
 		if ((direction == ForgeDirection.DOWN)
-				&& type.isLiquidEqual(this.requiredLiquid)) {
-			return this.internalLiquidTank;
-		}
+				&& type.isLiquidEqual(this.requiredLiquid)) { return this.internalLiquidTank; }
 		return null;
+	}
+
+	@Override
+	public ColorCode getColor() 
+	{
+		return ColorCode.WHITE;
+	}
+
+	@Override
+	public void setColor(Object obj) 
+	{
+	}
+
+	@Override
+	public int presureOutput(LiquidData type, ForgeDirection dir) 
+	{
+		if(dir == ForgeDirection.DOWN && type == LiquidHandler.milk)
+		{
+			return 100;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+
+	@Override
+	public boolean canPressureToo(LiquidData type, ForgeDirection dir) 
+	{
+		return false;
 	}
 }
