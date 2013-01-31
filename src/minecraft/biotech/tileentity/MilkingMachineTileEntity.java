@@ -136,6 +136,10 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        		scanForCows();
 	        		scantickCounter = 0;
 	        	}
+	        	if(this.getMilkStored() >= 30)
+	        	{
+	        		this.internalLiquidTank.drain(30, true);
+	        	}
 	        	if(CowList.size() != 0 && tickCounter >= 100 /*&& PipeIsConnected*/ )
 	        	{
 	        		milkCows();
@@ -143,6 +147,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        		tickCounter = 0;
 	        		this.setPowered(false);
 	        	}
+	        	System.out.println("Machine:"+ milkContentsMilliBuckets);
 	            tickCounter++;
 	            scantickCounter++;
 	        }
@@ -339,6 +344,11 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		return electricityMaxStored;
 	}
+	
+	public int getMilkStored()
+    {
+    	return this.milkContentsMilliBuckets;
+    }
 
 	@Override
 	public ColorCode getColor() 
@@ -368,7 +378,14 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public boolean canPressureToo(LiquidData type, ForgeDirection dir) 
 	{
-		return false;
+		if(dir == ForgeDirection.DOWN && type == LiquidHandler.milk)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	@Override
@@ -413,10 +430,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 
 	@Override
 	public ILiquidTank[] getTanks(ForgeDirection direction) {
-		return new ILiquidTank[] 
-				{ 
-					getTank(direction, Biotech.milkLiquid) 
-				};
+		return new ILiquidTank[] { getTank(direction, Biotech.milkLiquid) };
 	}
 
 	@Override

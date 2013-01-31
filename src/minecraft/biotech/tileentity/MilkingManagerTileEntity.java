@@ -73,7 +73,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	// Amount of milliBuckets of internal storage
 	private static final int MILK_CAPACITY_MILLIBUCKET = 3000;
 	private int milkContentsMilliBuckets = 0;
-	private ILiquidTank internalLiquidTank;
+	private ILiquidTank milkTank;
     
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
@@ -92,7 +92,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public MilkingManagerTileEntity()
 	{
 		super();
-		internalLiquidTank = new LiquidTank(Biotech.milkLiquid, MILK_CAPACITY_MILLIBUCKET, this);
+		milkTank = new LiquidTank(Biotech.milkLiquid, MILK_CAPACITY_MILLIBUCKET, this);
 		
 	}
 
@@ -148,7 +148,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
         {	        
 	        if(this.isRedstoneSignal())
 	        {
-	        	this.setMilkStored(1000);
 	        	setMachineSize();
 	        	this.setPowered(true);
 	        	if(scantickCounter >= 40)
@@ -170,7 +169,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 				if(MachineList.size() == 0)
 				{
 					i = 0;
-				}			
+				}
 	            scantickCounter++;
 	        }
 	        if(milkStored >= 30)
@@ -491,7 +490,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	{
 		if ((direction == ForgeDirection.DOWN) && type.isLiquidEqual(Biotech.milkLiquid)) 
 		{
-			return this.internalLiquidTank; 
+			return this.milkTank; 
 		}
 		return null;
 	}
@@ -510,14 +509,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public int presureOutput(LiquidData type, ForgeDirection dir) 
 	{
-		if(dir == ForgeDirection.DOWN && type == LiquidHandler.milk)
-		{
-			return -100;
-		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 
 	@Override
