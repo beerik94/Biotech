@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import liquidmechanics.api.IColorCoded;
-import liquidmechanics.api.IPressure;
+import liquidmechanics.api.liquids.IPressure;
 import liquidmechanics.api.helpers.ColorCode;
-import liquidmechanics.api.helpers.LiquidData;
-import liquidmechanics.api.helpers.LiquidHandler;
+import liquidmechanics.api.liquids.LiquidData;
+import liquidmechanics.api.liquids.LiquidHandler;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityCow;
@@ -21,6 +21,10 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -33,7 +37,7 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 
-public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure
+public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure, ITankContainer
 {
 	private int tickCounter;
 	private int scantickCounter;
@@ -60,6 +64,11 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
     //Is the machine currently powered, and did it change?
     public boolean prevIsPowered, isPowered = false;
     public boolean ReceivedRedstone = false;
+    
+ // Amount of milliBuckets of internal storage
+ 	private static final int MILK_CAPACITY_MILLIBUCKET = 300;
+ 	private int milkContentsMilliBuckets = 0;
+ 	private ILiquidTank internalLiquidTank;
 
 	private int facing;
 	private int playersUsing = 0;
@@ -76,6 +85,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public MilkingMachineTileEntity()
 	{
 		super();
+		internalLiquidTank = new LiquidTank(Biotech.milkLiquid, MILK_CAPACITY_MILLIBUCKET, this);
 	}
 
 	public void scanForCows()
@@ -104,6 +114,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		if(CowList.size() != 0)
 		{
 			CowList.remove(0);
+			this.milkContentsMilliBuckets += 30;
 		}
 	}
 
@@ -175,7 +186,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        
 	        ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
 	        
-	        if (inputTile != null)
+	        if (inputTile != null && network != null)
 	        {   
                 if (this.electricityStored < this.electricityMaxStored)
                 {
@@ -358,5 +369,62 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public boolean canPressureToo(LiquidData type, ForgeDirection dir) 
 	{
 		return false;
+	}
+
+	@Override
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
+		return 0;
+	}
+
+	@Override
+	public int fill(int tankIndex, LiquidStack resource, boolean doFill) {
+		return 0;
+	}
+
+	@Override
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
+		if (from != ForgeDirection.DOWN) {
+			return null;
+		}
+
+		if (maxDrain > this.milkContentsMilliBuckets) 
+		{
+			int output = this.milkContentsMilliBuckets;
+			if (doDrain) 
+			{
+				this.milkContentsMilliBuckets = 0;
+			}
+			return new LiquidStack(Biotech.milkLiquid.itemID, output);
+		} 
+		else 
+		{
+			if (doDrain) 
+			{
+				this.milkContentsMilliBuckets -= maxDrain;
+			}
+			return new LiquidStack(Biotech.milkLiquid.itemID, maxDrain);
+		}
+	}
+
+	@Override
+	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
+		return null;
+	}
+
+	@Override
+	public ILiquidTank[] getTanks(ForgeDirection direction) {
+		return new ILiquidTank[] 
+				{ 
+					getTank(direction, Biotech.milkLiquid) 
+				};
+	}
+
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) {
+		if ((direction == ForgeDirection.DOWN) && type.isLiquidEqual(Biotech.milkLiquid)) 
+		{
+			return this.internalLiquidTank; 
+		}
+		return null;
 	}
 }
