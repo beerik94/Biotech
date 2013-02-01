@@ -65,7 +65,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
     public boolean prevIsPowered, isPowered = false;
     public boolean ReceivedRedstone = false;
     
- // Amount of milliBuckets of internal storage
+    //Amount of milliBuckets of internal storage
  	private static final int MILK_CAPACITY_MILLIBUCKET = 300;
  	private int milkContentsMilliBuckets = 0;
  	private ILiquidTank internalLiquidTank;
@@ -140,7 +140,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        	{
 	        		this.internalLiquidTank.drain(30, true);
 	        	}
-	        	if(CowList.size() != 0 && tickCounter >= 100 /*&& PipeIsConnected*/ )
+	        	if(CowList.size() != 0 && tickCounter >= 100)
 	        	{
 	        		milkCows();
 	    			isMilking = true;
@@ -243,7 +243,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
     public void readFromNBT(NBTTagCompound tagCompound)
     {
         super.readFromNBT(tagCompound);
-        //this.progressTime = tagCompound.getShort("Progress");
         
         this.facing = tagCompound.getShort("facing");
         this.isPowered = tagCompound.getBoolean("isPowered");
@@ -266,7 +265,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
     public void writeToNBT(NBTTagCompound tagCompound)
     {
         super.writeToNBT(tagCompound);
-        //tagCompound.setShort("Progress", (short)this.progressTime);
 
         tagCompound.setShort("facing", (short)this.facing);
         tagCompound.setBoolean("isPowered", this.isPowered);
@@ -285,7 +283,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                 itemList.appendTag(tag);
             }
         }
-
         tagCompound.setTag("Inventory", itemList);
     }
 

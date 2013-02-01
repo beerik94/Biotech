@@ -23,6 +23,7 @@ import biotech.common.CommonProxy;
 import biotech.item.bioCircuitItem;
 import biotech.item.biotechItemBlock;
 import biotech.tileentity.BasicMachineTileEntity;
+import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.MilkingMachineTileEntity;
 import biotech.tileentity.MilkingManagerTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
@@ -110,6 +111,8 @@ public class Biotech
 	//5 == Miner
 	//6 == Filler
     //7 == Milking Manager
+    //8 == Milking Machine
+    //9 == Bio Refinery
     
     // Liquid Stack Milk
     public static LiquidStack milkLiquid;
@@ -202,14 +205,11 @@ public class Biotech
 		 * Register the TileEntity's
 		 */
         GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
-        
         GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
-        
         GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
-        
         GameRegistry.registerTileEntity(MilkingManagerTileEntity.class, "MilkingManagerTileEntity");
-        
         GameRegistry.registerTileEntity(MilkingMachineTileEntity.class, "MilkingMachineTileEntity");
+        GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
         
         /**
          * Register Milk as a Liquid
@@ -225,13 +225,11 @@ public class Biotech
         GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
         GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
         
-        //GameRegistry.registerBlock(biotechBlockMachine, "BiotechMachine");
         // Registration
         
 		/**
 		 * Handle localization and add names for all items
 		 */
-        //LanguageRegistry.addName(biotechBlockMachine, "Biotech Machine");
         
         //Blocks
 		LanguageRegistry.addName(milkMoving, "Milk(Flowing)");
@@ -259,6 +257,7 @@ public class Biotech
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Milking Manager");
         LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.8.name", "Milking Machine");
+        LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.9.name", "Bio Refinery");
         
         //CreativeTab
         LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
