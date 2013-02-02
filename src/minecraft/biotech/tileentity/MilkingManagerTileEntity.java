@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import liquidmechanics.api.IColorCoded;
-import liquidmechanics.api.liquids.IPressure;
 import liquidmechanics.api.helpers.ColorCode;
-import liquidmechanics.api.liquids.LiquidData;
-import liquidmechanics.api.liquids.LiquidHandler;
+
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -37,7 +35,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, ITankContainer, IColorCoded, IPressure
+public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, ITankContainer, IColorCoded
 {
 	private int tickCounter;
 	private int scantickCounter;
@@ -71,6 +69,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public int bucketTime = 0;
 	
 	// Amount of milliBuckets of internal storage
+	private ColorCode color = ColorCode.WHITE;
 	private static final int MILK_CAPACITY_MILLIBUCKET = 3000;
 	private int milkContentsMilliBuckets = 0;
 	private ILiquidTank milkTank;
@@ -433,31 +432,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		if(from == ForgeDirection.DOWN && resource == Biotech.milkLiquid)
-		{
-			int availibleCapactity = MILK_CAPACITY_MILLIBUCKET - milkContentsMilliBuckets;
-			int inputAmount = resource.amount;
-			if (inputAmount <= availibleCapactity) 
-			{
-				if (doFill) 
-				{
-					this.milkContentsMilliBuckets += inputAmount;
-				}
-				return inputAmount;
-			} 
-			else 
-			{
-				if (doFill) 
-				{
-					this.milkContentsMilliBuckets = MILK_CAPACITY_MILLIBUCKET;
-				}
-				return availibleCapactity;
-			}
-		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 
 	@Override
@@ -468,7 +443,27 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 
 	@Override
 	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		return null;
+		if (from != ForgeDirection.DOWN) {
+			return null;
+		}
+
+		if (maxDrain > this.milkContentsMilliBuckets) 
+		{
+			int output = this.milkContentsMilliBuckets;
+			if (doDrain) 
+			{
+				this.milkContentsMilliBuckets = 0;
+			}
+			return new LiquidStack(Biotech.milkLiquid.itemID, output);
+		} 
+		else 
+		{
+			if (doDrain) 
+			{
+				this.milkContentsMilliBuckets -= maxDrain;
+			}
+			return new LiquidStack(Biotech.milkLiquid.itemID, maxDrain);
+		}
 	}
 
 	@Override
@@ -504,17 +499,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public void setColor(Object obj) 
 	{
+		this.color = ColorCode.WHITE;
 	}
 
-	@Override
-	public int presureOutput(LiquidData type, ForgeDirection dir) 
-	{
-		return 0;
-	}
-
-	@Override
-	public boolean canPressureToo(LiquidData type, ForgeDirection dir) 
-	{
-		return false;
-	}
 }
