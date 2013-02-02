@@ -2,6 +2,8 @@ package biotech.tileentity;
 
 import java.util.EnumSet;
 
+import liquidmechanics.api.helpers.ColorCode;
+
 import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -17,6 +19,8 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
@@ -43,6 +47,12 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 	//How much power is stored?
     private double electricityStored  = 0;
     private double electricityMaxStored  = 5000;
+    
+    //Amount of milliBuckets of internal storage
+    private ColorCode color = ColorCode.WHITE;
+ 	private static final int milkMaxStored = 3000;
+ 	private int milkStored = 0;
+ 	private ILiquidTank milkBioTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
 	
 	private int facing;
 	private int playersUsing = 0;
@@ -149,6 +159,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
         this.facing = tagCompound.getShort("facing");
         this.isPowered = tagCompound.getBoolean("isPowered");
         this.electricityStored = tagCompound.getDouble("electricityStored");
+        this.milkStored = tagCompound.getInteger("milkStored");
         NBTTagList tagList = tagCompound.getTagList("Inventory");
 
         for (int i = 0; i < tagList.tagCount(); i++)
@@ -243,5 +254,20 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 	{
 		return electricityMaxStored;
 	}
+	
+	public int getMilkStored()
+    {
+    	return this.milkStored;
+    }
+    
+    public void setMilkStored(int amount)
+	{
+		this.milkStored = amount;
+	}
+    
+    public int getMaxMilk()
+    {
+    	return this.milkStored;
+    }
 	
 }

@@ -9,7 +9,6 @@ import liquidmechanics.api.helpers.ColorCode;
 import liquidmechanics.api.helpers.LiquidData;
 import liquidmechanics.api.helpers.LiquidHandler;
 
-
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,9 +68,9 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
     
     //Amount of milliBuckets of internal storage
     private ColorCode color = ColorCode.WHITE;
- 	private static final int MILK_CAPACITY_MILLIBUCKET = 300;
- 	private int milkContentsMilliBuckets = 0;
- 	private ILiquidTank milkSmallTank = new LiquidTank(Biotech.milkLiquid, MILK_CAPACITY_MILLIBUCKET, this);
+ 	private static final int milkMaxStored = 3000;
+ 	private int milkStored = 0;
+ 	private ILiquidTank milkSmallTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
 
 	private int facing;
 	private int playersUsing = 0;
@@ -116,7 +115,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		if(CowList.size() != 0)
 		{
 			CowList.remove(0);
-			this.milkContentsMilliBuckets += 30;
+			this.milkStored += 30;
 		}
 	}
 
@@ -140,7 +139,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        	}
 	        	if(this.getMilkStored() >= 30)
 	        	{
-	        		this.milkSmallTank.drain(30, true);
+	        		this.milkSmallTank.drain(30, false);
 	        	}
 	        	if(CowList.size() != 0 && tickCounter >= 100)
 	        	{
@@ -149,14 +148,9 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	        		tickCounter = 0;
 	        		this.setPowered(false);
 	        	}
-	        	System.out.println("Machine:"+ milkContentsMilliBuckets);
+	        	System.out.println("Machine:"+ milkStored);
 	            tickCounter++;
 	            scantickCounter++;
-	            LiquidStack stack = Biotech.milkLiquid;
-	            if (this.milkSmallTank.getLiquid() != null)
-                {
-                    stack = this.milkSmallTank.getLiquid();
-                }
 	        }
 	        if(tickCounter >= 150)
 	        {
@@ -254,7 +248,9 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         this.facing = tagCompound.getShort("facing");
         this.isPowered = tagCompound.getBoolean("isPowered");
         this.electricityStored = tagCompound.getDouble("electricityStored");
+        this.milkStored = tagCompound.getInteger("milkStored");
         LiquidStack liquid = Biotech.milkLiquid;
+        liquid.readFromNBT(tagCompound.getCompoundTag("milkSmallstored"));
         ((LiquidTank) milkSmallTank).setLiquid(liquid);
         
         NBTTagList tagList = tagCompound.getTagList("Inventory");
@@ -278,9 +274,10 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         tagCompound.setShort("facing", (short)this.facing);
         tagCompound.setBoolean("isPowered", this.isPowered);
         tagCompound.setDouble("electricityStored", this.electricityStored);
+        tagCompound.setInteger("milkStored", this.milkStored);
         if (milkSmallTank.getLiquid() != null)
         {
-            tagCompound.setTag("stored", milkSmallTank.getLiquid().writeToNBT(new NBTTagCompound()));
+            tagCompound.setTag("milkSmallstored", milkSmallTank.getLiquid().writeToNBT(new NBTTagCompound()));
         }
         
         NBTTagList itemList = new NBTTagList();
@@ -316,7 +313,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
 				this.ReceivedRedstone = dataStream.readBoolean();
-				((LiquidTank) this.milkSmallTank).setLiquid(new LiquidStack(dataStream.readInt(), dataStream.readInt(), dataStream.readInt()));
+				this.milkStored = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -328,7 +325,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.ReceivedRedstone);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.ReceivedRedstone, this.milkStored);
 	}
 	
 	public int getFacing() 
@@ -358,7 +355,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	
 	public int getMilkStored()
     {
-    	return this.milkContentsMilliBuckets;
+    	return this.milkStored;
     }
 
 	@Override
@@ -397,31 +394,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) {
-		if(from == ForgeDirection.DOWN && resource == Biotech.milkLiquid)
-		{
-			int availibleCapactity = MILK_CAPACITY_MILLIBUCKET - milkContentsMilliBuckets;
-			int inputAmount = resource.amount;
-			if (inputAmount <= availibleCapactity) 
-			{
-				if (doFill) 
-				{
-					this.milkContentsMilliBuckets += inputAmount;
-				}
-				return inputAmount;
-			} 
-			else 
-			{
-				if (doFill) 
-				{
-					this.milkContentsMilliBuckets = MILK_CAPACITY_MILLIBUCKET;
-				}
-				return availibleCapactity;
-			}
-		}
-		else
-		{
-			return 0;
-		}
+		return 0;
 	}
 
 	@Override
@@ -431,7 +404,27 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 
 	@Override
 	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		return null;
+		if (from != ForgeDirection.DOWN) {
+			return null;
+		}
+
+		if (maxDrain > this.milkStored) 
+		{
+			int output = this.milkStored;
+			if (doDrain) 
+			{
+				this.milkStored = 0;
+			}
+			return new LiquidStack(Biotech.milkLiquid.itemID, output);
+		} 
+		else 
+		{
+			if (doDrain) 
+			{
+				this.milkStored -= maxDrain;
+			}
+			return new LiquidStack(Biotech.milkLiquid.itemID, maxDrain);
+		}
 	}
 
 	@Override

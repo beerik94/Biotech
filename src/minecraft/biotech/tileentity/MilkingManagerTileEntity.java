@@ -70,8 +70,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	
 	// Amount of milliBuckets of internal storage
 	private ColorCode color = ColorCode.WHITE;
-	private static final int MILK_CAPACITY_MILLIBUCKET = 3000;
-	private int milkContentsMilliBuckets = 0;
 	private ILiquidTank milkTank;
     
     //Is the machine currently powered, and did it change?
@@ -91,7 +89,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public MilkingManagerTileEntity()
 	{
 		super();
-		milkTank = new LiquidTank(Biotech.milkLiquid, MILK_CAPACITY_MILLIBUCKET, this);
+		milkTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
 		
 	}
 
@@ -168,6 +166,10 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 				if(MachineList.size() == 0)
 				{
 					i = 0;
+				}
+				if(this.getMilkStored() < this.getMaxMilk())
+				{
+					this.milkTank.fill(Biotech.milkLiquid, false);
 				}
 	            scantickCounter++;
 	        }
@@ -391,17 +393,17 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     
     public int getMilkStored()
     {
-    	return this.milkContentsMilliBuckets;
+    	return this.milkStored;
     }
     
     public void setMilkStored(int amount)
 	{
-		this.milkContentsMilliBuckets = amount;
+		this.milkStored = amount;
 	}
     
     public int getMaxMilk()
     {
-    	return this.MILK_CAPACITY_MILLIBUCKET;
+    	return this.milkMaxStored;
     }
     
     public double getElectricityStored() 
@@ -432,7 +434,31 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
 	{
-		return 0;
+		if(from == ForgeDirection.DOWN && resource == Biotech.milkLiquid)
+		{
+			int availibleCapactity = milkMaxStored - milkStored;
+			int inputAmount = resource.amount;
+			if (inputAmount <= availibleCapactity) 
+			{
+				if (doFill) 
+				{
+					this.milkStored += inputAmount;
+				}
+				return inputAmount;
+			} 
+			else 
+			{
+				if (doFill) 
+				{
+					this.milkStored = milkMaxStored;
+				}
+				return availibleCapactity;
+			}
+		}
+		else
+		{
+			return 0;
+		}
 	}
 
 	@Override
@@ -443,27 +469,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 
 	@Override
 	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		if (from != ForgeDirection.DOWN) {
-			return null;
-		}
-
-		if (maxDrain > this.milkContentsMilliBuckets) 
-		{
-			int output = this.milkContentsMilliBuckets;
-			if (doDrain) 
-			{
-				this.milkContentsMilliBuckets = 0;
-			}
-			return new LiquidStack(Biotech.milkLiquid.itemID, output);
-		} 
-		else 
-		{
-			if (doDrain) 
-			{
-				this.milkContentsMilliBuckets -= maxDrain;
-			}
-			return new LiquidStack(Biotech.milkLiquid.itemID, maxDrain);
-		}
+		return null;
 	}
 
 	@Override

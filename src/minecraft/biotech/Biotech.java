@@ -152,8 +152,8 @@ public class Biotech
         this.bioCircuit = new bioCircuitItem(Config.getItem("biotech.BioCircuit", defaultBioItemId).getInt());
         
         this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-        this.milkMoving = new MilkFlowingBlock(Config.getBlock("biotech.MilkFlowing", defaultBiotechBlockId + 2).getInt(), 4);
-        this.milkStill = new MilkStillBlock(Config.getBlock("biotech.MilkStill", defaultBiotechBlockId + 3).getInt(), 4);
+        this.milkMoving = new MilkFlowingBlock(Config.getBlock("biotech.MilkFlowing", defaultBiotechBlockId + 1).getInt(), 4);
+        this.milkStill = new MilkStillBlock(Config.getBlock("biotech.MilkStill", defaultBiotechBlockId + 2).getInt(), 4);
         
 		/**
 		 * Define the subitems
