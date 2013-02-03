@@ -5,8 +5,6 @@ import java.util.List;
 
 import liquidmechanics.api.IColorCoded;
 import liquidmechanics.api.helpers.ColorCode;
-
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -21,7 +19,6 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
@@ -39,80 +36,80 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 {
 	private int tickCounter;
 	private int scantickCounter;
-	
+
 	private List<MilkingMachineTileEntity> MachineList = new ArrayList<MilkingMachineTileEntity>();
 	private int MachineListSize = 0;
-	
+
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 250;
 	public static final double WATTS_PER_IDLE_TICK = 25;
-	
+
 	// Time idle after a tick
 	public static final int IDLE_TIME_AFTER_ACTION = 60;
 	public static final int IDLE_TIME_NO_ACTION = 30;
-	
+
 	// Watts being used per pump action
 	public static final double WATTS_PER_PUMP_ACTION = 50;
-	
-	//How much power is stored?
-    private double electricityStored  = 0;
-    private double electricityMaxStored  = 5000;
-	
-    //How much milk is stored?
-    private int milkStored = 0;
-    private int milkMaxStored = 3000;
-    private int cowMilk = 10;
-    
-    private boolean isMilking = false;
-    public boolean bucketIn = false;
+
+	// How much power is stored?
+	private double electricityStored = 0;
+	private double electricityMaxStored = 5000;
+
+	// How much milk is stored?
+	private int milkStored = 0;
+	private int milkMaxStored = 3000;
+	private int cowMilk = 10;
+
+	private boolean isMilking = false;
+	public boolean bucketIn = false;
 	public int bucketTimeMax = 100;
 	public int bucketTime = 0;
-	
+
 	// Amount of milliBuckets of internal storage
 	private ColorCode color = ColorCode.WHITE;
 	private ILiquidTank milkTank;
-    
-    //Is the machine currently powered, and did it change?
-    public boolean prevIsPowered, isPowered = false;
+
+	// Is the machine currently powered, and did it change?
+	public boolean prevIsPowered, isPowered = false;
 
 	private int facing;
 	private int playersUsing = 0;
 	private int idleTicks;
-	
-    public int currentX = 0;
-    public int currentZ = 0;
-    public int currentY = 0;
-	
-    public int minX, maxX;
-    public int minZ, maxZ;
-	
+
+	public int currentX = 0;
+	public int currentZ = 0;
+	public int currentY = 0;
+
+	public int minX, maxX;
+	public int minZ, maxZ;
+
 	public MilkingManagerTileEntity()
 	{
 		super();
 		milkTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
-		
+
 	}
 
 	public void scanForMachines()
 	{
-		int xminrange = xCoord- getScanRange();
-		int xmaxrange = xCoord+ getScanRange()+1;
-		int yminrange = yCoord- getScanRange();
-		int ymaxrange = yCoord+ getScanRange()+1;
-		int zminrange = zCoord- getScanRange();
-		int zmaxrange = zCoord+ getScanRange()+1;
+		int xminrange = xCoord - getScanRange();
+		int xmaxrange = xCoord + getScanRange() + 1;
+		int yminrange = yCoord - getScanRange();
+		int ymaxrange = yCoord + getScanRange() + 1;
+		int zminrange = zCoord - getScanRange();
+		int zmaxrange = zCoord + getScanRange() + 1;
 
-		for(int xx = xminrange; xx <= xmaxrange; xx++)
+		for (int xx = xminrange; xx <= xmaxrange; xx++)
 		{
-			for(int yy = yminrange; yy <= ymaxrange; yy++)
+			for (int yy = yminrange; yy <= ymaxrange; yy++)
 			{
-				for(int zz = zminrange; zz <= zmaxrange; zz++)
+				for (int zz = zminrange; zz <= zmaxrange; zz++)
 				{
 					TileEntity tileEntity = worldObj.getBlockTileEntity(xx, yy, zz);
-					
-					if(tileEntity instanceof MilkingMachineTileEntity)
+
+					if (tileEntity instanceof MilkingMachineTileEntity)
 					{
-						if(MachineList.contains((MilkingMachineTileEntity) tileEntity))
+						if (MachineList.contains((MilkingMachineTileEntity) tileEntity))
 						{
 							return;
 						}
@@ -125,153 +122,149 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 			}
 		}
 	}
-	
-	public int getScanRange() 
+
+	public int getScanRange()
 	{
-		if (getStackInSlot(1) != null) 
+		if (getStackInSlot(1) != null)
 		{
-			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade))
-			{
-				return (getStackInSlot(1).stackSize + 5);
-			}
+			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade)) { return (getStackInSlot(1).stackSize + 5); }
 		}
 		return 3;
 	}
-	
+
 	@Override
-    public void updateEntity()
-    {
-        if (!worldObj.isRemote)
-        {	        
-	        if(this.isRedstoneSignal())
-	        {
-	        	setMachineSize();
-	        	this.setPowered(true);
-	        	if(scantickCounter >= 40)
-	        	{
-	        		scanForMachines();
-	        		scantickCounter = 0;
-	        	}
-	        	int i = 0;
-				while(i < MachineList.size())
+	public void updateEntity()
+	{
+		if (!worldObj.isRemote)
+		{
+			if (this.isRedstoneSignal())
+			{
+				setMachineSize();
+				this.setPowered(true);
+				if (scantickCounter >= 40)
+				{
+					scanForMachines();
+					scantickCounter = 0;
+				}
+				int i = 0;
+				while (i < MachineList.size())
 				{
 					MilkingMachineTileEntity machine = MachineList.get(i);
 					machine.ReceivedRedstone = true;
-					if(MachineList.get(i).isInvalid())
+					if (MachineList.get(i).isInvalid())
 					{
 						MachineList.remove(i);
 					}
 					i++;
 				}
-				if(MachineList.size() == 0)
+				if (MachineList.size() == 0)
 				{
 					i = 0;
 				}
-				if(this.getMilkStored() < this.getMaxMilk())
+				if (this.getMilkStored() < this.getMaxMilk())
 				{
 					this.milkTank.fill(Biotech.milkLiquid, false);
 				}
-	            scantickCounter++;
-	        }
-	        if(milkStored >= 30)
-	        {
-	        	if(inventory[2] != null && inventory[3] == null)
-	        	{
-	        		
-	        		this.bucketIn = true;
-	        		if(bucketTime >= bucketTimeMax)
-	        		{
-	        			if(inventory[2].stackSize >= 2)
-	        			{
-	        				inventory[2].stackSize -= 1;
-	        			}
-	        			else
-	        			{
-	        				inventory[2] = null;
-	        			}
-	        			ItemStack bMilk = new ItemStack(Item.bucketMilk);
-	        			inventory[3] = (bMilk);
-	        			milkStored -= 30;
-	        			bucketTime = 0;
-	        			this.bucketIn = false;
-	        		}
-	        	}
-	        }
-	        if(bucketTime < bucketTimeMax)
-    		{
-    			bucketTime++;
-    		}
-	        if(milkStored >= milkMaxStored)
-	        {
-	        	milkStored = milkMaxStored;
-	        }
-	        if(tickCounter >= 150)
-	        {
-	        	tickCounter = 0;
-	        }
-	        if(scantickCounter >= 100)
-	        {
-	        	tickCounter = 0;
-	        }
-	        if (this.ticks % 3 == 0 && this.playersUsing > 0)
+				scantickCounter++;
+			}
+			if (milkStored >= 30)
+			{
+				if (inventory[2] != null && inventory[3] == null)
+				{
+
+					this.bucketIn = true;
+					if (bucketTime >= bucketTimeMax)
+					{
+						if (inventory[2].stackSize >= 2)
+						{
+							inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							inventory[2] = null;
+						}
+						ItemStack bMilk = new ItemStack(Item.bucketMilk);
+						inventory[3] = (bMilk);
+						milkStored -= 30;
+						bucketTime = 0;
+						this.bucketIn = false;
+					}
+				}
+			}
+			if (bucketTime < bucketTimeMax)
+			{
+				bucketTime++;
+			}
+			if (milkStored >= milkMaxStored)
+			{
+				milkStored = milkMaxStored;
+			}
+			if (tickCounter >= 150)
+			{
+				tickCounter = 0;
+			}
+			if (scantickCounter >= 100)
+			{
+				tickCounter = 0;
+			}
+			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-        
-	        int front = 0; 
-	    	
-	    	switch(this.getFacing())
-	    	{
-	    	case 2:
-	    		front = 3;
-	    		break;
-	    	case 3:
-	    		front = 2;
-	    		break;
-	    	case 4:
-	    		front = 5;
-	    		break;
-	    	case 5:
-	    		front = 4;
-	    		break;
-	    	default:
-	    		front = 3;
-	   			break;
-	    	}
-	    	
-	    	ForgeDirection direction = ForgeDirection.getOrientation(front);
-	
-	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
-	        
-	        ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
-	        
-	        if (inputTile != null && network != null)
-	        {   
-                if (this.electricityStored < this.electricityMaxStored)
-                {
-                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
-                	
-                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
 
-                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
-                    
-                    if (UniversalElectricity.isVoltageSensitive)
-    				{
-                    	ElectricityPack electricityPack = network.consumeElectricity(this);
-    					if (electricityPack.voltage > this.getVoltage())
-    					{
-    						this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
-    					}
-    				}
-                    
-                }
-				else if(electricityStored >= electricityMaxStored)
-                {
-                    network.stopRequesting(this);
-                }
-	        }
-	       
-	        
+			int front = 0;
+
+			switch (this.getFacing())
+			{
+				case 2:
+					front = 3;
+					break;
+				case 3:
+					front = 2;
+					break;
+				case 4:
+					front = 5;
+					break;
+				case 5:
+					front = 4;
+					break;
+				default:
+					front = 3;
+					break;
+			}
+
+			ForgeDirection direction = ForgeDirection.getOrientation(front);
+
+			TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
+
+			ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
+
+			if (inputTile != null && network != null)
+			{
+				if (this.electricityStored < this.electricityMaxStored)
+				{
+					double electricityNeeded = this.electricityMaxStored - this.electricityStored;
+
+					network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+
+					this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
+
+					if (UniversalElectricity.isVoltageSensitive)
+					{
+						ElectricityPack electricityPack = network.consumeElectricity(this);
+						if (electricityPack.voltage > this.getVoltage())
+						{
+							this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
+						}
+					}
+
+				}
+				else if (electricityStored >= electricityMaxStored)
+				{
+					network.stopRequesting(this);
+				}
+			}
+
 			if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
 			{
 				if (this.inventory[0].getItem() instanceof IItemElectric)
@@ -285,78 +278,76 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 					}
 				}
 			}
-        }
-        super.updateEntity();
-    }
-	
-	public boolean isRedstoneSignal(){
-		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-		{
-			return true;
 		}
+		super.updateEntity();
+	}
+
+	public boolean isRedstoneSignal()
+	{
+		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) { return true; }
 		return false;
 	}
 
 	@Override
-    public void readFromNBT(NBTTagCompound tagCompound)
-    {
-        super.readFromNBT(tagCompound);
-        //this.progressTime = tagCompound.getShort("Progress");
-        
-        this.facing = tagCompound.getShort("facing");
-        this.isPowered = tagCompound.getBoolean("isPowered");
-        this.milkStored = tagCompound.getInteger("milkStored");  
-        this.electricityStored = tagCompound.getDouble("electricityStored");
-        NBTTagList tagList = tagCompound.getTagList("Inventory");
+	public void readFromNBT(NBTTagCompound tagCompound)
+	{
+		super.readFromNBT(tagCompound);
+		// this.progressTime = tagCompound.getShort("Progress");
 
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-            byte slot = tag.getByte("Slot");
+		this.facing = tagCompound.getShort("facing");
+		this.isPowered = tagCompound.getBoolean("isPowered");
+		this.milkStored = tagCompound.getInteger("milkStored");
+		this.electricityStored = tagCompound.getDouble("electricityStored");
+		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
-            if (slot >= 0 && slot < inventory.length)
-            {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-            }
-        }
-    }
+		for (int i = 0; i < tagList.tagCount(); i++)
+		{
+			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
+			byte slot = tag.getByte("Slot");
 
-    @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
-    {
-        super.writeToNBT(tagCompound);
-        //tagCompound.setShort("Progress", (short)this.progressTime);
+			if (slot >= 0 && slot < inventory.length)
+			{
+				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+			}
+		}
+	}
 
-        tagCompound.setShort("facing", (short)this.facing);
-        tagCompound.setBoolean("isPowered", this.isPowered);
-        tagCompound.setInteger("milkStored", (int)this.milkStored);
-        tagCompound.setDouble("electricityStored", this.electricityStored);
-        NBTTagList itemList = new NBTTagList();
+	@Override
+	public void writeToNBT(NBTTagCompound tagCompound)
+	{
+		super.writeToNBT(tagCompound);
+		// tagCompound.setShort("Progress", (short)this.progressTime);
 
-        for (int i = 0; i < inventory.length; i++)
-        {
-            ItemStack stack = inventory[i];
+		tagCompound.setShort("facing", (short) this.facing);
+		tagCompound.setBoolean("isPowered", this.isPowered);
+		tagCompound.setInteger("milkStored", (int) this.milkStored);
+		tagCompound.setDouble("electricityStored", this.electricityStored);
+		NBTTagList itemList = new NBTTagList();
 
-            if (stack != null)
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                stack.writeToNBT(tag);
-                itemList.appendTag(tag);
-            }
-        }
+		for (int i = 0; i < inventory.length; i++)
+		{
+			ItemStack stack = inventory[i];
 
-        tagCompound.setTag("Inventory", itemList);
-    }
+			if (stack != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("Slot", (byte) i);
+				stack.writeToNBT(tag);
+				itemList.appendTag(tag);
+			}
+		}
 
-    @Override
-    public String getInvName()
-    {
-        return "Milking Manager";
-    }
-    
-    @Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
+		tagCompound.setTag("Inventory", itemList);
+	}
+
+	@Override
+	public String getInvName()
+	{
+		return "Milking Manager";
+	}
+
+	@Override
+	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
 	{
 		try
 		{
@@ -374,39 +365,39 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public Packet getDescriptionPacket()
 	{
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored, this.electricityStored, this.MachineListSize);
 	}
-	
-	public int getFacing() 
+
+	public int getFacing()
 	{
 		return facing;
 	}
 
-	public void setFacing(int facing) 
+	public void setFacing(int facing)
 	{
 		this.facing = facing;
 	}
-    
-    public int getMilkStored()
-    {
-    	return this.milkStored;
-    }
-    
-    public void setMilkStored(int amount)
+
+	public int getMilkStored()
+	{
+		return this.milkStored;
+	}
+
+	public void setMilkStored(int amount)
 	{
 		this.milkStored = amount;
 	}
-    
-    public int getMaxMilk()
-    {
-    	return this.milkMaxStored;
-    }
-    
-    public double getElectricityStored() 
+
+	public int getMaxMilk()
+	{
+		return this.milkMaxStored;
+	}
+
+	public double getElectricityStored()
 	{
 		return electricityStored;
 	}
@@ -414,41 +405,41 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public void setElectricityStored(double joules)
 	{
 		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
-	}	
-	
-	public double getMaxElectricity() 
+	}
+
+	public double getMaxElectricity()
 	{
 		return electricityMaxStored;
 	}
-	
+
 	public void setMachineSize()
 	{
 		MachineListSize = MachineList.size();
 	}
-	
+
 	public int getMachineSize()
 	{
 		return MachineListSize;
 	}
 
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill) 
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
 	{
-		if(from == ForgeDirection.DOWN && resource == Biotech.milkLiquid)
+		if (from == ForgeDirection.DOWN && resource == Biotech.milkLiquid)
 		{
 			int availibleCapactity = milkMaxStored - milkStored;
 			int inputAmount = resource.amount;
-			if (inputAmount <= availibleCapactity) 
+			if (inputAmount <= availibleCapactity)
 			{
-				if (doFill) 
+				if (doFill)
 				{
 					this.milkStored += inputAmount;
 				}
 				return inputAmount;
-			} 
-			else 
+			}
+			else
 			{
-				if (doFill) 
+				if (doFill)
 				{
 					this.milkStored = milkMaxStored;
 				}
@@ -462,48 +453,44 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	}
 
 	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill) 
+	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
 	{
 		return 0;
 	}
 
 	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain) {
-		return null;
-	}
-
-	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction) 
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
 	{
-		return new ILiquidTank[] 
-			{ 
-				getTank(direction, Biotech.milkLiquid) 
-			};
-	}
-
-	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type) 
-	{
-		if ((direction == ForgeDirection.DOWN) && type.isLiquidEqual(Biotech.milkLiquid)) 
-		{
-			return this.milkTank; 
-		}
 		return null;
 	}
 
 	@Override
-	public ColorCode getColor() 
+	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	{
+		return null;
+	}
+
+	@Override
+	public ILiquidTank[] getTanks(ForgeDirection direction)
+	{
+		return new ILiquidTank[] { getTank(direction, Biotech.milkLiquid) };
+	}
+
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	{
+		if ((direction == ForgeDirection.DOWN) && type.isLiquidEqual(Biotech.milkLiquid)) { return this.milkTank; }
+		return null;
+	}
+
+	@Override
+	public ColorCode getColor()
 	{
 		return ColorCode.WHITE;
 	}
 
 	@Override
-	public void setColor(Object obj) 
+	public void setColor(Object obj)
 	{
 		this.color = ColorCode.WHITE;
 	}

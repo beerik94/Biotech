@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import liquidmechanics.api.IColorCoded;
+import liquidmechanics.api.IReadOut;
 import liquidmechanics.api.helpers.ColorCode;
 import liquidmechanics.api.liquids.IPressure;
 import liquidmechanics.api.liquids.LiquidData;
@@ -33,7 +34,7 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 
-public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure
+public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure,IReadOut
 {
         /*
          * Delete this after reading it LiQuid
@@ -394,7 +395,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         public int presureOutput(LiquidData type, ForgeDirection dir)
         {
                 // you can only output pressure for milk
-                if (type == color.getLiquidData()) return type.getPressure();
+                if (type.getColor() == color){ return type.getPressure();}
                
                 return 0;
         }
@@ -402,9 +403,15 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         @Override
         public boolean canPressureToo(LiquidData type, ForgeDirection dir)
         {
-                //might have to try Down.getOpposite() if that does work, still not good with forgeDirections ;p
-                if (type == color.getLiquidData() && dir == ForgeDirection.DOWN) return true;
+                //Have to use the opposite dirrection that you want
+                if (type.getColor() == color && dir == ForgeDirection.DOWN.getOpposite()){ return true;}
                
                 return false;
         }
+
+		@Override
+		public String getMeterReading(EntityPlayer user, ForgeDirection side)
+		{
+			return "Milk:"+this.milkStored;
+		}
 }
