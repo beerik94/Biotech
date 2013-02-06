@@ -3,10 +3,10 @@
   "name": "Biotech",
   "description": "A Universal Electricity Agriculture mod",
   "logoFile": "/atomiccraft.png",
-  "url": "https://github.com/calclavia/Biotech/",
+  "url": "https://github.com/Wiebbe/Biotech/",
   "updateUrl": "",
-  "authors": ["kaendfinger", "gigaherz", "wiebbe"],
-  "credits": "Made by gigaherz, taken over by kaendfinger and wiebbe",
+  "authors": ["kaendfinger", "gigaherz", "wiebbe", "liquid", "darkguardsman"],
+  "credits": "Made by gigaherz, taken over by wiebbe, liquid and darkguardsman",
   "parent": "",
   "screenshots": [],
   "dependencies": []
