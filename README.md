@@ -2,7 +2,7 @@ Biotech Mod
 =============
 
 ## Brief
-The Biotech mod is a Minecraft mod focused on brining advanced agriculture systems and contraptions into the game. The mod focuses on the automation of agriculture such as farms, cattles and everything related to food. In addition, the mod will also provide genetic manipulations in higher tiers. Runs off Universal Electricity.
+The Biotech mod is a Minecraft mod focused on bringing advanced agriculture systems and contraptions into the game. The mod focuses on the automation of agriculture, and food production. In addition, the mod will also provide genetic manipulations in higher tiers. Runs off Universal Electricity.
 
 ## Authors
 
