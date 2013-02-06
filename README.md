@@ -10,6 +10,7 @@ The Biotech mod is a Minecraft mod focused on bringing advanced agriculture syst
 * Gigaherz
 * Wiebbe
 * LiQuid
+* Darkguardsman
 
 ## Links
 Jenkins http://ken.wingedboot.com:8080/job/Biotech/
