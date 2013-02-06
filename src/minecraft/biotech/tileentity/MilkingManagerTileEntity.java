@@ -219,7 +219,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	}
 	
 	/**
-     * Use this to just fill the manager from a pipe or tank connected to the bottom side
+     * Use this to fill from a pipe or tank connected to the bottom side
      */
     public void fillFrom()
     {
