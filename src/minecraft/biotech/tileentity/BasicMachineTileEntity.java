@@ -15,8 +15,10 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
+import universalelectricity.core.electricity.ElectricityPack;
 import universalelectricity.core.implement.IConductor;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.core.vector.Vector3;
@@ -255,81 +257,88 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver implem
     {
         super.updateEntity();
         
-        //System.out.println("Remote: " + worldObj.isRemote + " playersUsing: " + this.playersUsing);
-        
 		if(!worldObj.isRemote)
 		{
-	        int front = 0; 
-	    	
-	    	switch(this.getFacing())
-	    	{
-	    	case 2:
-	    		front = 3;
-	    		break;
-	    	case 3:
-	    		front = 2;
-	    		break;
-	    	case 4:
-	    		front = 5;
-	    		break;
-	    	case 5:
-	    		front = 4;
-	    		break;
-	    	default:
-	    		front = 3;
-	   			break;
-	    	}
-
-	    	ForgeDirection direction = ForgeDirection.getOrientation(front);
-
-	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
-	        
-		        if (inputTile != null)
-		        {
-		            if (inputTile instanceof IConductor)
-		            {
-		                IConductor conductor = (IConductor) inputTile;
-		                ElectricityNetwork network = conductor.getNetwork();
-		
-		                if (this.electricityStored < this.electricityMaxStored)
-		                {
-		                	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
-		                	
-		                    network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-		
-		                    this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
-		                    
-		                }
-						else if(electricityStored >= electricityMaxStored)
-		                {
-		                    network.stopRequesting(this);
-		                }
-		            }
-		        }
+	        this.chargeUp();
 		        
-				if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
-				{
-					if (this.inventory[0].getItem() instanceof IItemElectric)
-					{
-						IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
-
-						if (electricItem.canProduceElectricity())
-						{
-							double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
-							this.setElectricityStored(this.electricityStored + joulesReceived);
-						}
-					}
-				}
-		        
-				if (this.ticks % 3 == 0 && this.playersUsing > 0)
-				{
-					PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
-				}
+			if (this.ticks % 3 == 0 && this.playersUsing > 0)
+			{
+				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			}
 		}
-		
     }
 
+    /**
+     * Charges up the tileEntities energy storage
+     */
+    public void chargeUp()
+    {
+            int front = 0;
+            switch (this.getFacing())
+            {
+                    case 2:
+                            front = 3;
+                            break;
+                    case 3:
+                            front = 2;
+                            break;
+                    case 4:
+                            front = 5;
+                            break;
+                    case 5:
+                            front = 4;
+                            break;
+                    default:
+                            front = 3;
+                            break;
+            }
+            ForgeDirection direction = ForgeDirection.getOrientation(front);
 
+            TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
+
+            ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
+
+            if (inputTile != null && network != null)
+            {
+                    if (this.electricityStored < this.electricityMaxStored)
+                    {
+                            double electricityNeeded = this.electricityMaxStored - this.electricityStored;
+
+                            network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
+
+                            this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
+
+                            if (UniversalElectricity.isVoltageSensitive)
+                            {
+                                    ElectricityPack electricityPack = network.consumeElectricity(this);
+                                    if (electricityPack.voltage > this.getVoltage())
+                                    {
+                                            this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
+                                    }
+                            }
+
+                    }
+                    else if (electricityStored >= electricityMaxStored)
+                    {
+                            network.stopRequesting(this);
+                    }
+            }
+
+            if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
+            {
+                    if (this.inventory[0].getItem() instanceof IItemElectric)
+                    {
+                            IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
+
+                            if (electricItem.canProduceElectricity())
+                            {
+                                    double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
+                                    this.setElectricityStored(this.electricityStored + joulesReceived);
+                            }
+                    }
+            }
+   
+    }
 
     @Override
     public int getStartInventorySide(ForgeDirection side)

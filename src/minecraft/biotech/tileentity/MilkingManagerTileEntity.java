@@ -19,6 +19,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
@@ -57,7 +58,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 
 	// How much milk is stored?
 	private int milkStored = 0;
-	private int milkMaxStored = 3000;
+	private int milkMaxStored = 7 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private int cowMilk = 10;
 
 	private boolean isMilking = false;
@@ -211,76 +212,24 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-
-			int front = 0;
-
-			switch (this.getFacing())
-			{
-				case 2:
-					front = 3;
-					break;
-				case 3:
-					front = 2;
-					break;
-				case 4:
-					front = 5;
-					break;
-				case 5:
-					front = 4;
-					break;
-				default:
-					front = 3;
-					break;
-			}
-
-			ForgeDirection direction = ForgeDirection.getOrientation(front);
-
-			TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
-
-			ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
-
-			if (inputTile != null && network != null)
-			{
-				if (this.electricityStored < this.electricityMaxStored)
-				{
-					double electricityNeeded = this.electricityMaxStored - this.electricityStored;
-
-					network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-
-					this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
-
-					if (UniversalElectricity.isVoltageSensitive)
-					{
-						ElectricityPack electricityPack = network.consumeElectricity(this);
-						if (electricityPack.voltage > this.getVoltage())
-						{
-							this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
-						}
-					}
-
-				}
-				else if (electricityStored >= electricityMaxStored)
-				{
-					network.stopRequesting(this);
-				}
-			}
-
-			if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
-			{
-				if (this.inventory[0].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
-
-					if (electricItem.canProduceElectricity())
-					{
-						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
-						this.setElectricityStored(this.electricityStored + joulesReceived);
-					}
-				}
-			}
+			this.fillFrom();
+			this.chargeUp();
 		}
 		super.updateEntity();
 	}
+	
+	/**
+     * Use this to just fill the manager from a pipe or tank connected to the bottom side
+     */
+    public void fillFrom()
+    {
+            TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord-1, xCoord);
+            if(ent instanceof ITankContainer)
+            {
+                    ITankContainer tank = (ITankContainer) ent;
+                    tank.drain(ForgeDirection.DOWN.getOpposite(), LiquidContainerRegistry.BUCKET_VOLUME, true);
+            }
+    }
 
 	public boolean isRedstoneSignal()
 	{

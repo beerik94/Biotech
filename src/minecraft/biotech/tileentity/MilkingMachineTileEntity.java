@@ -22,6 +22,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -64,7 +65,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
  
         // Amount of milliBuckets of internal storage
         private ColorCode color = ColorCode.WHITE;
-        private static final int milkMaxStored = 3;
+        private static final int milkMaxStored = 3 * LiquidContainerRegistry.BUCKET_VOLUME;
         private int milkStored = 0;
  
         private int facing;
@@ -161,77 +162,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                         }
                 }
                 super.updateEntity();
-        }
-        /**
-         * Charges up the tileEntities energy storage
-         */
-        public void chargeUp()
-        {
-                int front = 0;
-                switch (this.getFacing())
-                {
-                        case 2:
-                                front = 3;
-                                break;
-                        case 3:
-                                front = 2;
-                                break;
-                        case 4:
-                                front = 5;
-                                break;
-                        case 5:
-                                front = 4;
-                                break;
-                        default:
-                                front = 3;
-                                break;
-                }
-                ForgeDirection direction = ForgeDirection.getOrientation(front);
- 
-                TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
- 
-                ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
- 
-                if (inputTile != null && network != null)
-                {
-                        if (this.electricityStored < this.electricityMaxStored)
-                        {
-                                double electricityNeeded = this.electricityMaxStored - this.electricityStored;
- 
-                                network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
- 
-                                this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
- 
-                                if (UniversalElectricity.isVoltageSensitive)
-                                {
-                                        ElectricityPack electricityPack = network.consumeElectricity(this);
-                                        if (electricityPack.voltage > this.getVoltage())
-                                        {
-                                                this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
-                                        }
-                                }
- 
-                        }
-                        else if (electricityStored >= electricityMaxStored)
-                        {
-                                network.stopRequesting(this);
-                        }
-                }
- 
-                if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
-                {
-                        if (this.inventory[0].getItem() instanceof IItemElectric)
-                        {
-                                IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
- 
-                                if (electricItem.canProduceElectricity())
-                                {
-                                        double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
-                                        this.setElectricityStored(this.electricityStored + joulesReceived);
-                                }
-                        }
-                }
-       
         }
         /**
          * Use this to just drain to the pipe or liquid tank bellow your milker

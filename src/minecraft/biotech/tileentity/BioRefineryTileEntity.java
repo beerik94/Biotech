@@ -2,7 +2,12 @@ package biotech.tileentity;
 
 import java.util.EnumSet;
 
+import liquidmechanics.api.IColorCoded;
+import liquidmechanics.api.IReadOut;
 import liquidmechanics.api.helpers.ColorCode;
+import liquidmechanics.api.liquids.IPressure;
+import liquidmechanics.api.liquids.LiquidData;
+import liquidmechanics.api.liquids.LiquidHandler;
 
 import biotech.Biotech;
 
@@ -20,6 +25,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import net.minecraftforge.liquids.ILiquidTank;
+import net.minecraftforge.liquids.ITankContainer;
+import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityConnections;
@@ -30,12 +37,12 @@ import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
-public class BioRefineryTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+public class BioRefineryTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, IColorCoded, IPressure, IReadOut
 {
 	
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_TICK = 250;
-	public static final double WATTS_PER_IDLE_TICK = 25;
+	public static final double WATTS_PER_TICK = 500;
+	public static final double WATTS_PER_IDLE_TICK = 50;
 	
 	// Time idle after a tick
 	public static final int IDLE_TIME_AFTER_ACTION = 60;
@@ -50,7 +57,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
     
     //Amount of milliBuckets of internal storage
     private ColorCode color = ColorCode.WHITE;
- 	private static final int milkMaxStored = 3000;
+ 	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
  	private int milkStored = 0;
  	private ILiquidTank milkBioTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
 	
@@ -72,73 +79,8 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-		    
-	        int front = 0; 
-	    	
-	    	switch(this.getFacing())
-	    	{
-	    	case 2:
-	    		front = 3;
-	    		break;
-	    	case 3:
-	    		front = 2;
-	    		break;
-	    	case 4:
-	    		front = 5;
-	    		break;
-	    	case 5:
-	    		front = 4;
-	    		break;
-	    	default:
-	    		front = 3;
-	   			break;
-	    	}
-	    	
-	    	ForgeDirection direction = ForgeDirection.getOrientation(front);
-	
-	        TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj, new Vector3(this), direction);
-	        
-	        ElectricityNetwork network = ElectricityNetwork.getNetworkFromTileEntity(inputTile, direction);
-	        
-	        if (inputTile != null && network != null)
-	        {   
-	            if (this.electricityStored < this.electricityMaxStored)
-	            {
-	            	double electricityNeeded = this.electricityMaxStored - this.electricityStored; 
-	            	
-	                network.startRequesting(this, electricityNeeded, electricityNeeded >= getVoltage() ? getVoltage() : electricityNeeded);
-	
-	                this.setElectricityStored(electricityStored + (network.consumeElectricity(this).getWatts()));
-	                
-	                if (UniversalElectricity.isVoltageSensitive)
-					{
-	                	ElectricityPack electricityPack = network.consumeElectricity(this);
-						if (electricityPack.voltage > this.getVoltage())
-						{
-							this.worldObj.createExplosion(null, this.xCoord, this.yCoord, this.zCoord, 2f, true);
-						}
-					}
-	                
-	            }
-				else if(electricityStored >= electricityMaxStored)
-	            {
-	                network.stopRequesting(this);
-	            }
-	        }
-	        
-			if (this.inventory[0] != null && this.electricityStored < this.electricityMaxStored)
-			{
-				if (this.inventory[0].getItem() instanceof IItemElectric)
-				{
-					IItemElectric electricItem = (IItemElectric) this.inventory[0].getItem();
-	
-					if (electricItem.canProduceElectricity())
-					{
-						double joulesReceived = electricItem.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005, this.inventory[0]);
-						this.setElectricityStored(this.electricityStored + joulesReceived);
-					}
-				}
-			}
+		    this.fillFrom();
+	        this.chargeUp();
 		}
 		super.updateEntity();
 	}
@@ -150,6 +92,19 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 		}
 		return false;
 	}
+	
+	/**
+     * Use this to fill from a pipe or tank connected to the right side
+     */
+    public void fillFrom()
+    {
+            TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord-1, xCoord);
+            if(ent instanceof ITankContainer)
+            {
+                    ITankContainer tank = (ITankContainer) ent;
+                    tank.drain(ForgeDirection.DOWN.getOpposite(), LiquidContainerRegistry.BUCKET_VOLUME, true);
+            }
+    }
 	
 	@Override
     public void readFromNBT(NBTTagCompound tagCompound)
@@ -182,6 +137,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
         tagCompound.setShort("facing", (short)this.facing);
         tagCompound.setBoolean("isPowered", this.isPowered);
         tagCompound.setDouble("electricityStored", this.electricityStored);
+        tagCompound.setInteger("milkStored", this.milkStored);
         NBTTagList itemList = new NBTTagList();
 
         for (int i = 0; i < inventory.length; i++)
@@ -216,6 +172,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
+				this.milkStored = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -227,7 +184,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.milkStored);
 	}
 	
 	public int getFacing() 
@@ -268,6 +225,40 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
     public int getMaxMilk()
     {
     	return this.milkStored;
+    }
+
+    @Override
+	public String getMeterReading(EntityPlayer user, ForgeDirection side)
+	{
+		return "Milk:"+this.milkStored;
+	}
+
+    @Override
+    public int presureOutput(LiquidData type, ForgeDirection dir)
+    {
+            if (type.getColor() == color){ return type.getPressure();}
+           
+            return 0;
+    }
+
+    @Override
+    public boolean canPressureToo(LiquidData type, ForgeDirection dir)
+    {
+            if (type.getColor() == color && dir == ForgeDirection.DOWN.getOpposite()){ return true;}
+           
+            return false;
+    }
+
+    @Override
+    public ColorCode getColor()
+    {
+            return ColorCode.WHITE;
+    }
+
+    @Override
+    public void setColor(Object obj)
+    {
+            // leave this blank unless you plan on having it change or be changed
     }
 	
 }
