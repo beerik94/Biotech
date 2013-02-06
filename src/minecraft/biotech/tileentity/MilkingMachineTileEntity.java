@@ -34,21 +34,8 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 
-public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure,IReadOut
+public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure, IReadOut
 {
-        /*
-         * Delete this after reading it LiQuid
-         *
-         * Ok first off you only want to use ITankContainer if you plan on accepting and storing liquids
-         * In most cases you can get away with not using it if you know the liquid your going to use
-         * and store the amount as an int.
-         *
-         * Second only pressure liquids you are using, unknown is not a liquid but will still try to act as one so don't try to pump it
-         *
-         * Third you don't need to drain your liquid just too my pipes, drain it too anything bellow that will accept it that way you can
-         * work with railcraft, buildcraft, and other mod's pipes, tanks, and machiens
-         *
-         */
         private int tickCounter;
         private int scantickCounter;
  
@@ -77,7 +64,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
  
         // Amount of milliBuckets of internal storage
         private ColorCode color = ColorCode.WHITE;
-        private static final int milkMaxStored = 3;// use bucket number then times by the constant for bucket volume in case it changes
+        private static final int milkMaxStored = 3;
         private int milkStored = 0;
  
         private int facing;
@@ -180,7 +167,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
          */
         public void chargeUp()
         {
-                //moved your UE power charging to a seperate method to make reading easier
                 int front = 0;
                 switch (this.getFacing())
                 {
@@ -256,7 +242,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                 if(ent instanceof ITankContainer)
                 {
                         ITankContainer tank = (ITankContainer) ent;
-                        //the fill method returns the ammount of liquid that was added to the target block
                         int filled = tank.fill(ForgeDirection.DOWN.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
                         this.milkStored -= filled;
                 }
@@ -394,7 +379,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         @Override
         public int presureOutput(LiquidData type, ForgeDirection dir)
         {
-                // you can only output pressure for milk
                 if (type.getColor() == color){ return type.getPressure();}
                
                 return 0;
@@ -403,7 +387,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         @Override
         public boolean canPressureToo(LiquidData type, ForgeDirection dir)
         {
-                //Have to use the opposite dirrection that you want
                 if (type.getColor() == color && dir == ForgeDirection.DOWN.getOpposite()){ return true;}
                
                 return false;
