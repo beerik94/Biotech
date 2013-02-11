@@ -34,13 +34,10 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, ITankContainer, IColorCoded
+public class MilkingManagerTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, IColorCoded
 {
 	private int tickCounter;
 	private int scantickCounter;
-
-	private List<MilkingMachineTileEntity> MachineList = new ArrayList<MilkingMachineTileEntity>();
-	private int MachineListSize = 0;
 
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 250;
@@ -69,7 +66,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 
 	// Amount of milliBuckets of internal storage
 	private ColorCode color = ColorCode.WHITE;
-	private ILiquidTank milkTank;
 
 	// Is the machine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
@@ -88,50 +84,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public MilkingManagerTileEntity()
 	{
 		super();
-		milkTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
-
-	}
-
-	public void scanForMachines()
-	{
-		int xminrange = xCoord - getScanRange();
-		int xmaxrange = xCoord + getScanRange() + 1;
-		int yminrange = yCoord - getScanRange();
-		int ymaxrange = yCoord + getScanRange() + 1;
-		int zminrange = zCoord - getScanRange();
-		int zmaxrange = zCoord + getScanRange() + 1;
-
-		for (int xx = xminrange; xx <= xmaxrange; xx++)
-		{
-			for (int yy = yminrange; yy <= ymaxrange; yy++)
-			{
-				for (int zz = zminrange; zz <= zmaxrange; zz++)
-				{
-					TileEntity tileEntity = worldObj.getBlockTileEntity(xx, yy, zz);
-
-					if (tileEntity instanceof MilkingMachineTileEntity)
-					{
-						if (MachineList.contains((MilkingMachineTileEntity) tileEntity))
-						{
-							return;
-						}
-						else
-						{
-							MachineList.add((MilkingMachineTileEntity) tileEntity);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public int getScanRange()
-	{
-		if (getStackInSlot(1) != null)
-		{
-			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade)) { return (getStackInSlot(1).stackSize + 5); }
-		}
-		return 3;
 	}
 
 	@Override
@@ -141,56 +93,31 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 		{
 			if (this.isRedstoneSignal())
 			{
-				setMachineSize();
 				this.setPowered(true);
-				if (scantickCounter >= 40)
-				{
-					scanForMachines();
-					scantickCounter = 0;
-				}
-				int i = 0;
-				while (i < MachineList.size())
-				{
-					MilkingMachineTileEntity machine = MachineList.get(i);
-					machine.ReceivedRedstone = true;
-					if (MachineList.get(i).isInvalid())
-					{
-						MachineList.remove(i);
-					}
-					i++;
-				}
-				if (MachineList.size() == 0)
-				{
-					i = 0;
-				}
 				if (this.getMilkStored() < this.getMaxMilk())
 				{
 					this.fillFrom();
 				}
 				scantickCounter++;
 			}
-			if (milkStored >= 30)
+			if (milkStored >= 30 && inventory[2] != null && inventory[3] == null)
 			{
-				if (inventory[2] != null && inventory[3] == null)
+				this.bucketIn = true;
+				if (bucketTime >= bucketTimeMax)
 				{
-
-					this.bucketIn = true;
-					if (bucketTime >= bucketTimeMax)
+					if (inventory[2].stackSize >= 1)
 					{
-						if (inventory[2].stackSize >= 1)
-						{
-							inventory[2].stackSize -= 1;
-						}
-						else
-						{
-							inventory[2] = null;
-						}
-						ItemStack bMilk = new ItemStack(Item.bucketMilk);
-						inventory[3] = (bMilk);
-						milkStored -= 30;
-						bucketTime = 0;
-						this.bucketIn = false;
+						inventory[2].stackSize -= 1;
 					}
+					else
+					{
+						inventory[2] = null;
+					}
+					ItemStack bMilk = new ItemStack(Item.bucketMilk);
+					inventory[3] = (bMilk);
+					milkStored -= 30;
+					bucketTime = 0;
+					this.bucketIn = false;
 				}
 			}
 			if (bucketTime < bucketTimeMax)
@@ -224,11 +151,14 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
     public void fillFrom()
     {
             TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord-1, xCoord);
-            if(ent instanceof ITankContainer)
+            if(ent != null && ent instanceof ITankContainer)
             {
                     ITankContainer tank = (ITankContainer) ent;
-                    tank.drain(ForgeDirection.DOWN, (LiquidContainerRegistry.BUCKET_VOLUME / 4), true);
-                    this.milkStored += (LiquidContainerRegistry.BUCKET_VOLUME / 4);
+                    LiquidStack milk = tank.drain(ForgeDirection.DOWN, (LiquidContainerRegistry.BUCKET_VOLUME / 4), true);
+                    if(milk != null)
+                    {
+                    	this.milkStored += (LiquidContainerRegistry.BUCKET_VOLUME / 4);
+                    }
             }
     }
 
@@ -307,7 +237,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 				this.facing = dataStream.readInt();
 				this.milkStored = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
-				this.MachineListSize = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -319,7 +248,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored, this.electricityStored, this.MachineListSize);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored, this.electricityStored);
 	}
 
 	public int getFacing()
@@ -360,77 +289,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 	public double getMaxElectricity()
 	{
 		return electricityMaxStored;
-	}
-
-	public void setMachineSize()
-	{
-		MachineListSize = MachineList.size();
-	}
-
-	public int getMachineSize()
-	{
-		return MachineListSize;
-	}
-
-	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
-	{
-		if (from == ForgeDirection.DOWN && resource == Biotech.milkLiquid)
-		{
-			int availibleCapactity = milkMaxStored - milkStored;
-			int inputAmount = resource.amount;
-			if (inputAmount <= availibleCapactity)
-			{
-				if (doFill)
-				{
-					this.milkStored += inputAmount;
-				}
-				return inputAmount;
-			}
-			else
-			{
-				if (doFill)
-				{
-					this.milkStored = milkMaxStored;
-				}
-				return availibleCapactity;
-			}
-		}
-		else
-		{
-			return 0;
-		}
-	}
-
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
-	{
-		return 0;
-	}
-
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-
-	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return null;
-	}
-
-	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
-	{
-		return new ILiquidTank[] { getTank(direction, Biotech.milkLiquid) };
-	}
-
-	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
-	{
-		if ((direction == ForgeDirection.DOWN) && type.isLiquidEqual(Biotech.milkLiquid)) { return this.milkTank; }
-		return null;
 	}
 
 	@Override

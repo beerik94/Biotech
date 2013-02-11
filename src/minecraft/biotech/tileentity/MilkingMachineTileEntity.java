@@ -40,7 +40,8 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         private int tickCounter;
         private int scantickCounter;
         private int drainCounter;
- 
+
+        private MilkingManagerTileEntity ManagerEntity;
         protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
  
         // Watts being used per action / idle action
@@ -62,7 +63,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
  
         // Is the machine currently powered, and did it change?
         public boolean prevIsPowered, isPowered = false;
-        public boolean ReceivedRedstone = false;
  
         // Amount of milliBuckets of internal storage
         private ColorCode color = ColorCode.WHITE;
@@ -72,6 +72,10 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         private int facing;
         private int playersUsing = 0;
         private int idleTicks;
+        
+        private int managerX = 0;
+        private int managerY = 0;
+        private int managerZ = 0;
  
         public int currentX = 0;
         public int currentZ = 0;
@@ -87,12 +91,12 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
  
         public void scanForCows()
         {
-                int xminrange = xCoord - getScanRange();
-                int xmaxrange = xCoord + getScanRange() + 1;
-                int yminrange = yCoord - getScanRange();
-                int ymaxrange = yCoord + getScanRange() + 1;
-                int zminrange = zCoord - getScanRange();
-                int zmaxrange = zCoord + getScanRange() + 1;
+                int xminrange = xCoord - getMilkRange();
+                int xmaxrange = xCoord + getMilkRange() + 1;
+                int yminrange = yCoord - getMilkRange();
+                int ymaxrange = yCoord + getMilkRange() + 1;
+                int zminrange = zCoord - getMilkRange();
+                int zmaxrange = zCoord + getMilkRange() + 1;
  
                 List<EntityCow> scannedCowslist = worldObj.getEntitiesWithinAABB(EntityCow.class, AxisAlignedBB.getBoundingBox(xminrange, yminrange, zminrange, xmaxrange, ymaxrange, zmaxrange));
  
@@ -103,7 +107,34 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                                 CowList.add(Living);
                         }
                 }
- 
+        }
+        
+        public void scanForManager()
+        {
+        	int xminrange = xCoord - getScanRange();
+            int xmaxrange = xCoord + getScanRange() + 1;
+            int yminrange = yCoord - getScanRange();
+            int ymaxrange = yCoord + getScanRange() + 1;
+            int zminrange = zCoord - getScanRange();
+            int zmaxrange = zCoord + getScanRange() + 1;
+            
+            for (int xx = xminrange; xx <= xmaxrange; xx++)
+    		{
+    			for (int yy = yminrange; yy <= ymaxrange; yy++)
+    			{
+    				for (int zz = zminrange; zz <= zmaxrange; zz++)
+    				{
+    					TileEntity tileEntity = worldObj.getBlockTileEntity(xx, yy, zz);
+
+    					if (tileEntity instanceof MilkingManagerTileEntity)
+    					{
+    						ManagerEntity = (MilkingManagerTileEntity) tileEntity;
+    					}
+    				}
+    			}
+    		}
+        	
+        	
         }
  
         public void milkCows()
@@ -111,81 +142,106 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                 if (CowList.size() != 0)
                 {
                         CowList.remove(0);
-                        this.milkStored += 30;
+                        this.milkStored += 250;
                 }
         }
  
-        public int getScanRange()
+        public int getMilkRange()
         {
-                return 3;
+        	return 3;
         }
+        
+        public int getScanRange()
+    	{
+    		if (getStackInSlot(1) != null)
+    		{
+    			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade)) { return (getStackInSlot(1).stackSize + 5); }
+    		}
+    		return 3;
+    	}
  
         @Override
         public void updateEntity()
         {
- 
-                if (!worldObj.isRemote)
-                {
-                        if (this.ReceivedRedstone)
+            if (!worldObj.isRemote)
+            {
+                    if (this.GetRedstoneSignal())
+                    {
+                        this.setPowered(true);
+                        if (scantickCounter >= 40)
                         {
-                                this.setPowered(true);
-                                if (scantickCounter >= 40)
-                                {
-                                        scanForCows();
-                                        scantickCounter = 0;
-                                }
-                                if (CowList.size() != 0 && tickCounter >= 100)
-                                {
-                                        milkCows();
-                                        isMilking = true;
-                                        tickCounter = 0;
-                                        this.setPowered(false);
-                                }
-                                System.out.println("Machine:" + milkStored);
-                                tickCounter++;
-                                scantickCounter++;
-                               // drainCounter++;
-                                //if(drainCounter >= 60)
-                               // {
-                                	this.drainTo();
-                                	//drainCounter = 0;
-                               // }
+                                scanForCows();
+                                scantickCounter = 0;
                         }
-                        if (tickCounter >= 150)
+                        if (CowList.size() != 0 && tickCounter >= 100)
                         {
+                                milkCows();
+                                isMilking = true;
                                 tickCounter = 0;
+                                this.setPowered(false);
                         }
-                        if (scantickCounter >= 100)
+                        System.out.println("Machine:" + milkStored);
+                        tickCounter++;
+                       // drainCounter++;
+                        //if(drainCounter >= 60)
+                       // {
+                        	this.drainTo();
+                        	//drainCounter = 0;
+                       // }
+                    }
+                    if(scantickCounter >= 40)
+                    {
+                    	if(ManagerEntity == null)
                         {
-                                tickCounter = 0;
+                        	scanForManager();
                         }
-                        
-                        this.chargeUp();
-                       
-                        if (this.ticks % 3 == 0 && this.playersUsing > 0)
-                        {
-                                PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
-                        }
-                }
-                super.updateEntity();
+                    }
+                    if (tickCounter >= 150)
+                    {
+                            tickCounter = 0;
+                    }
+                    if (scantickCounter >= 100)
+                    {
+                            tickCounter = 0;
+                    }
+                    
+                    this.chargeUp();
+                    scantickCounter++;
+                    if (this.ticks % 3 == 0 && this.playersUsing > 0)
+                    {
+                            PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+                    }
+            }
+            super.updateEntity();
         }
         /**
          * Use this to just drain to the pipe or liquid tank bellow your milker
          */
         public void drainTo()
         {
-                TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord-1, xCoord);
-                if(ent instanceof ITankContainer)
-                {
-                        ITankContainer tank = (ITankContainer) ent;
-                        int filled = tank.fill(ForgeDirection.DOWN.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
-                        this.milkStored -= filled;
-                        System.out.println("filled: " + filled);
-                }
+            TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord-1, xCoord);
+            if(ent != null && ent instanceof ITankContainer)
+            {
+                    int vol = LiquidContainerRegistry.BUCKET_VOLUME;
+                    if(this.milkStored < vol)
+                    {
+                    	vol = this.milkStored;
+                    }
+                    int filled = ((ITankContainer) ent).fill(ForgeDirection.DOWN.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), vol), true);
+                    this.milkStored -= filled;
+                    System.out.println("filled: " + filled);
+            }
         }
         public boolean GetRedstoneSignal()
         {
-                return ReceivedRedstone;
+        	if(ManagerEntity != null)
+        	{
+        		return ManagerEntity.isRedstoneSignal();
+        	}
+        	else
+        	{
+        		return false;
+        	}
         }
  
         @Override
@@ -255,7 +311,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                                 this.isPowered = dataStream.readBoolean();
                                 this.facing = dataStream.readInt();
                                 this.electricityStored = dataStream.readDouble();
-                                this.ReceivedRedstone = dataStream.readBoolean();
                                 this.milkStored = dataStream.readInt();
                         }
                 }
@@ -268,7 +323,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         @Override
         public Packet getDescriptionPacket()
         {
-                return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.ReceivedRedstone, this.milkStored);
+                return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.milkStored);
         }
  
         public int getFacing()
@@ -295,7 +350,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
         {
                 return electricityMaxStored;
         }
- 
+        
         public int getMilkStored()
         {
                 return this.milkStored;

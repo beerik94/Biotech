@@ -20,10 +20,7 @@ public class MilkingManagerContainer extends Container
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
-
-		// Slot for upgrade
-		this.addSlotToContainer(new Slot(tileEntity, 1, 7, 7));
+		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 16));
 
 		// Slot for empty bucket
 		this.addSlotToContainer(new emptyBucketSlot(tileEntity, 2, 152, 16));

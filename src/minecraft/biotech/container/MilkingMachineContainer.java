@@ -7,28 +7,38 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.SlotElectricItem;
+import biotech.slots.rangeUpgradeSlot;
 import biotech.tileentity.MilkingMachineTileEntity;
 
 public class MilkingMachineContainer extends Container
 {
 	private MilkingMachineTileEntity tileEntity;
 
-	public MilkingMachineContainer(InventoryPlayer par1InventoryPlayer, MilkingMachineTileEntity tileEntity)
+	public MilkingMachineContainer(InventoryPlayer par1InventoryPlayer, MilkingMachineTileEntity te)
 	{
-		this.tileEntity = tileEntity;
+		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 16));
+		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 36));
+
+		// Slot for upgrade
+		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
 
 		int var3;
 
-		for (var3 = 0; var3 < 1; ++var3)
+		for (var3 = 0; var3 < 3; ++var3)
 		{
 			for (int var4 = 0; var4 < 9; ++var4)
 			{
 				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
 			}
 		}
+
+		for (var3 = 0; var3 < 9; ++var3)
+		{
+			this.addSlotToContainer(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
+		}
+		
 		tileEntity.openChest();
 	}
 
