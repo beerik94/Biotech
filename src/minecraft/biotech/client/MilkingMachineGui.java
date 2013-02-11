@@ -75,11 +75,5 @@ public class MilkingMachineGui extends GuiContainer
 		containerHeight = (this.height - this.ySize) / 2;
 		
         this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
-        /*
-        if (this.grinder.isPowered())
-        {
-            this.drawTexturedModalRect(x + 86, y + 54, 176, 0, 8, 8);
-        }
-         */
     }
 }

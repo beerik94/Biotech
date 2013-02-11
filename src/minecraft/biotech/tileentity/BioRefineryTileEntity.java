@@ -15,6 +15,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -28,6 +29,7 @@ import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
@@ -81,6 +83,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 			}
 		    this.fillFrom();
 	        this.chargeUp();
+	        this.Refine();
 		}
 		super.updateEntity();
 	}
@@ -91,6 +94,28 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * Refines milk into Mekanism bioFuel
+	 */
+	public void Refine()
+	{
+		if(this.inventory[1] == null)
+		{
+			this.inventory[1] = (Biotech.itemBioFuel);
+
+			if (this.inventory[1].stackSize <= 62 && this.milkStored >= 1000)
+	        {
+				this.inventory[1].stackSize += 2;
+				this.milkStored -= 1000;
+	        }
+			else if(this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
+			{
+				this.inventory[1].stackSize += 4;
+				this.milkStored -= 1000;
+			}
+		}
 	}
 	
 	/**

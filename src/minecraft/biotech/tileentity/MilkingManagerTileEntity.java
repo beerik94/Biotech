@@ -5,6 +5,7 @@ import java.util.List;
 
 import liquidmechanics.api.IColorCoded;
 import liquidmechanics.api.helpers.ColorCode;
+import liquidmechanics.api.liquids.LiquidHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -164,7 +165,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 				}
 				if (this.getMilkStored() < this.getMaxMilk())
 				{
-					this.milkTank.fill(Biotech.milkLiquid, false);
+					this.fillFrom();
 				}
 				scantickCounter++;
 			}
@@ -176,7 +177,7 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 					this.bucketIn = true;
 					if (bucketTime >= bucketTimeMax)
 					{
-						if (inventory[2].stackSize >= 2)
+						if (inventory[2].stackSize >= 1)
 						{
 							inventory[2].stackSize -= 1;
 						}
@@ -212,7 +213,6 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-			this.fillFrom();
 			this.chargeUp();
 		}
 		super.updateEntity();
@@ -227,7 +227,8 @@ public class MilkingManagerTileEntity extends BasicMachineTileEntity implements 
             if(ent instanceof ITankContainer)
             {
                     ITankContainer tank = (ITankContainer) ent;
-                    tank.drain(ForgeDirection.DOWN.getOpposite(), LiquidContainerRegistry.BUCKET_VOLUME, true);
+                    tank.drain(ForgeDirection.DOWN, (LiquidContainerRegistry.BUCKET_VOLUME / 4), true);
+                    this.milkStored += (LiquidContainerRegistry.BUCKET_VOLUME / 4);
             }
     }
 

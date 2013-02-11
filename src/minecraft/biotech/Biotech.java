@@ -95,12 +95,15 @@ public class Biotech
 	public static ItemStack bioCircuitCarrots;
 	public static ItemStack bioCircuitPotatoes;
 	public static ItemStack bioCircuitRangeUpgrade;
-
+	
+	// Mekanism bioFuel
+	public static ItemStack itemBioFuel;
+	
 	// Block templates
 	public static Block biotechBlockMachine;
 	public static Block milkMoving;
 	public static Block milkStill;
-
+	
 	// Metadata for biotechBlockMachine
 	// 0 == Tiller
 	// 1 == Foresting
@@ -187,8 +190,9 @@ public class Biotech
 	@Init
 	public void load(FMLInitializationEvent event)
 	{
-		proxy.registerRenderers();
 
+		proxy.registerRenderers();
+		
 		/**
 		 * Handle the items that will be used in recipes.
 		 */
@@ -196,7 +200,8 @@ public class Biotech
 		ItemStack itemMotor = new ItemStack(OreDictionary.getOreID("motor"), 1, 0);
 		ItemStack itemBronzePlate = new ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0);
 		ItemStack itemChest = new ItemStack(Block.chest, 1);
-
+		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
+		
 		/**
 		 * Register the TileEntity's
 		 */

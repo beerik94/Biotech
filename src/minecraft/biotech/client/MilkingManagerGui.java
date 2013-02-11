@@ -77,16 +77,9 @@ public class MilkingManagerGui extends GuiContainer
 		containerHeight = (this.height - this.ySize) / 2;
 		
         this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
-        /*
-        if (this.grinder.isPowered())
-        {
-            this.drawTexturedModalRect(x + 86, y + 54, 176, 0, 8, 8);
-        }
-         */
+        
 		int scale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 100);
-		
-		//Biotech.biotechLogger.info(Double.toString(this.tileEntity.getElectricityStored()));
-		
+
 		this.drawTexturedModalRect(containerWidth + 137, containerHeight + 67 - scale, 176, 50 - scale, 8, scale);
 		if(this.tileEntity.bucketIn)
 		{

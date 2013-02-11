@@ -39,6 +39,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 {
         private int tickCounter;
         private int scantickCounter;
+        private int drainCounter;
  
         protected List<EntityLiving> CowList = new ArrayList<EntityLiving>();
  
@@ -143,6 +144,12 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                                 System.out.println("Machine:" + milkStored);
                                 tickCounter++;
                                 scantickCounter++;
+                               // drainCounter++;
+                                //if(drainCounter >= 60)
+                               // {
+                                	this.drainTo();
+                                	//drainCounter = 0;
+                               // }
                         }
                         if (tickCounter >= 150)
                         {
@@ -152,9 +159,8 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                         {
                                 tickCounter = 0;
                         }
-                       
+                        
                         this.chargeUp();
-                        this.drainTo();
                        
                         if (this.ticks % 3 == 0 && this.playersUsing > 0)
                         {
@@ -174,6 +180,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                         ITankContainer tank = (ITankContainer) ent;
                         int filled = tank.fill(ForgeDirection.DOWN.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
                         this.milkStored -= filled;
+                        System.out.println("filled: " + filled);
                 }
         }
         public boolean GetRedstoneSignal()

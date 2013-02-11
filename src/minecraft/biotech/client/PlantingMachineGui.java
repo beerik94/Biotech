@@ -66,15 +66,8 @@ public class PlantingMachineGui extends GuiContainer
 		containerHeight = (this.height - this.ySize) / 2;
 		
         this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
-        /*
-        if (this.grinder.isPowered())
-        {
-            this.drawTexturedModalRect(x + 86, y + 54, 176, 0, 8, 8);
-        }
-         */
+
 		int scale = (int) (((double) this.tileEntity.getElectricityStored() / (double) this.tileEntity.getMaxElectricity()) * 52);
-		
-		//Biotech.biotechLogger.info(Double.toString(this.tileEntity.getElectricityStored()));
 		
 		this.drawTexturedModalRect(containerWidth + 165, containerHeight + 17 + 52 - scale, 176, 52 - scale, 4, scale);
     }
