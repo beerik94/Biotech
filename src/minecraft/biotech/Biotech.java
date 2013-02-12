@@ -13,6 +13,7 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
@@ -201,6 +202,7 @@ public class Biotech
 		ItemStack itemBronzePlate = new ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0);
 		ItemStack itemChest = new ItemStack(Block.chest, 1);
 		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
+		ItemStack itemIronIngot = new ItemStack(Item.ingotIron, 1);
 		
 		/**
 		 * Register the TileEntity's
@@ -272,7 +274,10 @@ public class Biotech
 		 * 
 		 * GameRegistry.addRecipe(new ItemStack(basicWorker, 1), "ddd", "bcb", "dad", 'a', itemChest, 'b', itemBasicCircuit, 'c', itemMotor, 'd', itemBronzePlate );
 		 */
-
+		
+		// Recipes
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Biotech.biotechBlockMachine, 1, 7), new Object[] { "@@@", "@!@", "@@@", '@', itemIronIngot, '!', itemMotor }));
+				
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
 
