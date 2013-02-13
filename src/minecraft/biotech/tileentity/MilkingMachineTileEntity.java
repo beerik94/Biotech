@@ -143,6 +143,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                 {
                         CowList.remove(0);
                         this.milkStored += 250;
+                        this.setElectricityStored(this.electricityStored -= 500);
                 }
         }
  
@@ -171,6 +172,10 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                         if (scantickCounter >= 40)
                         {
                                 scanForCows();
+                                if(ManagerEntity == null)
+                                {
+                                	scanForManager();
+                                }
                                 scantickCounter = 0;
                         }
                         if (CowList.size() != 0 && tickCounter >= 100)
@@ -185,16 +190,9 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                        // drainCounter++;
                         //if(drainCounter >= 60)
                        // {
-                        	this.drainTo();
+                        	drainTo();
                         	//drainCounter = 0;
                        // }
-                    }
-                    if(scantickCounter >= 40)
-                    {
-                    	if(ManagerEntity == null)
-                        {
-                        	scanForManager();
-                        }
                     }
                     if (tickCounter >= 150)
                     {
@@ -227,21 +225,15 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
                     {
                     	vol = this.milkStored;
                     }
-                    int filled = ((ITankContainer) ent).fill(ForgeDirection.DOWN.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), vol), true);
+                    int filled = ((ITankContainer) ent).fill(0, LiquidHandler.getStack(color.getLiquidData(), vol), true);
                     this.milkStored -= filled;
                     System.out.println("filled: " + filled);
             }
         }
         public boolean GetRedstoneSignal()
         {
-        	if(ManagerEntity != null)
-        	{
-        		return ManagerEntity.isRedstoneSignal();
-        	}
-        	else
-        	{
-        		return false;
-        	}
+        	if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) { return true; }
+    		return false;
         }
  
         @Override
