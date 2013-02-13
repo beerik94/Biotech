@@ -196,13 +196,17 @@ public class Biotech
 		
 		/**
 		 * Handle the items that will be used in recipes.
+		 * Just use the string in the recipe like the milk manager recipe
 		 */
+		/*
 		ItemStack itemBasicCircuit = new ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0);
 		ItemStack itemMotor = new ItemStack(OreDictionary.getOreID("motor"), 1, 0);
 		ItemStack itemBronzePlate = new ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0);
 		ItemStack itemChest = new ItemStack(Block.chest, 1);
 		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
-		ItemStack itemIronIngot = new ItemStack(Item.ingotIron, 1);
+		*/
+		ItemStack MilkManager = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
+		ItemStack MilkMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 8);
 		
 		/**
 		 * Register the TileEntity's
@@ -276,7 +280,8 @@ public class Biotech
 		 */
 		
 		// Recipes
-		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Biotech.biotechBlockMachine, 1, 7), new Object[] { "@@@", "@!@", "@@@", '@', itemIronIngot, '!', itemMotor }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(MilkManager, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(MilkMachine, new Object[] { "@@@", "@!@", "@@@", '@', , '!', }));
 				
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
