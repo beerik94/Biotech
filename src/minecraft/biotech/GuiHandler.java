@@ -45,11 +45,11 @@ public class GuiHandler implements IGuiHandler
 	    	switch(id)
 	    	{
 	    	case 0:
-	    		return new TillingMachineContainer(player.inventory, (TillingMachineTileEntity) tileEntity);
+	    		//return new TillingMachineContainer(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
 	    		return new MilkingManagerContainer(player.inventory, (MilkingManagerTileEntity) tileEntity);
 	    	case 2:
-	    		return new PlantingMachineContainer(player.inventory, (PlantingMachineTileEntity) tileEntity);
+	    		//return new PlantingMachineContainer(player.inventory, (PlantingMachineTileEntity) tileEntity);
 	    	case 3:
 	    		return new MilkingMachineContainer(player.inventory, (MilkingMachineTileEntity) tileEntity);
 	    	case 4:
@@ -70,11 +70,11 @@ public class GuiHandler implements IGuiHandler
 	    	switch(id)
 	    	{
 	    	case 0:
-	    		return new TillingMachineGui(player.inventory, (TillingMachineTileEntity) tileEntity);
+	    		//return new TillingMachineGui(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
 	    		return new MilkingManagerGui(player.inventory, (MilkingManagerTileEntity) tileEntity);
 	    	case 2:
-	    		return new PlantingMachineGui(player.inventory, (PlantingMachineTileEntity) tileEntity);
+	    		//return new PlantingMachineGui(player.inventory, (PlantingMachineTileEntity) tileEntity);
 	    	case 3:
 	    		return new MilkingMachineGui(player.inventory, (MilkingMachineTileEntity) tileEntity);
 	    	case 4:

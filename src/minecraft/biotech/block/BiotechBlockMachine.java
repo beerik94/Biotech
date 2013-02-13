@@ -63,6 +63,9 @@ public class BiotechBlockMachine extends BlockMachine
 	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
+		//TODO Will be added when Wiebbe adds the machines or if I(LiQuiD) knows what the machines have to be programmed like
+		//All machines commented except the milking machines.
+		/*
 		if (meta == 0)
 		{
 			switch (side)
@@ -175,7 +178,9 @@ public class BiotechBlockMachine extends BlockMachine
 					return 3;
 			}
 		}
-		else if (meta == 7)
+		*/
+		//else 
+			if (meta == 7)
 		{
 			switch (side)
 			{
@@ -218,7 +223,7 @@ public class BiotechBlockMachine extends BlockMachine
 				case 2:
 					return 32;
 				case 3:
-					return 0;
+					return 3;
 				default:
 					return 3;
 			}
@@ -274,10 +279,9 @@ public class BiotechBlockMachine extends BlockMachine
 				break;
 
 			default:
-
 				break;
 		}
-
+		/*
 		if (metadata == 0)
 		{
 			if (side == front)
@@ -439,7 +443,9 @@ public class BiotechBlockMachine extends BlockMachine
 				return 3;
 			}
 		}
-		else if (metadata == 7)
+		*/
+		//else 
+			if (metadata == 7)
 		{
 			if (side == front)
 			{
@@ -576,6 +582,7 @@ public class BiotechBlockMachine extends BlockMachine
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
+		/*
 		list.add(new ItemStack(i, 1, 0));
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
@@ -583,6 +590,7 @@ public class BiotechBlockMachine extends BlockMachine
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
 		list.add(new ItemStack(i, 1, 6));
+		*/
 		list.add(new ItemStack(i, 1, 7));
 		list.add(new ItemStack(i, 1, 8));
 		list.add(new ItemStack(i, 1, 9));
@@ -637,17 +645,21 @@ public class BiotechBlockMachine extends BlockMachine
 			switch (metadata)
 			{
 				case 0:
+					/*
 					if (!player.isSneaking())
 					{
 						player.openGui(Biotech.instance, 0, world, x, y, z);
 						return true;
 					}
+					*/
 				case 1:
+					/*
 					if (!player.isSneaking())
 					{
 						player.openGui(Biotech.instance, 2, world, x, y, z);
 						return true;
 					}
+					*/
 				case 2:
 				case 3:
 				case 4:
@@ -671,12 +683,6 @@ public class BiotechBlockMachine extends BlockMachine
 						player.openGui(Biotech.instance, 4, world, x, y, z);
 						return true;
 					}
-				default:
-					if (!player.isSneaking())
-					{
-						player.openGui(Biotech.instance, 0, world, x, y, z);
-						return true;
-					}
 			}
 		}
 		return true;
@@ -694,9 +700,9 @@ public class BiotechBlockMachine extends BlockMachine
 		switch (metadata)
 		{
 			case 0:
-				return new TillingMachineTileEntity();
+				//return new TillingMachineTileEntity();
 			case 1:
-				return new PlantingMachineTileEntity();
+				//return new PlantingMachineTileEntity();
 			case 2:
 			case 3:
 			case 4:

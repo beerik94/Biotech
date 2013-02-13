@@ -205,6 +205,14 @@ public class Biotech
 		ItemStack itemChest = new ItemStack(Block.chest, 1);
 		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
 		*/
+		ItemStack itemStone = new ItemStack(Block.stone, 1);
+		ItemStack TillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
+		ItemStack PlanMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
+		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
+		ItemStack HarvMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
+		ItemStack FertMachine =	new ItemStack(Biotech.biotechBlockMachine, 1, 4);
+		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
+		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
 		ItemStack MilkManager = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
 		ItemStack MilkMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 8);
 		
@@ -212,8 +220,8 @@ public class Biotech
 		 * Register the TileEntity's
 		 */
 		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
-		GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
-		GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
+		//GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
+		//GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
 		GameRegistry.registerTileEntity(MilkingManagerTileEntity.class, "MilkingManagerTileEntity");
 		GameRegistry.registerTileEntity(MilkingMachineTileEntity.class, "MilkingMachineTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
@@ -254,6 +262,7 @@ public class Biotech
 		LanguageRegistry.addName(bioCircuitRangeUpgrade, "Bio Circuit - Range Upgrade");
 
 		// Subblocks
+		/*
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.0.name", "Tilling Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.1.name", "Planting Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
@@ -261,27 +270,21 @@ public class Biotech
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
+		*/
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Milking Manager");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.8.name", "Milking Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.9.name", "Bio Refinery");
 
 		// CreativeTab
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
-
-		/*
-		 * Recipes will be added after the rest works a bit better need to think of some more recipes as well!
-		 * 
-		 * // Recipes ItemStack[] bcCircuits = { itemBasicCircuit, itemBasicCircuit, itemBasicCircuit, };
-		 * 
-		 * bcCircuits[0].setItemDamage(0); //Basic Circuit bcCircuits[1].setItemDamage(1); //Advanced Circuit bcCircuits[2].setItemDamage(2); //Elite Circuit biotechLogger.info("Loading recipes"); GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.seeds); GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.melonSeeds); GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.pumpkinSeeds); GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.netherStalkSeeds); GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Block.cactus); GameRegistry.addShapelessRecipe(planter, bcCircuits[0], Item.reed); GameRegistry.addShapelessRecipe(harvester, bcCircuits[0], Item.wheat); GameRegistry.addShapelessRecipe(woodcutter, bcCircuits[0], new ItemStack(Block.sapling, 1, -1)); GameRegistry.addShapelessRecipe(fertilizer, bcCircuits[1], new ItemStack(Item.dyePowder, 1, 15)); GameRegistry.addShapelessRecipe(tiller, bcCircuits[1], Block.dirt); GameRegistry.addShapelessRecipe(miner, bcCircuits[2], Block.stone); GameRegistry.addShapelessRecipe(filler, bcCircuits[2], Block.dirt); //1x Chest, 1x Circuit, 1x Motor, 1x Tier material, Plating?
-		 * 
-		 * 
-		 * GameRegistry.addRecipe(new ItemStack(basicWorker, 1), "ddd", "bcb", "dad", 'a', itemChest, 'b', itemBasicCircuit, 'c', itemMotor, 'd', itemBronzePlate );
-		 */
 		
 		// Recipes
+		//TODO Wiebbe add your recipes and fix these 2 machines so we can release.
+		
+		//GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
+		//GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(MilkManager, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(MilkMachine, new Object[] { "@@@", "@!@", "@@@", '@', , '!', }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(MilkMachine, new Object[] { "@@@", "@!@", "@@@", '@', itemStone, '!', "motor"}));
 				
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
