@@ -100,13 +100,14 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 					isMilking = true;
 					tickCounter = 0;
 					this.setPowered(false);
-				}else
+				}
+				else
 				{
 					isMilking = false;
 				}
 
 				System.out.println("Machine:" + milkStored);
-				drainTo();
+				drainTo(ForgeDirection.DOWN);
 			}
 
 			if (this.ticks % 10 == 0 && this.playersUsing > 0)
@@ -116,6 +117,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		}
 
 	}
+
 	/**
 	 * Scans for cows for milking
 	 */
@@ -180,14 +182,17 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	/**
 	 * Drains the contents of the internal tank to a block bellow it
 	 */
-	public void drainTo()
+	public void drainTo(ForgeDirection dir)
 	{
-		TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord - 1, xCoord);
+		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, xCoord + dir.offsetZ);
 		if (ent instanceof ITankContainer)
 		{
-			int filled = ((ITankContainer) ent).fill(0, LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
-			this.milkStored -= filled;
-			System.out.println("filled: " + filled);
+			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
+			if (filled > 0)
+			{
+				this.milkStored -= filled;
+				System.out.println("filled: " + filled);
+			}
 		}
 	}
 
