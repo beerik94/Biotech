@@ -45,7 +45,7 @@ public class MilkingMachineGui extends GuiContainer
 		{
 			displayText = "Disabled!";
 		}
-		else if (this.tileEntity.GetRedstoneSignal())
+		else if (!this.tileEntity.HasRedstoneSignal())
 		{
 			displayText = "Working";
 		}

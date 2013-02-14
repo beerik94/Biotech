@@ -80,7 +80,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{
-			if (!this.GetRedstoneSignal())// try to set this so that redstone single turns it off rather than on
+			if (!this.HasRedstoneSignal())// try to set this so that redstone single turns it off rather than on
 			{
 				this.setPowered(true);
 				this.chargeUp();
@@ -191,17 +191,18 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 			if (filled > 0)
 			{
 				this.milkStored -= filled;
-				System.out.println("filled: " + filled);
 			}
+			System.out.println("filled: " + filled);
 		}
 	}
 
 	/**
 	 * gets if this block is getting powered by redstone
 	 */
-	public boolean GetRedstoneSignal()
+	public boolean HasRedstoneSignal()
 	{
-		return worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord);
+		if(worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)){ return true; }
+		return false;
 	}
 
 	@Override
