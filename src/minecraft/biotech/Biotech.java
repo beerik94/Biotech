@@ -203,8 +203,8 @@ public class Biotech
 		ItemStack itemMotor = new ItemStack(OreDictionary.getOreID("motor"), 1, 0);
 		ItemStack itemBronzePlate = new ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0);
 		ItemStack itemChest = new ItemStack(Block.chest, 1);
-		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
 		*/
+		ItemStack itemBioFuel = new ItemStack(Block.bedrock, 1, 0);
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
 		ItemStack TillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
 		ItemStack PlanMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);

@@ -51,9 +51,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public static final int IDLE_TIME_AFTER_ACTION = 60;
 	public static final int IDLE_TIME_NO_ACTION = 30;
 
-	// Watts being used per pump action
-	public static final double WATTS_PER_PUMP_ACTION = 50;
-
 	// How much power is stored?
 	private double electricityStored = 0;
 	private double electricityMaxStored = 5000;
@@ -106,13 +103,17 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 					isMilking = false;
 				}
 
-				System.out.println("Machine:" + milkStored);
+				System.out.println("Machine:" + this.getMilkStored());
 				drainTo(ForgeDirection.DOWN);
 			}
 
 			if (this.ticks % 10 == 0 && this.playersUsing > 0)
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			}
+			if(this.getMilkStored() >= this.getMaxMilk())
+			{
+				this.setMilkStored(this.getMaxMilk());
 			}
 		}
 
@@ -157,11 +158,11 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 
 	public void milkCows()
 	{
-		if (CowList.size() != 0 && this.milkStored < this.milkMaxStored)
+		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk())
 		{
 			CowList.remove(0);
-			this.milkStored += 250;
-			this.setElectricityStored(this.electricityStored -= this.WATTS_PER_PUMP_ACTION);
+			this.setMilkStored(250);
+			this.setElectricityStored(this.electricityStored -= this.WATTS_PER_TICK);
 		}
 	}
 
@@ -190,7 +191,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
 			if (filled > 0)
 			{
-				this.milkStored -= filled;
+				this.setMilkStored(-filled);
 			}
 			System.out.println("filled: " + filled);
 		}
@@ -309,10 +310,20 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		return electricityMaxStored;
 	}
+	
+	public void setMilkStored(int amount)
+	{
+		this.milkStored += amount;
+	}
 
 	public int getMilkStored()
 	{
 		return this.milkStored;
+	}
+	
+	public int getMaxMilk()
+	{
+		return this.milkMaxStored;
 	}
 
 	@Override

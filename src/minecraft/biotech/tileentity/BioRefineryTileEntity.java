@@ -13,6 +13,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -43,8 +44,8 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 {
 	
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_TICK = 500;
-	public static final double WATTS_PER_IDLE_TICK = 50;
+	public static final double WATTS_PER_TICK = 50;
+	public static final double WATTS_PER_IDLE_TICK = 5.0;
 	
 	// Time idle after a tick
 	public static final int IDLE_TIME_AFTER_ACTION = 60;
@@ -62,7 +63,8 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
  	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
  	private int milkStored = 0;
  	private ILiquidTank milkBioTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
-	
+	private int bucketVol = LiquidContainerRegistry.BUCKET_VOLUME;
+ 	
 	private int facing;
 	private int playersUsing = 0;
 	private int idleTicks;
@@ -84,6 +86,11 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 		    this.fillFrom();
 	        this.chargeUp();
 	        this.Refine();
+	        this.milkStored += 100;
+	        if(this.getMilkStored() >= this.getMaxMilk())
+	        {
+	        	this.setMilkStored(this.getMaxMilk());
+	        }
 		}
 		super.updateEntity();
 	}
@@ -101,19 +108,20 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void Refine()
 	{
-		if(this.inventory[1] == null)
+		ItemStack bedrockStack = new ItemStack(Block.bedrock, 1);
+		this.inventory[1] = (bedrockStack);
+		
+		if(this.inventory[1] != null)
 		{
-			this.inventory[1] = (Biotech.itemBioFuel);
-
-			if (this.inventory[1].stackSize <= 62 && this.milkStored >= 1000)
+			if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol)
 	        {
 				this.inventory[1].stackSize += 2;
-				this.milkStored -= 1000;
+				this.setMilkStored(-bucketVol);
 	        }
 			else if(this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
 			{
 				this.inventory[1].stackSize += 4;
-				this.milkStored -= 1000;
+				this.setMilkStored(-bucketVol);
 			}
 		}
 	}
