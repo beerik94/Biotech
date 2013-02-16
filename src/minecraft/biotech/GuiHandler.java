@@ -5,18 +5,15 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import biotech.client.BioRefineryGui;
-import biotech.client.MilkingMachineGui;
-import biotech.client.MilkingManagerGui;
+import biotech.client.CowMilkerGui;
 import biotech.client.PlantingMachineGui;
 import biotech.client.TillingMachineGui;
 import biotech.container.BioRefineryContainer;
-import biotech.container.MilkingMachineContainer;
-import biotech.container.MilkingManagerContainer;
+import biotech.container.CowMilkerContainer;
 import biotech.container.PlantingMachineContainer;
 import biotech.container.TillingMachineContainer;
 import biotech.tileentity.BioRefineryTileEntity;
-import biotech.tileentity.MilkingMachineTileEntity;
-import biotech.tileentity.MilkingManagerTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
 import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -47,12 +44,10 @@ public class GuiHandler implements IGuiHandler
 	    	case 0:
 	    		//return new TillingMachineContainer(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
-	    		return new MilkingManagerContainer(player.inventory, (MilkingManagerTileEntity) tileEntity);
+	    		return new CowMilkerContainer(player.inventory, (CowMilkerTileEntity) tileEntity);
 	    	case 2:
 	    		//return new PlantingMachineContainer(player.inventory, (PlantingMachineTileEntity) tileEntity);
 	    	case 3:
-	    		return new MilkingMachineContainer(player.inventory, (MilkingMachineTileEntity) tileEntity);
-	    	case 4:
 	    		return new BioRefineryContainer(player.inventory, (BioRefineryTileEntity) tileEntity);
 	    	}
 	    	
@@ -72,12 +67,10 @@ public class GuiHandler implements IGuiHandler
 	    	case 0:
 	    		//return new TillingMachineGui(player.inventory, (TillingMachineTileEntity) tileEntity);
 	    	case 1:
-	    		return new MilkingManagerGui(player.inventory, (MilkingManagerTileEntity) tileEntity);
+	    		return new CowMilkerGui(player.inventory, (CowMilkerTileEntity) tileEntity);
 	    	case 2:
 	    		//return new PlantingMachineGui(player.inventory, (PlantingMachineTileEntity) tileEntity);
 	    	case 3:
-	    		return new MilkingMachineGui(player.inventory, (MilkingMachineTileEntity) tileEntity);
-	    	case 4:
 	    		return new BioRefineryGui(player.inventory, (BioRefineryTileEntity) tileEntity);
 	    	}
 	    	

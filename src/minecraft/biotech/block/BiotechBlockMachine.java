@@ -16,8 +16,7 @@ import universalelectricity.prefab.BlockMachine;
 import biotech.Biotech;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
-import biotech.tileentity.MilkingMachineTileEntity;
-import biotech.tileentity.MilkingManagerTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
 import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.relauncher.Side;
@@ -32,9 +31,8 @@ public class BiotechBlockMachine extends BlockMachine
 	// 4 == Fertilizer
 	// 5 == Miner
 	// 6 == Filler
-	// 7 == Milk Manager
-	// 8 == Milking Machine
-	// 9 == BioFuel Maker
+	// 7 == Cow Milker
+	// 8 == BioFuel Maker
 
 	public static final int TILLER_METADATA = 0;
 	public static final int PLANTER_METADATA = 1;
@@ -43,9 +41,8 @@ public class BiotechBlockMachine extends BlockMachine
 	public static final int FERTILIZER_METADATA = 4;
 	public static final int MINER_METADATA = 5;
 	public static final int FILLER_METADATA = 6;
-	public static final int MILK_MANAGER_METADATA = 7;
-	public static final int MILK_MACHINE_METADATA = 8;
-	public static final int BIO_REFINERY_METADATA = 9;
+	public static final int COW_MILKER_METADATA = 7;
+	public static final int BIO_REFINERY_METADATA = 8;
 
 	public BiotechBlockMachine(int id, int textureIndex)
 	{
@@ -197,22 +194,6 @@ public class BiotechBlockMachine extends BlockMachine
 			}
 		}
 		else if (meta == 8)
-		{
-			switch (side)
-			{
-				case 0:
-					return 3;
-				case 1:
-					return 18;
-				case 2:
-					return 32;
-				case 3:
-					return 3;
-				default:
-					return 3;
-			}
-		}
-		else if (meta == 9)
 		{
 			switch (side)
 			{
@@ -491,30 +472,6 @@ public class BiotechBlockMachine extends BlockMachine
 				return 3;
 			}
 		}
-		else if (metadata == 9)
-		{
-			if (side == front)
-			{
-				return tileEntity.isPowered ? 48 : 32;
-			}
-			else if (side == back)
-			{
-				return 3;
-			}
-			else if (side == bottom)
-			{
-				return 19;
-			}
-			else if (side == top)
-			{
-				return 18;
-			}
-			else
-			{
-				return 3;
-			}
-		}
-
 		else
 		{
 			return 3;
@@ -593,7 +550,6 @@ public class BiotechBlockMachine extends BlockMachine
 		*/
 		list.add(new ItemStack(i, 1, 7));
 		list.add(new ItemStack(i, 1, 8));
-		list.add(new ItemStack(i, 1, 9));
 	}
 
 	@Override
@@ -677,12 +633,6 @@ public class BiotechBlockMachine extends BlockMachine
 						player.openGui(Biotech.instance, 3, world, x, y, z);
 						return true;
 					}
-				case 9:
-					if (!player.isSneaking())
-					{
-						player.openGui(Biotech.instance, 4, world, x, y, z);
-						return true;
-					}
 			}
 		}
 		return true;
@@ -709,10 +659,8 @@ public class BiotechBlockMachine extends BlockMachine
 			case 5:
 			case 6:
 			case 7:
-				return new MilkingManagerTileEntity();
+				return new CowMilkerTileEntity();
 			case 8:
-				return new MilkingMachineTileEntity();
-			case 9:
 				return new BioRefineryTileEntity();
 			default:
 				return new BasicMachineTileEntity();

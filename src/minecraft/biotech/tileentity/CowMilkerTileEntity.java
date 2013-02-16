@@ -9,9 +9,10 @@ import liquidmechanics.api.helpers.ColorCode;
 import liquidmechanics.api.liquids.IPressure;
 import liquidmechanics.api.liquids.LiquidData;
 import liquidmechanics.api.liquids.LiquidHandler;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -21,8 +22,12 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.ISidedInventory;
+import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
@@ -34,7 +39,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure, IReadOut
+public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IReadOut, IPressure
 {
 	protected List<EntityCow> CowList = new ArrayList<EntityCow>();
 
@@ -50,27 +55,42 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	private double electricityStored = 0;
 	private double electricityMaxStored = 5000;
 
-	private boolean isMilking = false;
+	// How much milk is stored?
+	private int milkStored = 0;
+	private int milkMaxStored = 7 * LiquidContainerRegistry.BUCKET_VOLUME;
 
-	// Is the machine currently powered, and did it change?
-	public boolean prevIsPowered, isPowered = false;
+	private boolean isMilking = false;
+	public boolean bucketIn = false;
+	public int bucketTimeMax = 100;
+	public int bucketTime = 0;
 
 	// Amount of milliBuckets of internal storage
 	private ColorCode color = ColorCode.WHITE;
 
-	private static final int milkMaxStored = 3 * LiquidContainerRegistry.BUCKET_VOLUME;
-
-	private int milkStored = 0;
+	// Is the machine currently powered, and did it change?
+	public boolean prevIsPowered, isPowered = false;
 
 	private int facing;
 	private int playersUsing = 0;
 	private int idleTicks;
 
+	public int currentX = 0;
+	public int currentZ = 0;
+	public int currentY = 0;
+
+	public int minX, maxX;
+	public int minZ, maxZ;
+
+	public CowMilkerTileEntity()
+	{
+		super();
+	}
+
 	@Override
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if (!worldObj.isRemote && !this.HasRedstoneSignal())
+		if (!worldObj.isRemote && this.HasRedstoneSignal())
 		{
 			/* Per Tick Processes */
 			this.setPowered(true);
@@ -95,10 +115,39 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
+			System.out.println("Milk: " + this.getMilkStored());
+			
+			if (milkStored >= 30 && inventory[2] != null && inventory[3] == null)
+			{
+				this.bucketIn = true;
+				if (bucketTime >= bucketTimeMax)
+				{
+					if (inventory[2].stackSize >= 1)
+					{
+						inventory[2].stackSize -= 1;
+					}
+					else
+					{
+						inventory[2] = null;
+					}
+					ItemStack bMilk = new ItemStack(Item.bucketMilk);
+					inventory[3] = (bMilk);
+					milkStored -= 30;
+					bucketTime = 0;
+					this.bucketIn = false;
+				}
+			}
+			if (bucketTime < bucketTimeMax)
+			{
+				bucketTime++;
+			}
+			if (milkStored >= milkMaxStored)
+			{
+				milkStored = milkMaxStored;
+			}
 		}
-
 	}
-
+	
 	/**
 	 * Scans for cows for milking
 	 */
@@ -114,7 +163,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk())
 		{
 			CowList.remove(0);
-			this.setMilkStored(250, true);
+			this.setMilkStored(25, true);
 			this.setElectricityStored(this.electricityStored -= this.WATTS_PER_TICK);
 		}
 	}
@@ -144,8 +193,9 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
 			if (filled > 0)
 			{
-				this.setMilkStored(-filled, true);
+				this.setMilkStored(filled, false);
 			}
+			System.out.println("filled: " + filled);
 		}
 	}
 
@@ -162,13 +212,14 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void readFromNBT(NBTTagCompound tagCompound)
 	{
 		super.readFromNBT(tagCompound);
-		// vars
-		this.facing = tagCompound.getShort("facing");
-		this.electricityStored = tagCompound.getDouble("electricityStored");
-		this.milkStored = tagCompound.getInteger("milkStored");
+		// this.progressTime = tagCompound.getShort("Progress");
 
-		// inventory
+		this.facing = tagCompound.getShort("facing");
+		this.isPowered = tagCompound.getBoolean("isPowered");
+		this.milkStored = tagCompound.getInteger("milkStored");
+		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
+
 		for (int i = 0; i < tagList.tagCount(); i++)
 		{
 			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
@@ -185,13 +236,14 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void writeToNBT(NBTTagCompound tagCompound)
 	{
 		super.writeToNBT(tagCompound);
-		// vars
-		tagCompound.setShort("facing", (short) this.facing);
-		tagCompound.setDouble("electricityStored", this.electricityStored);
-		tagCompound.setInteger("milkStored", this.milkStored);
+		// tagCompound.setShort("Progress", (short)this.progressTime);
 
-		// inventory
+		tagCompound.setShort("facing", (short) this.facing);
+		tagCompound.setBoolean("isPowered", this.isPowered);
+		tagCompound.setInteger("milkStored", (int) this.milkStored);
+		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
+
 		for (int i = 0; i < inventory.length; i++)
 		{
 			ItemStack stack = inventory[i];
@@ -204,13 +256,14 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 				itemList.appendTag(tag);
 			}
 		}
+
 		tagCompound.setTag("Inventory", itemList);
 	}
 
 	@Override
 	public String getInvName()
 	{
-		return "Milking Machine";
+		return "Cow Milker";
 	}
 
 	@Override
@@ -248,21 +301,6 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		this.facing = facing;
 	}
 
-	public double getElectricityStored()
-	{
-		return electricityStored;
-	}
-
-	public void setElectricityStored(double joules)
-	{
-		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
-	}
-
-	public double getMaxElectricity()
-	{
-		return electricityMaxStored;
-	}
-
 	/**
 	 * Sets the current volume of milk stored
 	 * 
@@ -273,11 +311,11 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		if (add)
 		{
-			this.milkStored = Math.max(this.milkMaxStored, Math.min(0, this.milkStored + amount));
+			this.milkStored += amount;
 		}
 		else
 		{
-			this.milkStored = Math.max(this.milkMaxStored, Math.min(0, amount));
+			this.milkStored -= amount;
 		}
 	}
 
@@ -319,4 +357,20 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		return "Milk: " + this.milkStored + " Units";
 	}
+
+	public double getElectricityStored()
+	{
+		return electricityStored;
+	}
+
+	public void setElectricityStored(double joules)
+	{
+		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
+	}
+
+	public double getMaxElectricity()
+	{
+		return electricityMaxStored;
+	}
+
 }

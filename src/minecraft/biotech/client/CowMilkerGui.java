@@ -9,24 +9,24 @@ import org.lwjgl.opengl.GL11;
 import universalelectricity.core.electricity.ElectricInfo;
 import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import biotech.Biotech;
-import biotech.container.MilkingManagerContainer;
-import biotech.tileentity.MilkingManagerTileEntity;
+import biotech.container.CowMilkerContainer;
+import biotech.tileentity.CowMilkerTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class MilkingManagerGui extends GuiContainer
+public class CowMilkerGui extends GuiContainer
 {
-	private MilkingManagerTileEntity tileEntity;
+	private CowMilkerTileEntity tileEntity;
 
 	public static String MILKINGMANAGER_GUI = Biotech.FILE_PATH + "milkingmanager.png";
 	
 	private int containerWidth;
 	private int containerHeight;
 
-	public MilkingManagerGui(InventoryPlayer playerInventory, MilkingManagerTileEntity tileEntity)
+	public CowMilkerGui(InventoryPlayer playerInventory, CowMilkerTileEntity tileEntity)
 	{
-		super(new MilkingManagerContainer(playerInventory, tileEntity));
+		super(new CowMilkerContainer(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}
@@ -45,7 +45,7 @@ public class MilkingManagerGui extends GuiContainer
 		{
 			displayText = "Disabled!";
 		}
-		else if (this.tileEntity.isRedstoneSignal())
+		else if (this.tileEntity.HasRedstoneSignal())
 		{
 			displayText = "Working";
 		}

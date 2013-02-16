@@ -9,13 +9,13 @@ import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.SlotElectricItem;
 import biotech.slots.emptyBucketSlot;
 import biotech.slots.milkBucketSlot;
-import biotech.tileentity.MilkingManagerTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
 
-public class MilkingManagerContainer extends Container
+public class CowMilkerContainer extends Container
 {
-	private MilkingManagerTileEntity tileEntity;
+	private CowMilkerTileEntity tileEntity;
 
-	public MilkingManagerContainer(InventoryPlayer par1InventoryPlayer, MilkingManagerTileEntity te)
+	public CowMilkerContainer(InventoryPlayer par1InventoryPlayer, CowMilkerTileEntity te)
 	{
 		this.tileEntity = te;
 

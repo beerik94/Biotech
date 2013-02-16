@@ -25,8 +25,7 @@ import biotech.item.bioCircuitItem;
 import biotech.item.biotechItemBlock;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
-import biotech.tileentity.MilkingMachineTileEntity;
-import biotech.tileentity.MilkingManagerTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
 import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.common.FMLLog;
@@ -213,8 +212,7 @@ public class Biotech
 		ItemStack FertMachine =	new ItemStack(Biotech.biotechBlockMachine, 1, 4);
 		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
 		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
-		ItemStack MilkManager = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
-		ItemStack MilkMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 8);
+		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
 		
 		/**
 		 * Register the TileEntity's
@@ -222,8 +220,7 @@ public class Biotech
 		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
 		//GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
 		//GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
-		GameRegistry.registerTileEntity(MilkingManagerTileEntity.class, "MilkingManagerTileEntity");
-		GameRegistry.registerTileEntity(MilkingMachineTileEntity.class, "MilkingMachineTileEntity");
+		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "MilkingManagerTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
 
 		/**
@@ -271,9 +268,8 @@ public class Biotech
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
 		*/
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Milking Manager");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.8.name", "Milking Machine");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.9.name", "Bio Refinery");
+		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Cow Milker");
+		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.8.name", "Bio Refinery");
 
 		// CreativeTab
 		LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
@@ -283,8 +279,7 @@ public class Biotech
 		
 		//GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
 		//GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(MilkManager, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(MilkMachine, new Object[] { "@@@", "@!@", "@@@", '@', itemStone, '!', "motor"}));
+		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
 				
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
