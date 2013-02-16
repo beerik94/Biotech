@@ -138,12 +138,10 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	 */
 	public void drainTo(ForgeDirection dir)
 	{
-		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, xCoord + dir.offsetZ);
-		System.out.println("Draining To: "+ (ent != null && ent instanceof ITankContainer ? "Tank" : " other"));
+		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 		if (ent instanceof ITankContainer)
 		{
 			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
-			System.out.println("Filled: "+filled);
 			if (filled > 0)
 			{
 				this.setMilkStored(-filled, true);
