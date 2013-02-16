@@ -36,11 +36,6 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class MilkingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure, IReadOut
 {
-	private int tickCounter;
-	private int scantickCounter;
-	private int drainCounter;
-
-	private MilkingManagerTileEntity TileManager;
 	protected List<EntityCow> CowList = new ArrayList<EntityCow>();
 
 	// Watts being used per action / idle action
@@ -75,45 +70,30 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if (!worldObj.isRemote)
+		if (!worldObj.isRemote && !this.HasRedstoneSignal())
 		{
-			if (!this.HasRedstoneSignal())// try to set this so that redstone single turns it off rather than on
+			/* Per Tick Processes */
+			this.setPowered(true);
+			this.chargeUp();
+			this.drainTo(ForgeDirection.DOWN);
+
+			/* SCAN FOR COWS */
+			if (this.ticks % 40 == 0)
 			{
-				this.setPowered(true);
-				this.chargeUp();
-				if (scantickCounter++ >= 40)
-				{
-					scanForCows();
-					if (TileManager == null)
-					{
-						scanForManager();
-					}
-					scantickCounter = 0;
-				}
-
-				if (CowList.size() != 0 && tickCounter++ >= 100)
-				{
-					milkCows();
-					isMilking = true;
-					tickCounter = 0;
-					this.setPowered(false);
-				}
-				else
-				{
-					isMilking = false;
-				}
-
-				System.out.println("Machine:" + this.getMilkStored());
-				drainTo(ForgeDirection.DOWN);
+				scanForCows();
 			}
 
-			if (this.ticks % 10 == 0 && this.playersUsing > 0)
+			/* Milk Cows */
+			if (this.ticks % 100 == 0)
+			{
+				milkCows();
+				this.setPowered(false);
+			}
+
+			/* Update Client */
+			if (this.playersUsing > 0 && this.ticks % 3 == 0)
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
-			}
-			if(this.getMilkStored() >= this.getMaxMilk())
-			{
-				this.setMilkStored(this.getMaxMilk());
 			}
 		}
 
@@ -129,39 +109,12 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 		this.CowList.addAll(worldObj.getEntitiesWithinAABB(EntityCow.class, searchBox));
 	}
 
-	public void scanForManager()
-	{
-		int xminrange = xCoord - getScanRange();
-		int xmaxrange = xCoord + getScanRange() + 1;
-		int yminrange = yCoord - getScanRange();
-		int ymaxrange = yCoord + getScanRange() + 1;
-		int zminrange = zCoord - getScanRange();
-		int zmaxrange = zCoord + getScanRange() + 1;
-
-		for (int xx = xminrange; xx <= xmaxrange; xx++)
-		{
-			for (int yy = yminrange; yy <= ymaxrange; yy++)
-			{
-				for (int zz = zminrange; zz <= zmaxrange; zz++)
-				{
-					TileEntity tileEntity = worldObj.getBlockTileEntity(xx, yy, zz);
-
-					if (tileEntity instanceof MilkingManagerTileEntity)
-					{
-						TileManager = (MilkingManagerTileEntity) tileEntity;
-					}
-				}
-			}
-		}
-
-	}
-
 	public void milkCows()
 	{
 		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk())
 		{
 			CowList.remove(0);
-			this.setMilkStored(250);
+			this.setMilkStored(250, true);
 			this.setElectricityStored(this.electricityStored -= this.WATTS_PER_TICK);
 		}
 	}
@@ -186,14 +139,15 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void drainTo(ForgeDirection dir)
 	{
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, xCoord + dir.offsetZ);
+		System.out.println("Draining To: "+ (ent != null && ent instanceof ITankContainer ? "Tank" : " other"));
 		if (ent instanceof ITankContainer)
 		{
 			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
+			System.out.println("Filled: "+filled);
 			if (filled > 0)
 			{
-				this.setMilkStored(-filled);
+				this.setMilkStored(-filled, true);
 			}
-			System.out.println("filled: " + filled);
 		}
 	}
 
@@ -202,7 +156,7 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	 */
 	public boolean HasRedstoneSignal()
 	{
-		if(worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)){ return true; }
+		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) { return true; }
 		return false;
 	}
 
@@ -310,17 +264,30 @@ public class MilkingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		return electricityMaxStored;
 	}
-	
-	public void setMilkStored(int amount)
+
+	/**
+	 * Sets the current volume of milk stored
+	 * 
+	 * @param amount - volume sum
+	 * @param add - if true it will add the amount to the current sum
+	 */
+	public void setMilkStored(int amount, boolean add)
 	{
-		this.milkStored += amount;
+		if (add)
+		{
+			this.milkStored = Math.max(this.milkMaxStored, Math.min(0, this.milkStored + amount));
+		}
+		else
+		{
+			this.milkStored = Math.max(this.milkMaxStored, Math.min(0, amount));
+		}
 	}
 
 	public int getMilkStored()
 	{
 		return this.milkStored;
 	}
-	
+
 	public int getMaxMilk()
 	{
 		return this.milkMaxStored;
