@@ -162,8 +162,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk())
 		{
-			CowList.remove(0);
-			this.setMilkStored(25, true);
+			int vol = (10 * CowList.size());
+			this.setMilkStored(vol, true);
 			this.setElectricityStored(this.electricityStored -= this.WATTS_PER_TICK);
 		}
 	}

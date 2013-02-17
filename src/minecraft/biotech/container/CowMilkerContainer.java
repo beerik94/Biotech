@@ -9,6 +9,7 @@ import universalelectricity.core.implement.IItemElectric;
 import universalelectricity.prefab.SlotElectricItem;
 import biotech.slots.emptyBucketSlot;
 import biotech.slots.milkBucketSlot;
+import biotech.slots.rangeUpgradeSlot;
 import biotech.tileentity.CowMilkerTileEntity;
 
 public class CowMilkerContainer extends Container
@@ -20,8 +21,11 @@ public class CowMilkerContainer extends Container
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 16));
+		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 51));
 
+		// Slot for Range Upgrade
+		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
+		
 		// Slot for empty bucket
 		this.addSlotToContainer(new emptyBucketSlot(tileEntity, 2, 152, 16));
 			

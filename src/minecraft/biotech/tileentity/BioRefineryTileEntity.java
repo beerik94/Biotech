@@ -40,9 +40,8 @@ import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
-public class BioRefineryTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver, IColorCoded, IPressure, IReadOut
+public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure, IReadOut
 {
-	
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 50;
 	public static final double WATTS_PER_IDLE_TICK = 5.0;
@@ -83,23 +82,19 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-		    this.fillFrom();
+		    this.fillFrom(ForgeDirection.DOWN);
 	        this.chargeUp();
 	        this.Refine();
-	        this.milkStored += 100;
 	        if(this.getMilkStored() >= this.getMaxMilk())
 	        {
-	        	this.setMilkStored(this.getMaxMilk());
+	        	this.milkStored = this.getMaxMilk();
 	        }
 		}
 		super.updateEntity();
 	}
 	
 	public boolean isRedstoneSignal(){
-		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-		{
-			return true;
-		}
+		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) { return true; }
 		return false;
 	}
 	
@@ -116,12 +111,12 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 			if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol)
 	        {
 				this.inventory[1].stackSize += 2;
-				this.setMilkStored(-bucketVol);
+				this.setMilkStored(bucketVol, false);
 	        }
 			else if(this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
 			{
 				this.inventory[1].stackSize += 4;
-				this.setMilkStored(-bucketVol);
+				this.setMilkStored(bucketVol, false);
 			}
 		}
 	}
@@ -129,13 +124,13 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
 	/**
      * Use this to fill from a pipe or tank connected to the right side
      */
-    public void fillFrom()
+    public void fillFrom(ForgeDirection dir)
     {
-            TileEntity ent = worldObj.getBlockTileEntity(xCoord, yCoord-1, xCoord);
+            TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
             if(ent instanceof ITankContainer)
             {
-                    ITankContainer tank = (ITankContainer) ent;
-                    tank.drain(ForgeDirection.DOWN.getOpposite(), LiquidContainerRegistry.BUCKET_VOLUME, true);
+                    ((ITankContainer) ent).drain(dir, bucketVol, true);
+                    this.setMilkStored(bucketVol, true);
             }
     }
 	
@@ -250,9 +245,22 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IIn
     	return this.milkStored;
     }
     
-    public void setMilkStored(int amount)
+	/**
+	 * Sets the current volume of milk stored
+	 * 
+	 * @param amount - volume sum
+	 * @param add - if true it will add the amount to the current sum
+	 */
+	public void setMilkStored(int amount, boolean add)
 	{
-		this.milkStored = amount;
+		if (add)
+		{
+			this.milkStored += amount;
+		}
+		else
+		{
+			this.milkStored -= amount;
+		}
 	}
     
     public int getMaxMilk()
