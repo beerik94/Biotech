@@ -61,7 +61,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
     private ColorCode color = ColorCode.WHITE;
  	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
  	private int milkStored = 0;
- 	private ILiquidTank milkBioTank = new LiquidTank(Biotech.milkLiquid, milkMaxStored, this);
 	private int bucketVol = LiquidContainerRegistry.BUCKET_VOLUME;
  	
 	private int facing;
@@ -84,7 +83,10 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 			}
 		    this.fillFrom(ForgeDirection.DOWN);
 	        this.chargeUp();
-	        this.Refine();
+	        if(this.inventory[1] != null && this.ticks % 25 == 0)
+	        {
+	        	this.Refine();
+	        }
 	        if(this.getMilkStored() >= this.getMaxMilk())
 	        {
 	        	this.milkStored = this.getMaxMilk();
@@ -104,21 +106,45 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public void Refine()
 	{
 		ItemStack bedrockStack = new ItemStack(Block.bedrock, 1);
-		this.inventory[1] = (bedrockStack);
 		
-		if(this.inventory[1] != null)
-		{
-			if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol)
-	        {
+		if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol)
+        {
+			if(this.inventory[1] == null)
+			{
+				this.inventory[1] = (bedrockStack);
+				this.inventory[1].stackSize += 1;
+			}
+			else
+			{
 				this.inventory[1].stackSize += 2;
-				this.setMilkStored(bucketVol, false);
-	        }
-			else if(this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
+			}
+        }
+		
+		if(this.inventory[2] != null)
+		{
+			if(this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
+			{
+				if(this.inventory[1] == null)
+				{
+					this.inventory[1] = (bedrockStack);
+					this.inventory[1].stackSize += 1;
+				}
+				else
+				{
+					this.inventory[1].stackSize += 4;
+				}
+			}
+			else if(this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
 			{
 				this.inventory[1].stackSize += 4;
-				this.setMilkStored(bucketVol, false);
+			}
+			else if(this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 && this.milkStored >= 1000)
+			{
+				this.inventory[1].stackSize += 10;
+				
 			}
 		}
+		this.setMilkStored(bucketVol, false);
 	}
 	
 	/**

@@ -112,9 +112,8 @@ public class Biotech
 	// 4 == Fertilizer
 	// 5 == Miner
 	// 6 == Filler
-	// 7 == Milking Manager
-	// 8 == Milking Machine
-	// 9 == Bio Refinery
+	// 7 == Cow Milker
+	// 8 == Bio Refinery
 
 	// Liquid Stack Milk
 	public static LiquidStack milkLiquid;
@@ -203,7 +202,7 @@ public class Biotech
 		ItemStack itemBronzePlate = new ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0);
 		ItemStack itemChest = new ItemStack(Block.chest, 1);
 		*/
-		ItemStack itemBioFuel = new ItemStack(Block.bedrock, 1, 0);
+		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
 		ItemStack TillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
 		ItemStack PlanMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
@@ -218,8 +217,8 @@ public class Biotech
 		 * Register the TileEntity's
 		 */
 		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
-		//GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
-		//GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
+		GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
+		GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
 		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "MilkingManagerTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
 
@@ -259,10 +258,11 @@ public class Biotech
 		LanguageRegistry.addName(bioCircuitRangeUpgrade, "Bio Circuit - Range Upgrade");
 
 		// Subblocks
-		/*
+		
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.0.name", "Tilling Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.1.name", "Planting Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
+		/*
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.3.name", "Harvesting Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
 		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
@@ -277,8 +277,9 @@ public class Biotech
 		// Recipes
 		//TODO Wiebbe add your recipes and fix these 2 machines so we can release.
 		
-		//GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
-		//GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] { "###", "@!@", "###", '@', Item.hoeStone, '!', "motor", '#', itemStone }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] { "###", "@!@", "###", '@', Item.appleRed, '!', "motor", '#', itemStone }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] { "###", "@!@", "###", '@', Item.axeStone, '!', "motor", '#', itemStone }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
 				
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);

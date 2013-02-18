@@ -17,6 +17,7 @@ import biotech.Biotech;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
+import biotech.tileentity.CuttingMachineTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
 import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.relauncher.Side;
@@ -61,8 +62,7 @@ public class BiotechBlockMachine extends BlockMachine
 	public int getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
 		//TODO Will be added when Wiebbe adds the machines or if I(LiQuiD) knows what the machines have to be programmed like
-		//All machines commented except the milking machines.
-		/*
+		
 		if (meta == 0)
 		{
 			switch (side)
@@ -74,7 +74,7 @@ public class BiotechBlockMachine extends BlockMachine
 				case 2:
 					return 32;
 				case 3:
-					return 0;
+					return 3;
 				default:
 					return 3;
 			}
@@ -90,7 +90,7 @@ public class BiotechBlockMachine extends BlockMachine
 				case 2:
 					return 32;
 				case 3:
-					return 0;
+					return 3;
 				default:
 					return 3;
 			}
@@ -106,11 +106,12 @@ public class BiotechBlockMachine extends BlockMachine
 				case 2:
 					return 32;
 				case 3:
-					return 0;
+					return 3;
 				default:
 					return 3;
 			}
 		}
+		/*
 		else if (meta == 3)
 		{
 			switch (side)
@@ -176,8 +177,7 @@ public class BiotechBlockMachine extends BlockMachine
 			}
 		}
 		*/
-		//else 
-			if (meta == 7)
+		else if (meta == 7)
 		{
 			switch (side)
 			{
@@ -262,7 +262,7 @@ public class BiotechBlockMachine extends BlockMachine
 			default:
 				break;
 		}
-		/*
+		
 		if (metadata == 0)
 		{
 			if (side == front)
@@ -271,11 +271,11 @@ public class BiotechBlockMachine extends BlockMachine
 			}
 			else if (side == back)
 			{
-				return 0;
+				return 3;
 			}
 			else if (side == bottom)
 			{
-				return 3;
+				return 19;
 			}
 			else if (side == top)
 			{
@@ -294,11 +294,11 @@ public class BiotechBlockMachine extends BlockMachine
 			}
 			else if (side == back)
 			{
-				return 0;
+				return 3;
 			}
 			else if (side == bottom)
 			{
-				return 3;
+				return 19;
 			}
 			else if (side == top)
 			{
@@ -317,11 +317,11 @@ public class BiotechBlockMachine extends BlockMachine
 			}
 			else if (side == back)
 			{
-				return 0;
+				return 3;
 			}
 			else if (side == bottom)
 			{
-				return 3;
+				return 19;
 			}
 			else if (side == top)
 			{
@@ -332,6 +332,7 @@ public class BiotechBlockMachine extends BlockMachine
 				return 3;
 			}
 		}
+		/*
 		else if (metadata == 3)
 		{
 			if (side == front)
@@ -425,8 +426,7 @@ public class BiotechBlockMachine extends BlockMachine
 			}
 		}
 		*/
-		//else 
-			if (metadata == 7)
+		else if (metadata == 7)
 		{
 			if (side == front)
 			{
@@ -539,10 +539,10 @@ public class BiotechBlockMachine extends BlockMachine
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
-		/*
 		list.add(new ItemStack(i, 1, 0));
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
+		/*
 		list.add(new ItemStack(i, 1, 3));
 		list.add(new ItemStack(i, 1, 4));
 		list.add(new ItemStack(i, 1, 5));
@@ -617,22 +617,18 @@ public class BiotechBlockMachine extends BlockMachine
 					}
 					*/
 				case 2:
+					player.openGui(Biotech.instance,  4,  world, x, y, z);
+					return true;
 				case 3:
 				case 4:
 				case 5:
 				case 6:
 				case 7:
-					if (!player.isSneaking())
-					{
-						player.openGui(Biotech.instance, 1, world, x, y, z);
-						return true;
-					}
+					player.openGui(Biotech.instance, 1, world, x, y, z);
+					return true;
 				case 8:
-					if (!player.isSneaking())
-					{
-						player.openGui(Biotech.instance, 3, world, x, y, z);
-						return true;
-					}
+					player.openGui(Biotech.instance, 3, world, x, y, z);
+					return true;
 			}
 		}
 		return true;
@@ -654,6 +650,7 @@ public class BiotechBlockMachine extends BlockMachine
 			case 1:
 				//return new PlantingMachineTileEntity();
 			case 2:
+				return new CuttingMachineTileEntity();
 			case 3:
 			case 4:
 			case 5:
