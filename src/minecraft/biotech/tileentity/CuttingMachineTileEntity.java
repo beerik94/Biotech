@@ -15,8 +15,8 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class CuttingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver
-{
+public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
+		IPacketReceiver {
 
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 25;
@@ -44,26 +44,22 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	public int minX, maxX;
 	public int minZ, maxZ;
 
-	public CuttingMachineTileEntity()
-	{
+	public CuttingMachineTileEntity() {
 		super();
 	}
 
 	@Override
-	public void updateEntity()
-	{
+	public void updateEntity() {
 		super.updateEntity();
-		if (!worldObj.isRemote && this.HasRedstoneSignal())
-		{
+		if (!worldObj.isRemote && this.HasRedstoneSignal()) {
 			/* Per Tick Processes */
 			this.setPowered(true);
 			this.chargeUp();
-			
 
 			/* Update Client */
-			if (this.playersUsing > 0 && this.ticks % 3 == 0)
-			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			if (this.playersUsing > 0 && this.ticks % 3 == 0) {
+				PacketManager.sendPacketToClients(getDescriptionPacket(),
+						this.worldObj, new Vector3(this), 12);
 			}
 		}
 	}
@@ -71,15 +67,17 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	/**
 	 * gets if this block is getting powered by redstone
 	 */
-	public boolean HasRedstoneSignal()
-	{
-		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) { return true; }
+	public boolean HasRedstoneSignal() {
+		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
+				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
+						zCoord)) {
+			return true;
+		}
 		return false;
 	}
 
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound)
-	{
+	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
 		// this.progressTime = tagCompound.getShort("Progress");
 
@@ -88,21 +86,18 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
-		for (int i = 0; i < tagList.tagCount(); i++)
-		{
+		for (int i = 0; i < tagList.tagCount(); i++) {
 			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
 			byte slot = tag.getByte("Slot");
 
-			if (slot >= 0 && slot < inventory.length)
-			{
+			if (slot >= 0 && slot < inventory.length) {
 				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
 			}
 		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
-	{
+	public void writeToNBT(NBTTagCompound tagCompound) {
 		super.writeToNBT(tagCompound);
 		// tagCompound.setShort("Progress", (short)this.progressTime);
 
@@ -111,12 +106,10 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
 
-		for (int i = 0; i < inventory.length; i++)
-		{
+		for (int i = 0; i < inventory.length; i++) {
 			ItemStack stack = inventory[i];
 
-			if (stack != null)
-			{
+			if (stack != null) {
 				NBTTagCompound tag = new NBTTagCompound();
 				tag.setByte("Slot", (byte) i);
 				stack.writeToNBT(tag);
@@ -128,32 +121,28 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	}
 
 	@Override
-	public String getInvName()
-	{
+	public String getInvName() {
 		return "Wood Cutter";
 	}
 
 	@Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
+	public void handlePacketData(INetworkManager network, int packetType,
+			Packet250CustomPayload packet, EntityPlayer player,
+			ByteArrayDataInput dataStream) {
+		try {
+			if (this.worldObj.isRemote) {
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored);
+	public Packet getDescriptionPacket() {
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered,
+				this.facing, this.electricityStored);
 	}
 }

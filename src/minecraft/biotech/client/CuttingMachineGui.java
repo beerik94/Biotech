@@ -1,6 +1,5 @@
 package biotech.client;
 
-public class CuttingMachineGui 
-{
+public class CuttingMachineGui {
 
 }

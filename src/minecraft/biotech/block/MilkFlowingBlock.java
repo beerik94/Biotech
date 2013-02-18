@@ -17,7 +17,7 @@ public class MilkFlowingBlock extends BlockFluid implements ILiquid {
 		setHardness(100F);
 		setLightOpacity(3);
 		setBlockName("Milk(Flowing)");
-		
+
 		this.blockIndexInTexture = textureIndex;
 	}
 

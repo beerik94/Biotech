@@ -13,7 +13,7 @@ public class MilkStillBlock extends BlockStationary implements ILiquid {
 		setHardness(100F);
 		setLightOpacity(3);
 		setBlockName("Milk(Still)");
-		
+
 		this.blockIndexInTexture = textureIndex;
 	}
 

@@ -6,19 +6,20 @@ import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import cpw.mods.fml.common.FMLCommonHandler;
 
-public class CmdWorker extends CommandBase 
-{
-	public CmdWorker() {}
+public class CmdWorker extends CommandBase {
+	public CmdWorker() {
+	}
+
 	@Override
-	public String getCommandName() 
-	{
+	public String getCommandName() {
 		return "biotech";
 	}
+
 	@Override
 	public void processCommand(ICommandSender var1, String[] var2) {
 		if (var2[1] == "version") {
 			var1.sendChatToPlayer("Biotech mod version: " + "0.1.1");
-		}else{
+		} else {
 			var1.sendChatToPlayer("Usage: " + getCommandName() + " version");
 		}
 	}

@@ -45,10 +45,9 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.7",dependencies = "after:LiquidMechanics")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.7", dependencies = "after:LiquidMechanics")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
-public class Biotech
-{
+public class Biotech {
 	// The instance of your mod that Forge uses.
 	@Instance("Biotech")
 	public static Biotech instance;
@@ -74,7 +73,8 @@ public class Biotech
 	private final static int defaultBiotechBlockId = firstBlockId + 1;
 
 	// Default config loader
-	public static final Configuration Config = new Configuration(new File(Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
+	public static final Configuration Config = new Configuration(new File(
+			Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
 
 	// Item templates
 	public static Item biotechPotionItem;
@@ -95,15 +95,15 @@ public class Biotech
 	public static ItemStack bioCircuitCarrots;
 	public static ItemStack bioCircuitPotatoes;
 	public static ItemStack bioCircuitRangeUpgrade;
-	
+
 	// Mekanism bioFuel
 	public static ItemStack itemBioFuel;
-	
+
 	// Block templates
 	public static Block biotechBlockMachine;
 	public static Block milkMoving;
 	public static Block milkStill;
-	
+
 	// Metadata for biotechBlockMachine
 	// 0 == Tiller
 	// 1 == Foresting
@@ -135,9 +135,10 @@ public class Biotech
 	public static Logger biotechLogger = Logger.getLogger("Biotech");
 
 	@PreInit
-	public void preInit(FMLPreInitializationEvent event)
-	{
-		UniversalElectricity.register(this, UniversalElectricity.MAJOR_VERSION, UniversalElectricity.MINOR_VERSION, UniversalElectricity.REVISION_VERSION, true);
+	public void preInit(FMLPreInitializationEvent event) {
+		UniversalElectricity.register(this, UniversalElectricity.MAJOR_VERSION,
+				UniversalElectricity.MINOR_VERSION,
+				UniversalElectricity.REVISION_VERSION, true);
 
 		biotechLogger.setParent(FMLLog.getLogger());
 		biotechLogger.info("Starting Biotech");
@@ -148,11 +149,16 @@ public class Biotech
 		/**
 		 * Define the items and blocks.
 		 */
-		this.bioCircuit = new bioCircuitItem(Config.getItem("biotech.BioCircuit", defaultBioItemId).getInt());
+		this.bioCircuit = new bioCircuitItem(Config.getItem(
+				"biotech.BioCircuit", defaultBioItemId).getInt());
 
-		this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1).setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
-		this.milkMoving = new MilkFlowingBlock(Config.getBlock("biotech.MilkFlowing", defaultBiotechBlockId + 1).getInt(), 4);
-		this.milkStill = new MilkStillBlock(Config.getBlock("biotech.MilkStill", defaultBiotechBlockId + 2).getInt(), 4);
+		this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock(
+				"biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1)
+				.setHardness(0.5F).setStepSound(Block.soundMetalFootstep);
+		this.milkMoving = new MilkFlowingBlock(Config.getBlock(
+				"biotech.MilkFlowing", defaultBiotechBlockId + 1).getInt(), 4);
+		this.milkStill = new MilkStillBlock(Config.getBlock(
+				"biotech.MilkStill", defaultBiotechBlockId + 2).getInt(), 4);
 
 		/**
 		 * Define the subitems
@@ -168,7 +174,8 @@ public class Biotech
 		/**
 		 * Enable the chat commands
 		 */
-		Property enableChatCommand = Config.get("general", "enableChatCommand", true);
+		Property enableChatCommand = Config.get("general", "enableChatCommand",
+				true);
 
 		// guiHandler.preInit();
 
@@ -177,61 +184,71 @@ public class Biotech
 		biotechLogger.info("Config loaded");
 	}
 
-	public static void initCommands(FMLServerStartingEvent event)
-	{
-		if (enableChatCommand.value == "true")
-		{
+	public static void initCommands(FMLServerStartingEvent event) {
+		if (enableChatCommand.value == "true") {
 			event.registerServerCommand(new CmdWorker());
 			biotechLogger.info("Biotech Command Enabled");
 		}
 	}
 
 	@Init
-	public void load(FMLInitializationEvent event)
-	{
+	public void load(FMLInitializationEvent event) {
 
 		proxy.registerRenderers();
-		
+
 		/**
-		 * Handle the items that will be used in recipes.
-		 * Just use the string in the recipe like the milk manager recipe
+		 * Handle the items that will be used in recipes. Just use the string in
+		 * the recipe like the milk manager recipe
 		 */
 		/*
-		ItemStack itemBasicCircuit = new ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0);
-		ItemStack itemMotor = new ItemStack(OreDictionary.getOreID("motor"), 1, 0);
-		ItemStack itemBronzePlate = new ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0);
-		ItemStack itemChest = new ItemStack(Block.chest, 1);
-		*/
-		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
+		 * ItemStack itemBasicCircuit = new
+		 * ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0); ItemStack
+		 * itemMotor = new ItemStack(OreDictionary.getOreID("motor"), 1, 0);
+		 * ItemStack itemBronzePlate = new
+		 * ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0); ItemStack
+		 * itemChest = new ItemStack(Block.chest, 1);
+		 */
+		ItemStack itemBioFuel = new ItemStack(
+				OreDictionary.getOreID("bioFuel"), 1, 0);
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
 		ItemStack TillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
 		ItemStack PlanMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
 		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
 		ItemStack HarvMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
-		ItemStack FertMachine =	new ItemStack(Biotech.biotechBlockMachine, 1, 4);
+		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
 		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
 		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
 		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
-		
+
 		/**
 		 * Register the TileEntity's
 		 */
-		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
-		GameRegistry.registerTileEntity(PlantingMachineTileEntity.class, "PlantingMachineTileEntity");
-		GameRegistry.registerTileEntity(TillingMachineTileEntity.class, "TillingMachineTileEntity");
-		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "MilkingManagerTileEntity");
-		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
+		GameRegistry.registerTileEntity(BasicMachineTileEntity.class,
+				"BasicMachineTileEntity");
+		GameRegistry.registerTileEntity(PlantingMachineTileEntity.class,
+				"PlantingMachineTileEntity");
+		GameRegistry.registerTileEntity(TillingMachineTileEntity.class,
+				"TillingMachineTileEntity");
+		GameRegistry.registerTileEntity(CowMilkerTileEntity.class,
+				"MilkingManagerTileEntity");
+		GameRegistry.registerTileEntity(BioRefineryTileEntity.class,
+				"BioRefineryTileEntity");
 
 		/**
 		 * Register Milk as a Liquid
 		 */
-		milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk", new LiquidStack(milkStill, 1));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Milk", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
+		milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk",
+				new LiquidStack(milkStill, 1));
+		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(
+				LiquidDictionary.getLiquid("Milk",
+						LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(
+						Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
 
 		/**
 		 * Handle the blocks
 		 */
-		GameRegistry.registerBlock(Biotech.biotechBlockMachine, biotechItemBlock.class, "Basic Biotech Block");
+		GameRegistry.registerBlock(Biotech.biotechBlockMachine,
+				biotechItemBlock.class, "Basic Biotech Block");
 		GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
 		GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
 
@@ -250,44 +267,67 @@ public class Biotech
 
 		// Subitems
 		LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
-		LanguageRegistry.addName(bioCircuitWheatSeeds, "Bio Circuit - Wheat Seeds");
-		LanguageRegistry.addName(bioCircuitMelonSeeds, "Bio Circuit - Melon Seeds");
-		LanguageRegistry.addName(bioCircuitPumpkinSeeds, "Bio Circuit - Pumpkin Seeds");
+		LanguageRegistry.addName(bioCircuitWheatSeeds,
+				"Bio Circuit - Wheat Seeds");
+		LanguageRegistry.addName(bioCircuitMelonSeeds,
+				"Bio Circuit - Melon Seeds");
+		LanguageRegistry.addName(bioCircuitPumpkinSeeds,
+				"Bio Circuit - Pumpkin Seeds");
 		LanguageRegistry.addName(bioCircuitCarrots, "Bio Circuit - Carrots");
 		LanguageRegistry.addName(bioCircuitPotatoes, "Bio Circuit - Potaties");
-		LanguageRegistry.addName(bioCircuitRangeUpgrade, "Bio Circuit - Range Upgrade");
+		LanguageRegistry.addName(bioCircuitRangeUpgrade,
+				"Bio Circuit - Range Upgrade");
 
 		// Subblocks
-		
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.0.name", "Tilling Machine");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.1.name", "Planting Machine");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
+
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.0.name", "Tilling Machine");
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.1.name", "Planting Machine");
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
 		/*
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.3.name", "Harvesting Machine");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.4.name", "Fertilizing Machine");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.5.name", "Mining Machine");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.6.name", "Filling Machine");
-		*/
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.7.name", "Cow Milker");
-		LanguageRegistry.instance().addStringLocalization("tile.BiotechBlockMachine.8.name", "Bio Refinery");
+		 * LanguageRegistry.instance().addStringLocalization(
+		 * "tile.BiotechBlockMachine.3.name", "Harvesting Machine");
+		 * LanguageRegistry
+		 * .instance().addStringLocalization("tile.BiotechBlockMachine.4.name",
+		 * "Fertilizing Machine");
+		 * LanguageRegistry.instance().addStringLocalization
+		 * ("tile.BiotechBlockMachine.5.name", "Mining Machine");
+		 * LanguageRegistry
+		 * .instance().addStringLocalization("tile.BiotechBlockMachine.6.name",
+		 * "Filling Machine");
+		 */
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.7.name", "Cow Milker");
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.8.name", "Bio Refinery");
 
 		// CreativeTab
-		LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
-		
+		LanguageRegistry.instance().addStringLocalization(
+				"itemGroup.tabBiotech", "Biotech");
+
 		// Recipes
-		//TODO Wiebbe add your recipes and fix these 2 machines so we can release.
-		
-		GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] { "###", "@!@", "###", '@', Item.hoeStone, '!', "motor", '#', itemStone }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] { "###", "@!@", "###", '@', Item.appleRed, '!', "motor", '#', itemStone }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] { "###", "@!@", "###", '@', Item.axeStone, '!', "motor", '#', itemStone }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] { "@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
-				
+		// TODO Wiebbe add your recipes and fix these 2 machines so we can
+		// release.
+
+		GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] {
+				"###", "@!@", "###", '@', Item.hoeStone, '!', "motor", '#',
+				itemStone }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] {
+				"###", "@!@", "###", '@', Item.appleRed, '!', "motor", '#',
+				itemStone }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] {
+				"###", "@!@", "###", '@', Item.axeStone, '!', "motor", '#',
+				itemStone }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] {
+				"@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
+
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
 
 	@PostInit
-	public void postInit(FMLPostInitializationEvent event)
-	{
+	public void postInit(FMLPostInitializationEvent event) {
 		biotechLogger.info("Biotech fully loaded");
 	}
 }

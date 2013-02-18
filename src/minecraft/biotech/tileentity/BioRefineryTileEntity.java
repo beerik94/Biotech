@@ -40,292 +40,263 @@ import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
-public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPressure, IReadOut
-{
+public class BioRefineryTileEntity extends BasicMachineTileEntity implements
+		IPacketReceiver, IColorCoded, IPressure, IReadOut {
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 50;
 	public static final double WATTS_PER_IDLE_TICK = 5.0;
-	
+
 	// Time idle after a tick
 	public static final int IDLE_TIME_AFTER_ACTION = 60;
 	public static final int IDLE_TIME_NO_ACTION = 30;
-	
-	//Is the machine currently powered, and did it change?
-    public boolean prevIsPowered, isPowered = false;
-	
-	//How much power is stored?
-    private double electricityStored  = 0;
-    private double electricityMaxStored  = 5000;
-    
-    //Amount of milliBuckets of internal storage
-    private ColorCode color = ColorCode.WHITE;
- 	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
- 	private int milkStored = 0;
+
+	// Is the machine currently powered, and did it change?
+	public boolean prevIsPowered, isPowered = false;
+
+	// How much power is stored?
+	private double electricityStored = 0;
+	private double electricityMaxStored = 5000;
+
+	// Amount of milliBuckets of internal storage
+	private ColorCode color = ColorCode.WHITE;
+	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
+	private int milkStored = 0;
 	private int bucketVol = LiquidContainerRegistry.BUCKET_VOLUME;
- 	
+
 	private int facing;
 	private int playersUsing = 0;
 	private int idleTicks;
-	
-	public BioRefineryTileEntity()
-    {
-        super();
-    }
-	
+
+	public BioRefineryTileEntity() {
+		super();
+	}
+
 	@Override
-	public void updateEntity()
-	{
-		if (!worldObj.isRemote)
-		{
-			if (this.ticks % 3 == 0 && this.playersUsing > 0)
-			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+	public void updateEntity() {
+		if (!worldObj.isRemote) {
+			if (this.ticks % 3 == 0 && this.playersUsing > 0) {
+				PacketManager.sendPacketToClients(getDescriptionPacket(),
+						this.worldObj, new Vector3(this), 12);
 			}
-		    this.fillFrom(ForgeDirection.DOWN);
-	        this.chargeUp();
-	        if(this.inventory[1] != null && this.ticks % 25 == 0)
-	        {
-	        	this.Refine();
-	        }
-	        if(this.getMilkStored() >= this.getMaxMilk())
-	        {
-	        	this.milkStored = this.getMaxMilk();
-	        }
+			this.fillFrom(ForgeDirection.DOWN);
+			this.chargeUp();
+			if (this.inventory[1] != null && this.ticks % 25 == 0) {
+				this.Refine();
+			}
+			if (this.getMilkStored() >= this.getMaxMilk()) {
+				this.milkStored = this.getMaxMilk();
+			}
 		}
 		super.updateEntity();
 	}
-	
-	public boolean isRedstoneSignal(){
-		if(worldObj.isBlockGettingPowered(xCoord,yCoord, zCoord) || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord)) { return true; }
+
+	public boolean isRedstoneSignal() {
+		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
+				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
+						zCoord)) {
+			return true;
+		}
 		return false;
 	}
-	
+
 	/**
 	 * Refines milk into Mekanism bioFuel
 	 */
-	public void Refine()
-	{
-		ItemStack bedrockStack = new ItemStack(Block.bedrock, 1);
-		
-		if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol)
-        {
-			if(this.inventory[1] == null)
-			{
-				this.inventory[1] = (bedrockStack);
+	public void Refine() {
+
+		if (this.inventory[1].stackSize <= 62
+				&& this.getMilkStored() >= bucketVol) {
+			if (this.inventory[1] == null) {
+				this.inventory[1] = (Biotech.itemBioFuel);
 				this.inventory[1].stackSize += 1;
-			}
-			else
-			{
+			} else {
 				this.inventory[1].stackSize += 2;
 			}
-        }
-		
-		if(this.inventory[2] != null)
-		{
-			if(this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
-			{
-				if(this.inventory[1] == null)
-				{
-					this.inventory[1] = (bedrockStack);
+		}
+
+		if (this.inventory[2] != null) {
+			if (this.inventory[2].getItem() == Item.seeds
+					&& this.inventory[1].stackSize <= 60
+					&& this.milkStored >= 1000) {
+				if (this.inventory[1] == null) {
+					this.inventory[1] = (Biotech.itemBioFuel);
 					this.inventory[1].stackSize += 1;
-				}
-				else
-				{
+				} else {
 					this.inventory[1].stackSize += 4;
 				}
-			}
-			else if(this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
-			{
+			} else if (this.inventory[2].getItem() == Item.wheat
+					&& this.inventory[1].stackSize <= 60
+					&& this.milkStored >= 1000) {
 				this.inventory[1].stackSize += 4;
-			}
-			else if(this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 && this.milkStored >= 1000)
-			{
+			} else if (this.inventory[2].getItem() == Item.appleRed
+					&& this.inventory[1].stackSize <= 54
+					&& this.milkStored >= 1000) {
 				this.inventory[1].stackSize += 10;
-				
+
 			}
 		}
 		this.setMilkStored(bucketVol, false);
 	}
-	
+
 	/**
-     * Use this to fill from a pipe or tank connected to the right side
-     */
-    public void fillFrom(ForgeDirection dir)
-    {
-            TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
-            if(ent instanceof ITankContainer)
-            {
-                    ((ITankContainer) ent).drain(dir, bucketVol, true);
-                    this.setMilkStored(bucketVol, true);
-            }
-    }
-	
+	 * Use this to fill from a pipe or tank connected to the right side
+	 */
+	public void fillFrom(ForgeDirection dir) {
+		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX,
+				yCoord + dir.offsetY, zCoord + dir.offsetZ);
+		if (ent instanceof ITankContainer) {
+			((ITankContainer) ent).drain(dir, bucketVol, true);
+			this.setMilkStored(bucketVol, true);
+		}
+	}
+
 	@Override
-    public void readFromNBT(NBTTagCompound tagCompound)
-    {
-        super.readFromNBT(tagCompound);
-        
-        this.facing = tagCompound.getShort("facing");
-        this.isPowered = tagCompound.getBoolean("isPowered");
-        this.electricityStored = tagCompound.getDouble("electricityStored");
-        this.milkStored = tagCompound.getInteger("milkStored");
-        NBTTagList tagList = tagCompound.getTagList("Inventory");
+	public void readFromNBT(NBTTagCompound tagCompound) {
+		super.readFromNBT(tagCompound);
 
-        for (int i = 0; i < tagList.tagCount(); i++)
-        {
-            NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-            byte slot = tag.getByte("Slot");
+		this.facing = tagCompound.getShort("facing");
+		this.isPowered = tagCompound.getBoolean("isPowered");
+		this.electricityStored = tagCompound.getDouble("electricityStored");
+		this.milkStored = tagCompound.getInteger("milkStored");
+		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
-            if (slot >= 0 && slot < inventory.length)
-            {
-                inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-            }
-        }
-    }
+		for (int i = 0; i < tagList.tagCount(); i++) {
+			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
+			byte slot = tag.getByte("Slot");
 
-    @Override
-    public void writeToNBT(NBTTagCompound tagCompound)
-    {
-        super.writeToNBT(tagCompound);
+			if (slot >= 0 && slot < inventory.length) {
+				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+			}
+		}
+	}
 
-        tagCompound.setShort("facing", (short)this.facing);
-        tagCompound.setBoolean("isPowered", this.isPowered);
-        tagCompound.setDouble("electricityStored", this.electricityStored);
-        tagCompound.setInteger("milkStored", this.milkStored);
-        NBTTagList itemList = new NBTTagList();
+	@Override
+	public void writeToNBT(NBTTagCompound tagCompound) {
+		super.writeToNBT(tagCompound);
 
-        for (int i = 0; i < inventory.length; i++)
-        {
-            ItemStack stack = inventory[i];
+		tagCompound.setShort("facing", (short) this.facing);
+		tagCompound.setBoolean("isPowered", this.isPowered);
+		tagCompound.setDouble("electricityStored", this.electricityStored);
+		tagCompound.setInteger("milkStored", this.milkStored);
+		NBTTagList itemList = new NBTTagList();
 
-            if (stack != null)
-            {
-                NBTTagCompound tag = new NBTTagCompound();
-                tag.setByte("Slot", (byte) i);
-                stack.writeToNBT(tag);
-                itemList.appendTag(tag);
-            }
-        }
+		for (int i = 0; i < inventory.length; i++) {
+			ItemStack stack = inventory[i];
 
-        tagCompound.setTag("Inventory", itemList);
-    }
+			if (stack != null) {
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("Slot", (byte) i);
+				stack.writeToNBT(tag);
+				itemList.appendTag(tag);
+			}
+		}
 
-    @Override
-    public String getInvName()
-    {
-        return "Bio Refinery";
-    }
-    
-    @Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream) 
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
+		tagCompound.setTag("Inventory", itemList);
+	}
+
+	@Override
+	public String getInvName() {
+		return "Bio Refinery";
+	}
+
+	@Override
+	public void handlePacketData(INetworkManager network, int packetType,
+			Packet250CustomPayload packet, EntityPlayer player,
+			ByteArrayDataInput dataStream) {
+		try {
+			if (this.worldObj.isRemote) {
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
 				this.milkStored = dataStream.readInt();
 			}
-		}
-		catch (Exception e)
-		{
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.electricityStored, this.milkStored);
+	public Packet getDescriptionPacket() {
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered,
+				this.facing, this.electricityStored, this.milkStored);
 	}
-	
-	public int getFacing() 
-	{
+
+	public int getFacing() {
 		return facing;
 	}
 
-	public void setFacing(int facing) 
-	{
+	public void setFacing(int facing) {
 		this.facing = facing;
 	}
-    
-    public double getElectricityStored() 
-	{
+
+	public double getElectricityStored() {
 		return electricityStored;
 	}
 
-	public void setElectricityStored(double joules)
-	{
+	public void setElectricityStored(double joules) {
 		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
-	}	
-	
-	public double getMaxElectricity() 
-	{
+	}
+
+	public double getMaxElectricity() {
 		return electricityMaxStored;
 	}
-	
-	public int getMilkStored()
-    {
-    	return this.milkStored;
-    }
-    
+
+	public int getMilkStored() {
+		return this.milkStored;
+	}
+
 	/**
 	 * Sets the current volume of milk stored
 	 * 
-	 * @param amount - volume sum
-	 * @param add - if true it will add the amount to the current sum
+	 * @param amount
+	 *            - volume sum
+	 * @param add
+	 *            - if true it will add the amount to the current sum
 	 */
-	public void setMilkStored(int amount, boolean add)
-	{
-		if (add)
-		{
+	public void setMilkStored(int amount, boolean add) {
+		if (add) {
 			this.milkStored += amount;
-		}
-		else
-		{
+		} else {
 			this.milkStored -= amount;
 		}
 	}
-    
-    public int getMaxMilk()
-    {
-    	return this.milkStored;
-    }
 
-    @Override
-	public String getMeterReading(EntityPlayer user, ForgeDirection side)
-	{
-		return "Milk:"+this.milkStored;
+	public int getMaxMilk() {
+		return this.milkStored;
 	}
 
-    @Override
-    public int presureOutput(LiquidData type, ForgeDirection dir)
-    {
-            if (type.getColor() == color){ return type.getPressure();}
-           
-            return 0;
-    }
+	@Override
+	public String getMeterReading(EntityPlayer user, ForgeDirection side) {
+		return "Milk:" + this.milkStored;
+	}
 
-    @Override
-    public boolean canPressureToo(LiquidData type, ForgeDirection dir)
-    {
-            if (type.getColor() == color && dir == ForgeDirection.DOWN.getOpposite()){ return true;}
-           
-            return false;
-    }
+	@Override
+	public int presureOutput(LiquidData type, ForgeDirection dir) {
+		if (type.getColor() == color) {
+			return type.getPressure();
+		}
 
-    @Override
-    public ColorCode getColor()
-    {
-            return ColorCode.WHITE;
-    }
+		return 0;
+	}
 
-    @Override
-    public void setColor(Object obj)
-    {
-            // leave this blank unless you plan on having it change or be changed
-    }
-	
+	@Override
+	public boolean canPressureToo(LiquidData type, ForgeDirection dir) {
+		if (type.getColor() == color
+				&& dir == ForgeDirection.DOWN.getOpposite()) {
+			return true;
+		}
+
+		return false;
+	}
+
+	@Override
+	public ColorCode getColor() {
+		return ColorCode.WHITE;
+	}
+
+	@Override
+	public void setColor(Object obj) {
+		// leave this blank unless you plan on having it change or be changed
+	}
+
 }
