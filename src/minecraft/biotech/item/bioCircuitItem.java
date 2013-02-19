@@ -21,7 +21,7 @@ public class bioCircuitItem extends Item {
 	public bioCircuitItem(int id) {
 		super(id);
 		// Constructor Configuration
-		setMaxStackSize(64);
+		setMaxStackSize(1);
 		setCreativeTab(Biotech.tabBiotech);
 		setIconIndex(0);
 		setItemName("bioCircuit");

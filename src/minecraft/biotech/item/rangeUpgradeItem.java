@@ -10,8 +10,7 @@ public class rangeUpgradeItem extends Item {
 
 	public rangeUpgradeItem(int id, int textureIndex) {
 		super(id);
-
-		setMaxStackSize(64);
+		setMaxStackSize(4);
 		setCreativeTab(Biotech.tabBiotech);
 		setIconIndex(0);
 		setItemName("rangeUpgrade");

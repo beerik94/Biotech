@@ -20,11 +20,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 25;
-	public static final double WATTS_PER_IDLE_TICK = 2.5;
-
-	// Time idle after a tick
-	public static final int IDLE_TIME_AFTER_ACTION = 60;
-	public static final int IDLE_TIME_NO_ACTION = 30;
 
 	// How much power is stored?
 	private double electricityStored = 0;
@@ -65,7 +60,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	}
 
 	/**
-	 * gets if this block is getting powered by redstone
+	 * Gets if this block is getting powered by redstone
 	 */
 	public boolean HasRedstoneSignal() {
 		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
@@ -74,6 +69,39 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			return true;
 		}
 		return false;
+	}
+	
+	/**
+	 * The cutting function
+	 */
+	public void DoCut()
+	{
+		
+	}
+	
+	/**
+	 * The replanting of saplings
+	 */
+	public void Replant()
+	{
+		
+	}
+	
+	/**
+	 * The growth improvement
+	 */
+	public void Grow()
+	{
+		
+	}
+	
+	/**
+	 * Calculates the range
+	 */
+	public void GetRange()
+	{
+		
+		
 	}
 
 	@Override

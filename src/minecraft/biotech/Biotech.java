@@ -200,14 +200,6 @@ public class Biotech {
 		 * Handle the items that will be used in recipes. Just use the string in
 		 * the recipe like the milk manager recipe
 		 */
-		/*
-		 * ItemStack itemBasicCircuit = new
-		 * ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0); ItemStack
-		 * itemMotor = new ItemStack(OreDictionary.getOreID("motor"), 1, 0);
-		 * ItemStack itemBronzePlate = new
-		 * ItemStack(OreDictionary.getOreID("plateBronze"), 1, 0); ItemStack
-		 * itemChest = new ItemStack(Block.chest, 1);
-		 */
 		ItemStack itemBioFuel = new ItemStack(
 				OreDictionary.getOreID("bioFuel"), 1, 0);
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
@@ -219,6 +211,7 @@ public class Biotech {
 		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
 		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
 		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
+		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 9);
 
 		/**
 		 * Register the TileEntity's
@@ -308,20 +301,23 @@ public class Biotech {
 				"itemGroup.tabBiotech", "Biotech");
 
 		// Recipes
-		// TODO Wiebbe add your recipes and fix these 2 machines so we can
-		// release.
+		// TODO Add Recipes for other machines
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] {
-				"###", "@!@", "###", '@', Item.hoeStone, '!', "motor", '#',
-				itemStone }));
+				"#%#", "@!@", "#$#", '@', Item.hoeStone, '!', "motor", '#',
+				itemStone, '$', "battery", '%', "basicCircuit" }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] {
-				"###", "@!@", "###", '@', Item.appleRed, '!', "motor", '#',
-				itemStone }));
+				"#%#", "@!@", "#$#", '@', Item.appleRed, '!', "motor", '#',
+				itemStone, '$', "battery", '%', "basicCircuit" }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] {
-				"###", "@!@", "###", '@', Item.axeStone, '!', "motor", '#',
-				itemStone }));
+				"#%#", "@!@", "#$#", '@', Item.axeStone, '!', "motor", '#',
+				itemStone, '$', "battery", '%', "basicCircuit" }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] {
-				"@@@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor" }));
+				"@$@", "@!@", "@#@", '@', Item.ingotIron, '!', "motor", '#',
+				"battery", '$', "basicCircuit" }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(BioRefinery, new Object[] {
+				"@$@", "%!%", "@#@", '@', Item.ingotIron, '!', "motor", '#', 
+				"battery", '$', "basicCircuit", '%', Item.bucketEmpty })); 
 
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
