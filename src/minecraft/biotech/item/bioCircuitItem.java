@@ -21,7 +21,6 @@ public class bioCircuitItem extends Item {
 	public bioCircuitItem(int id) {
 		super(id);
 		// Constructor Configuration
-		setMaxStackSize(1);
 		setCreativeTab(Biotech.tabBiotech);
 		setIconIndex(0);
 		setItemName("bioCircuit");
@@ -73,6 +72,14 @@ public class bioCircuitItem extends Item {
 	public ItemStack getStack(int count, int damageValue) {
 		ItemStack stack = new ItemStack(this, count);
 		stack.setItemDamage(damageValue);
+		if(damageValue == 6)
+		{
+			this.setMaxStackSize(4);
+		}
+		else
+		{
+			this.setMaxStackSize(1);
+		}
 		return stack;
 	}
 

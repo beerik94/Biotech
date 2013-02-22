@@ -98,9 +98,14 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	/**
 	 * Calculates the range
 	 */
-	public void GetRange()
+	public int GetRange()
 	{
-		
+		if (getStackInSlot(1) != null) {
+			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade)) {
+				return (getStackInSlot(1).stackSize * 2 + 2);
+			}
+		}
+		return 2;
 		
 	}
 
