@@ -18,31 +18,28 @@ import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.tileentity.FarmMachineTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
 import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 public class BiotechBlockMachine extends BlockMachine {
-	// 0 == Tiller
-	// 1 == Planter
-	// 2 == Woodcutter
-	// 3 == Crop Harvester
-	// 4 == Fertilizer
-	// 5 == Miner
-	// 6 == Filler
-	// 7 == Cow Milker
-	// 8 == BioFuel Maker
+	// 0 == Farm
+	// 1 == Woodcutter
+	// 2 == Fertilizer
+	// 3 == Miner
+	// 4 == Filler
+	// 5 == Cow Milker
+	// 6 == BioRefinery
 
-	public static final int TILLER_METADATA = 0;
-	public static final int PLANTER_METADATA = 1;
-	public static final int WOODCUTTER_METADATA = 2;
-	public static final int CROPPER_METADATA = 3;
-	public static final int FERTILIZER_METADATA = 4;
-	public static final int MINER_METADATA = 5;
-	public static final int FILLER_METADATA = 6;
-	public static final int COW_MILKER_METADATA = 7;
-	public static final int BIO_REFINERY_METADATA = 8;
+	public static final int FARM_METADATA = 0;
+	public static final int WOODCUTTER_METADATA = 1;
+	public static final int FERTILIZER_METADATA = 2;
+	public static final int MINER_METADATA = 3;
+	public static final int FILLER_METADATA = 4;
+	public static final int COW_MILKER_METADATA = 5;
+	public static final int BIO_REFINERY_METADATA = 6;
 
 	public BiotechBlockMachine(int id, int textureIndex) {
 		super("BiotechBlockMachine", id, UniversalElectricity.machine,
@@ -58,36 +55,7 @@ public class BiotechBlockMachine extends BlockMachine {
 
 	@Override
 	public int getBlockTextureFromSideAndMetadata(int side, int meta) {
-		// TODO Will be added when Wiebbe adds the machines or if I(LiQuiD)
-		// knows what the machines have to be programmed like
-
-		if (meta == 0) {
-			switch (side) {
-			case 0:
-				return 3;
-			case 1:
-				return 18;
-			case 2:
-				return 32;
-			case 3:
-				return 3;
-			default:
-				return 3;
-			}
-		} else if (meta == 1) {
-			switch (side) {
-			case 0:
-				return 3;
-			case 1:
-				return 18;
-			case 2:
-				return 32;
-			case 3:
-				return 3;
-			default:
-				return 3;
-			}
-		} else if (meta == 2) {
+		if (meta == 0 || meta == 1 || meta == 2 || meta == 3 || meta == 4) {
 			switch (side) {
 			case 0:
 				return 3;
@@ -101,18 +69,7 @@ public class BiotechBlockMachine extends BlockMachine {
 				return 3;
 			}
 		}
-		/*
-		 * else if (meta == 3) { switch (side) { case 0: return 3; case 1:
-		 * return 18; case 2: return 32; case 3: return 0; default: return 3; }
-		 * } else if (meta == 4) { switch (side) { case 0: return 3; case 1:
-		 * return 18; case 2: return 32; case 3: return 0; default: return 3; }
-		 * } else if (meta == 5) { switch (side) { case 0: return 3; case 1:
-		 * return 18; case 2: return 32; case 3: return 0; default: return 3; }
-		 * } else if (meta == 6) { switch (side) { case 0: return 3; case 1:
-		 * return 18; case 2: return 32; case 3: return 0; default: return 3; }
-		 * }
-		 */
-		else if (meta == 7) {
+		else if (meta == 5) {
 			switch (side) {
 			case 0:
 				return 3;
@@ -125,7 +82,7 @@ public class BiotechBlockMachine extends BlockMachine {
 			default:
 				return 3;
 			}
-		} else if (meta == 8) {
+		} else if (meta == 6) {
 			switch (side) {
 			case 0:
 				return 3;
@@ -190,7 +147,7 @@ public class BiotechBlockMachine extends BlockMachine {
 			break;
 		}
 
-		if (metadata == 0) {
+		if (metadata == 0 || metadata == 1 || metadata == 2 || metadata == 3 || metadata == 4) {
 			if (side == front) {
 				return tileEntity.isPowered ? 48 : 32;
 			} else if (side == back) {
@@ -202,7 +159,8 @@ public class BiotechBlockMachine extends BlockMachine {
 			} else {
 				return 3;
 			}
-		} else if (metadata == 1) {
+		} 
+		else if (metadata == 5) {
 			if (side == front) {
 				return tileEntity.isPowered ? 48 : 32;
 			} else if (side == back) {
@@ -214,48 +172,7 @@ public class BiotechBlockMachine extends BlockMachine {
 			} else {
 				return 3;
 			}
-		} else if (metadata == 2) {
-			if (side == front) {
-				return tileEntity.isPowered ? 48 : 32;
-			} else if (side == back) {
-				return 3;
-			} else if (side == bottom) {
-				return 19;
-			} else if (side == top) {
-				return 18;
-			} else {
-				return 3;
-			}
-		}
-		/*
-		 * else if (metadata == 3) { if (side == front) { return
-		 * tileEntity.isPowered ? 48 : 32; } else if (side == back) { return 0;
-		 * } else if (side == bottom) { return 3; } else if (side == top) {
-		 * return 18; } else { return 3; } } else if (metadata == 4) { if (side
-		 * == front) { return tileEntity.isPowered ? 48 : 32; } else if (side ==
-		 * back) { return 0; } else if (side == bottom) { return 3; } else if
-		 * (side == top) { return 18; } else { return 3; } } else if (metadata
-		 * == 5) { if (side == front) { return tileEntity.isPowered ? 48 : 32; }
-		 * else if (side == back) { return 0; } else if (side == bottom) {
-		 * return 3; } else if (side == top) { return 18; } else { return 3; } }
-		 * else if (metadata == 6) { if (side == front) { return
-		 * tileEntity.isPowered ? 48 : 32; } else if (side == back) { return 0;
-		 * } else if (side == bottom) { return 3; } else if (side == top) {
-		 * return 18; } else { return 3; } }
-		 */
-		else if (metadata == 7) {
-			if (side == front) {
-				return tileEntity.isPowered ? 48 : 32;
-			} else if (side == back) {
-				return 3;
-			} else if (side == bottom) {
-				return 19;
-			} else if (side == top) {
-				return 18;
-			} else {
-				return 3;
-			}
-		} else if (metadata == 8) {
+		} else if (metadata == 6) {
 			if (side == front) {
 				return tileEntity.isPowered ? 48 : 32;
 			} else if (side == back) {
@@ -336,12 +253,10 @@ public class BiotechBlockMachine extends BlockMachine {
 		list.add(new ItemStack(i, 1, 0));
 		list.add(new ItemStack(i, 1, 1));
 		list.add(new ItemStack(i, 1, 2));
-		/*
-		 * list.add(new ItemStack(i, 1, 3)); list.add(new ItemStack(i, 1, 4));
-		 * list.add(new ItemStack(i, 1, 5)); list.add(new ItemStack(i, 1, 6));
-		 */
-		list.add(new ItemStack(i, 1, 7));
-		list.add(new ItemStack(i, 1, 8));
+		list.add(new ItemStack(i, 1, 3));
+		list.add(new ItemStack(i, 1, 4));
+		list.add(new ItemStack(i, 1, 5));
+		list.add(new ItemStack(i, 1, 6));
 	}
 
 	@Override
@@ -394,27 +309,19 @@ public class BiotechBlockMachine extends BlockMachine {
 		if (!world.isRemote && !player.isSneaking()) {
 			switch (metadata) {
 			case 0:
-				/*
-				 * if (!player.isSneaking()) { player.openGui(Biotech.instance,
-				 * 0, world, x, y, z); return true; }
-				 */
+				player.openGui(Biotech.instance, 0, world, x, y, z);
+				return true;
 			case 1:
-				/*
-				 * if (!player.isSneaking()) { player.openGui(Biotech.instance,
-				 * 2, world, x, y, z); return true; }
-				 */
 			case 2:
-				player.openGui(Biotech.instance, 4, world, x, y, z);
+				player.openGui(Biotech.instance, 3, world, x, y, z);
 				return true;
 			case 3:
 			case 4:
 			case 5:
-			case 6:
-			case 7:
 				player.openGui(Biotech.instance, 1, world, x, y, z);
 				return true;
-			case 8:
-				player.openGui(Biotech.instance, 3, world, x, y, z);
+			case 6:
+				player.openGui(Biotech.instance, 2, world, x, y, z);
 				return true;
 			}
 		}
@@ -430,18 +337,15 @@ public class BiotechBlockMachine extends BlockMachine {
 	public TileEntity createTileEntity(World world, int metadata) {
 		switch (metadata) {
 		case 0:
-			// return new TillingMachineTileEntity();
+			return new FarmMachineTileEntity();
 		case 1:
-			// return new PlantingMachineTileEntity();
-		case 2:
 			return new CuttingMachineTileEntity();
+		case 2:
 		case 3:
 		case 4:
 		case 5:
-		case 6:
-		case 7:
 			return new CowMilkerTileEntity();
-		case 8:
+		case 6:
 			return new BioRefineryTileEntity();
 		default:
 			return new BasicMachineTileEntity();
