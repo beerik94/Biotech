@@ -1,5 +1,9 @@
 package biotech.tileentity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -72,6 +76,18 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	}
 	
 	/**
+	 * Check for Trees
+	 */
+	public void GetTree()
+	{
+		if(worldObj.getBlockId(xCoord, yCoord, zCoord) == Block.wood.blockID)
+		{
+			
+		}
+		
+	}
+	
+	/**
 	 * The cutting function
 	 */
 	public void DoCut()
@@ -106,7 +122,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			}
 		}
 		return 2;
-		
 	}
 
 	@Override
