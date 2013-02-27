@@ -86,38 +86,34 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		case 2: // North
 			for (int i = 1; i < GetRange(); i++) {
 				ZPos = this.zCoord - i;
-				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
-
-				}
 			}
 			break;
 		case 3: // South
 			for (int i = 1; i < GetRange(); i++) {
 				ZPos = this.zCoord + i;
-				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
-
-				}
 			}
 			break;
 		case 4: // West
 			for (int i = 1; i < GetRange(); i++) {
 				XPos = this.xCoord - i;
-				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
-
-				}
 			}
 			break;
 		case 5: // East
 			for (int i = 1; i < GetRange(); i++) {
 				XPos = this.xCoord + i;
-				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
-
-				}
 			}
 			break;
 		}
-		if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
+		int bottomBlock = worldObj.getBlockId(XPos, this.yCoord, ZPos);
+		int YPos = this.yCoord + 1;
+		while (bottomBlock == Block.wood.blockID) {
+			int otherBlock = worldObj.getBlockId(XPos, YPos, ZPos);
+			if (otherBlock == Block.wood.blockID) {
+				YPos += 1;
+			} else {
 
+				return;
+			}
 		}
 
 	}
