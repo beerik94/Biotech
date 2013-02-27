@@ -97,7 +97,8 @@ public class Biotech {
 	public static ItemStack bioCircuitRangeUpgrade;
 
 	// Mekanism bioFuel
-	public static ItemStack itemBioFuel;
+	public static ItemStack BioFuel = new ItemStack(
+			OreDictionary.getOreID("itemBioFuel"), 1, 0);
 
 	// Block templates
 	public static Block biotechBlockMachine;
@@ -105,15 +106,13 @@ public class Biotech {
 	public static Block milkStill;
 
 	// Metadata for biotechBlockMachine
-	// 0 == Tiller
-	// 1 == Foresting
-	// 2 == Woodcutter
-	// 3 == Crop Harvester
-	// 4 == Fertilizer
-	// 5 == Miner
-	// 6 == Filler
-	// 7 == Cow Milker
-	// 8 == Bio Refinery
+	// 0 == Farm
+	// 1 == Woodcutter
+	// 2 == Fertilizer
+	// 3 == Miner
+	// 4 == Filler
+	// 5 == Cow Milker
+	// 6 == BioRefinery
 
 	// Liquid Stack Milk
 	public static LiquidStack milkLiquid;
@@ -203,15 +202,13 @@ public class Biotech {
 		ItemStack itemBioFuel = new ItemStack(
 				OreDictionary.getOreID("bioFuel"), 1, 0);
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
-		ItemStack TillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
-		ItemStack PlanMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
-		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
-		ItemStack HarvMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
-		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
-		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
-		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
-		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 7);
-		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 9);
+		ItemStack FarmMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
+		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
+		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
+		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
+		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
+		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
+		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
 
 		/**
 		 * Register the TileEntity's
@@ -274,27 +271,19 @@ public class Biotech {
 		// Subblocks
 
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.0.name", "Tilling Machine");
+				"tile.BiotechBlockMachine.0.name", "Farm");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.1.name", "Planting Machine");
+				"tile.BiotechBlockMachine.1.name", "Woodcutter");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.2.name", "Woodcutter Machine");
-		/*
-		 * LanguageRegistry.instance().addStringLocalization(
-		 * "tile.BiotechBlockMachine.3.name", "Harvesting Machine");
-		 * LanguageRegistry
-		 * .instance().addStringLocalization("tile.BiotechBlockMachine.4.name",
-		 * "Fertilizing Machine");
-		 * LanguageRegistry.instance().addStringLocalization
-		 * ("tile.BiotechBlockMachine.5.name", "Mining Machine");
-		 * LanguageRegistry
-		 * .instance().addStringLocalization("tile.BiotechBlockMachine.6.name",
-		 * "Filling Machine");
-		 */
+				"tile.BiotechBlockMachine.2.name", "Fertilizer");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.7.name", "Cow Milker");
+				"tile.BiotechBlockMachine.3.name", "Miner");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.8.name", "Bio Refinery");
+				"tile.BiotechBlockMachine.4.name", "Filler");
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.5.name", "Cow Milker");
+		LanguageRegistry.instance().addStringLocalization(
+				"tile.BiotechBlockMachine.6.name", "Bio Refinery");
 
 		// CreativeTab
 		LanguageRegistry.instance().addStringLocalization(
@@ -302,13 +291,14 @@ public class Biotech {
 
 		// Recipes
 		// TODO Add Recipes for other machines
-
+		/*
 		GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] {
 				"#%#", "@!@", "#$#", '@', Item.hoeStone, '!', "motor", '#',
 				itemStone, '$', "battery", '%', "basicCircuit" }));
 		GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] {
 				"#%#", "@!@", "#$#", '@', Item.appleRed, '!', "motor", '#',
 				itemStone, '$', "battery", '%', "basicCircuit" }));
+				*/
 		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] {
 				"#%#", "@!@", "#$#", '@', Item.axeStone, '!', "motor", '#',
 				itemStone, '$', "battery", '%', "basicCircuit" }));

@@ -15,6 +15,6 @@ public class bioFuelSlot extends Slot {
 
 	@Override
 	public boolean isItemValid(ItemStack itemstack) {
-		return itemstack.itemID == Biotech.itemBioFuel.itemID;
+		return itemstack.itemID == Biotech.BioFuel.itemID;
 	}
 }

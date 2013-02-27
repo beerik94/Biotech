@@ -107,7 +107,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 		if (this.inventory[1].stackSize <= 62
 				&& this.getMilkStored() >= bucketVol) {
 			if (this.inventory[1] == null) {
-				this.inventory[1] = (Biotech.itemBioFuel);
+				this.inventory[1] = (Biotech.BioFuel);
 				this.inventory[1].stackSize += 1;
 			} else {
 				this.inventory[1].stackSize += 2;
@@ -119,7 +119,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 					&& this.inventory[1].stackSize <= 60
 					&& this.milkStored >= 1000) {
 				if (this.inventory[1] == null) {
-					this.inventory[1] = (Biotech.itemBioFuel);
+					this.inventory[1] = (Biotech.BioFuel);
 					this.inventory[1].stackSize += 1;
 				} else {
 					this.inventory[1].stackSize += 4;

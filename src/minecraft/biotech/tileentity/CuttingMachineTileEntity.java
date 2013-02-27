@@ -11,6 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
@@ -74,48 +75,78 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check for Trees
 	 */
-	public void GetTree()
-	{
-		if(worldObj.getBlockId(xCoord, yCoord, zCoord) == Block.wood.blockID)
-		{
-			
+	public void GetTree() {
+		int XPos = this.xCoord;
+		int ZPos = this.zCoord;
+		switch (this.getFacing()) {
+		case 2: // North
+			for (int i = 1; i < GetRange(); i++) {
+				ZPos = this.zCoord - i;
+				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
+
+				}
+			}
+			break;
+		case 3: // South
+			for (int i = 1; i < GetRange(); i++) {
+				ZPos = this.zCoord + i;
+				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
+
+				}
+			}
+			break;
+		case 4: // West
+			for (int i = 1; i < GetRange(); i++) {
+				XPos = this.xCoord - i;
+				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
+
+				}
+			}
+			break;
+		case 5: // East
+			for (int i = 1; i < GetRange(); i++) {
+				XPos = this.xCoord + i;
+				if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
+
+				}
+			}
+			break;
 		}
-		
+		if (worldObj.getBlockId(XPos, this.yCoord, ZPos) == Block.wood.blockID) {
+
+		}
+
 	}
-	
+
 	/**
 	 * The cutting function
+	 * 
+	 * @param x
+	 *            The X position of the block
+	 * @param y
+	 *            The Y position of the block
+	 * @param z
+	 *            The Z position of the block
 	 */
-	public void DoCut()
-	{
-		
+	public void DoCut(int x, int y, int z) {
+
 	}
-	
+
 	/**
 	 * The replanting of saplings
 	 */
-	public void Replant()
-	{
-		
+	public void Replant() {
+
 	}
-	
-	/**
-	 * The growth improvement
-	 */
-	public void Grow()
-	{
-		
-	}
-	
+
 	/**
 	 * Calculates the range
 	 */
-	public int GetRange()
-	{
+	public int GetRange() {
 		if (getStackInSlot(1) != null) {
 			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade)) {
 				return (getStackInSlot(1).stackSize * 2 + 2);

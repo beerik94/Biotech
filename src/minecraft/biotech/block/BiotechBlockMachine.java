@@ -153,7 +153,7 @@ public class BiotechBlockMachine extends BlockMachine {
 			} else if (side == back) {
 				return 3;
 			} else if (side == bottom) {
-				return 19;
+				return 3;
 			} else if (side == top) {
 				return 18;
 			} else {
