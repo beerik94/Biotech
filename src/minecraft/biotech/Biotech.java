@@ -26,6 +26,8 @@ import biotech.item.biotechItemBlock;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
+import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.tileentity.FarmMachineTileEntity;
 import biotech.tileentity.PlantingMachineTileEntity;
 import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.common.FMLLog;
@@ -45,7 +47,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.7", dependencies = "after:LiquidMechanics")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.7", dependencies = "after:hydraulic")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 public class Biotech {
 	// The instance of your mod that Forge uses.
@@ -215,12 +217,12 @@ public class Biotech {
 		 */
 		GameRegistry.registerTileEntity(BasicMachineTileEntity.class,
 				"BasicMachineTileEntity");
-		GameRegistry.registerTileEntity(PlantingMachineTileEntity.class,
-				"PlantingMachineTileEntity");
-		GameRegistry.registerTileEntity(TillingMachineTileEntity.class,
-				"TillingMachineTileEntity");
+		GameRegistry.registerTileEntity(FarmMachineTileEntity.class,
+				"FarmMachineTileEntity");
+		GameRegistry.registerTileEntity(CuttingMachineTileEntity.class,
+				"CuttingMachineTileEntity");
 		GameRegistry.registerTileEntity(CowMilkerTileEntity.class,
-				"MilkingManagerTileEntity");
+				"CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class,
 				"BioRefineryTileEntity");
 

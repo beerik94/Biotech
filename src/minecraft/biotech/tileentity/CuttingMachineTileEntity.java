@@ -55,7 +55,8 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			/* Per Tick Processes */
 			this.setPowered(true);
 			this.chargeUp();
-			if (this.ticks % 40 == 0) {
+			if (this.ticks % 40 == 0) 
+			{
 				GetTree();
 			}
 			System.out.println("Facing: " + this.getFacing());
@@ -79,10 +80,13 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		return false;
 	}
 
+	//TODO Maybe add this feature in the future
+	//For now only the tree that is 2 blocks above the woodcutter gets detected
 	/**
 	 * Check for Trees
 	 */
 	public void GetTree() {
+		/*
 		int XPos = this.xCoord;
 		int ZPos = this.zCoord;
 		switch (this.getFacing()) {
@@ -118,6 +122,20 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 				return;
 			}
 		}
+		*/
+		int i = 2;
+		while(worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) == Block.wood.blockID)
+		{
+			System.out.println("Log Blocks: " + i);
+			i++;
+		}
+		if(worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID)
+		{
+			for(int x = 2; x < i; x++)
+			{
+				DoCut(this.xCoord, this.yCoord + x, this.zCoord);
+			}
+		}
 	}
 
 	/**
@@ -131,7 +149,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 *            The Z position of the block
 	 */
 	public void DoCut(int x, int y, int z) {
-		worldObj.setBlockWithNotify(x, y, z, Block.wood.blockID);
+		worldObj.setBlockWithNotify(x, y, z, 0);
 	}
 
 	/**
@@ -217,5 +235,25 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	public Packet getDescriptionPacket() {
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
 				this.electricityStored);
+	}
+	
+	public int getFacing() {
+		return facing;
+	}
+
+	public void setFacing(int facing) {
+		this.facing = facing;
+	}
+	
+	public double getElectricityStored() {
+		return electricityStored;
+	}
+
+	public void setElectricityStored(double joules) {
+		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
+	}
+
+	public double getMaxElectricity() {
+		return electricityMaxStored;
 	}
 }

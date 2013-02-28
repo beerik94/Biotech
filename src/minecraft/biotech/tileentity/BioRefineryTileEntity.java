@@ -1,13 +1,9 @@
 package biotech.tileentity;
 
-import java.util.EnumSet;
+import hydraulic.core.implement.IColorCoded;
+import hydraulic.core.implement.IReadOut;
 
-import liquidmechanics.api.IColorCoded;
-import liquidmechanics.api.IReadOut;
-import liquidmechanics.api.helpers.ColorCode;
-import liquidmechanics.api.liquids.IPressure;
-import liquidmechanics.api.liquids.LiquidData;
-import liquidmechanics.api.liquids.LiquidHandler;
+import java.util.EnumSet;
 
 import biotech.Biotech;
 

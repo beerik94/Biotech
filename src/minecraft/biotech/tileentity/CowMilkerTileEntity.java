@@ -1,14 +1,14 @@
 package biotech.tileentity;
 
+import hydraulic.core.implement.ColorCode;
+import hydraulic.core.implement.IColorCoded;
+import hydraulic.core.implement.IReadOut;
+import hydraulic.core.liquids.LiquidData;
+import hydraulic.core.liquids.LiquidHandler;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import liquidmechanics.api.IColorCoded;
-import liquidmechanics.api.IReadOut;
-import liquidmechanics.api.helpers.ColorCode;
-import liquidmechanics.api.liquids.IPressure;
-import liquidmechanics.api.liquids.LiquidData;
-import liquidmechanics.api.liquids.LiquidHandler;
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
