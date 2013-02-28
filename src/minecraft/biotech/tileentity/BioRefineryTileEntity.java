@@ -1,7 +1,11 @@
 package biotech.tileentity;
 
+import hydraulic.core.implement.ColorCode;
 import hydraulic.core.implement.IColorCoded;
+import hydraulic.core.implement.IPsiReciever;
 import hydraulic.core.implement.IReadOut;
+import hydraulic.core.liquids.LiquidData;
+import hydraulic.core.liquids.LiquidHandler;
 
 import java.util.EnumSet;
 
@@ -37,7 +41,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
 public class BioRefineryTileEntity extends BasicMachineTileEntity implements
-		IPacketReceiver, IColorCoded, IPressure, IReadOut {
+		IPacketReceiver, IColorCoded, IPsiReciever, IReadOut {
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 50;
 	public static final double WATTS_PER_IDLE_TICK = 5.0;
@@ -265,26 +269,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	public String getMeterReading(EntityPlayer user, ForgeDirection side) {
 		return "Milk:" + this.milkStored;
 	}
-
-	@Override
-	public int presureOutput(LiquidData type, ForgeDirection dir) {
-		if (type.getColor() == color) {
-			return type.getPressure();
-		}
-
-		return 0;
-	}
-
-	@Override
-	public boolean canPressureToo(LiquidData type, ForgeDirection dir) {
-		if (type.getColor() == color
-				&& dir == ForgeDirection.DOWN.getOpposite()) {
-			return true;
-		}
-
-		return false;
-	}
-
+	
 	@Override
 	public ColorCode getColor() {
 		return ColorCode.WHITE;
@@ -293,6 +278,16 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public void setColor(Object obj) {
 		// leave this blank unless you plan on having it change or be changed
+	}
+
+	@Override
+	public double getMaxPressure(ForgeDirection side) {
+		return color.getLiquidData().getPressure();
+	}
+
+	@Override
+	public void onReceivePressure(double pressure) {
+		// TODO Auto-generated method stub
 	}
 
 }

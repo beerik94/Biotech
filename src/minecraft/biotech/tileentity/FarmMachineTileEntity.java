@@ -63,8 +63,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 
 		if (this.idleTicks > 0) {
 			if (this.ticks % 40 == 0)
-				this.setElectricityStored(this.getElectricityStored()
-						- this.WATTS_PER_IDLE_ACTION);
+				this.setElectricityStored(this.WATTS_PER_IDLE_ACTION, false);
 
 			--this.idleTicks;
 			return;
@@ -74,8 +73,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 			this.setPowered(true);
 
 			if (doWork()) {
-				this.setElectricityStored(this.getElectricityStored()
-						- this.WATTS_PER_ACTION);
+				this.setElectricityStored(this.WATTS_PER_ACTION, false);
 				this.idleTicks = this.IDLE_TIME_AFTER_ACTION;
 				advanceLocation();
 				this.setPowered(false);

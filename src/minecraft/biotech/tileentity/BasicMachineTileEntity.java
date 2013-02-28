@@ -279,7 +279,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 								: electricityNeeded);
 
 				this.setElectricityStored(electricityStored
-						+ (network.consumeElectricity(this).getWatts()));
+						+ (network.consumeElectricity(this).getWatts()), true);
 
 				if (UniversalElectricity.isVoltageSensitive) {
 					ElectricityPack electricityPack = network
@@ -306,7 +306,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 							.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005,
 									this.inventory[0]);
 					this.setElectricityStored(this.electricityStored
-							+ joulesReceived);
+							+ joulesReceived, true);
 				}
 			}
 		}
@@ -571,8 +571,20 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 		return electricityStored;
 	}
 
-	public void setElectricityStored(double joules) {
-		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
+	/**
+	 * Sets the current volume of milk stored
+	 * 
+	 * @param amount
+	 *            - volume sum
+	 * @param add
+	 *            - if true it will add the amount to the current sum
+	 */
+	public void setElectricityStored(double amount, boolean add) {
+		if (add) {
+			this.electricityStored += amount;
+		} else {
+			this.electricityStored -= amount;
+		}
 	}
 
 	public double getMaxElectricity() {

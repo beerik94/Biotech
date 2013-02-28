@@ -24,12 +24,13 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		IPacketReceiver {
 
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_TICK = 25;
+	public static final double WATTS_PER_SEARCH = 25;
+	public static final double WATTS_PER_CUT = 125;
 
 	// How much power is stored?
 	private double electricityStored = 0;
 	private double electricityMaxStored = 5000;
-	
+
 	// Is the machine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
 
@@ -55,9 +56,9 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			/* Per Tick Processes */
 			this.setPowered(true);
 			this.chargeUp();
-			if (this.ticks % 40 == 0) 
-			{
+			if (this.ticks % 40 == 0 && this.getElectricityStored() >= WATTS_PER_SEARCH) {
 				GetTree();
+				this.setElectricityStored(WATTS_PER_SEARCH, false);
 			}
 			System.out.println("Facing: " + this.getFacing());
 			/* Update Client */
@@ -80,59 +81,33 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		return false;
 	}
 
-	//TODO Maybe add this feature in the future
-	//For now only the tree that is 2 blocks above the woodcutter gets detected
+	// TODO Maybe add this feature in the future
+	// For now only the tree that is 2 blocks(and all the other blocks till the tree ends) above the woodcutter gets detected
 	/**
 	 * Check for Trees
 	 */
 	public void GetTree() {
 		/*
-		int XPos = this.xCoord;
-		int ZPos = this.zCoord;
-		switch (this.getFacing()) {
-		case 2: // North
-			for (int i = 1; i < GetRange(); i++) {
-				ZPos = this.zCoord + i;
-			}
-			break;
-		case 3: // South
-			for (int i = 1; i < GetRange(); i++) {
-				ZPos = this.zCoord - i;
-			}
-			break;
-		case 4: // West
-			for (int i = 1; i < GetRange(); i++) {
-				XPos = this.xCoord + i;
-			}
-			break;
-		case 5: // East
-			for (int i = 1; i < GetRange(); i++) {
-				XPos = this.xCoord - i;
-			}
-			break;
-		}
-		int bottomBlock = worldObj.getBlockId(XPos, this.yCoord, ZPos);
-		int YPos = this.yCoord + 1;
-		while (bottomBlock == Block.wood.blockID) {
-			int otherBlock = worldObj.getBlockId(XPos, YPos, ZPos);
-			if (otherBlock == Block.wood.blockID) {
-				YPos += 1;
-			} else {
-				DoCut(XPos, YPos - 1, ZPos);
-				return;
-			}
-		}
-		*/
+		 * int XPos = this.xCoord; int ZPos = this.zCoord; switch
+		 * (this.getFacing()) { case 2: // North for (int i = 1; i < GetRange();
+		 * i++) { ZPos = this.zCoord + i; } break; case 3: // South for (int i =
+		 * 1; i < GetRange(); i++) { ZPos = this.zCoord - i; } break; case 4: //
+		 * West for (int i = 1; i < GetRange(); i++) { XPos = this.xCoord + i; }
+		 * break; case 5: // East for (int i = 1; i < GetRange(); i++) { XPos =
+		 * this.xCoord - i; } break; } int bottomBlock =
+		 * worldObj.getBlockId(XPos, this.yCoord, ZPos); int YPos = this.yCoord
+		 * + 1; while (bottomBlock == Block.wood.blockID) { int otherBlock =
+		 * worldObj.getBlockId(XPos, YPos, ZPos); if (otherBlock ==
+		 * Block.wood.blockID) { YPos += 1; } else { DoCut(XPos, YPos - 1,
+		 * ZPos); return; } }
+		 */
 		int i = 2;
-		while(worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) == Block.wood.blockID)
-		{
+		while (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) == Block.wood.blockID) {
 			System.out.println("Log Blocks: " + i);
 			i++;
 		}
-		if(worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID)
-		{
-			for(int x = 2; x < i; x++)
-			{
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID && this.getElectricityStored() >= WATTS_PER_CUT) {
+			for (int x = 2; x < i; x++) {
 				DoCut(this.xCoord, this.yCoord + x, this.zCoord);
 			}
 		}
@@ -150,6 +125,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 */
 	public void DoCut(int x, int y, int z) {
 		worldObj.setBlockWithNotify(x, y, z, 0);
+		this.setElectricityStored(WATTS_PER_CUT, false);
 	}
 
 	/**
@@ -157,6 +133,13 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 */
 	public void Replant() {
 
+	}
+	
+	/**
+	 * Removes leaves that are left behind.
+	 */
+	public void RemoveLeaves() {
+		
 	}
 
 	/**
@@ -236,7 +219,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
 				this.electricityStored);
 	}
-	
+
 	public int getFacing() {
 		return facing;
 	}
@@ -244,13 +227,25 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	public void setFacing(int facing) {
 		this.facing = facing;
 	}
-	
+
 	public double getElectricityStored() {
 		return electricityStored;
 	}
-
-	public void setElectricityStored(double joules) {
-		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
+	
+	/**
+	 * Sets the current volume of milk stored
+	 * 
+	 * @param amount
+	 *            - volume sum
+	 * @param add
+	 *            - if true it will add the amount to the current sum
+	 */
+	public void setElectricityStored(double amount, boolean add) {
+		if (add) {
+			this.electricityStored += amount;
+		} else {
+			this.electricityStored -= amount;
+		}
 	}
 
 	public double getMaxElectricity() {

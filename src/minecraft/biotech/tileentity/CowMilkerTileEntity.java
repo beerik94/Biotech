@@ -2,6 +2,7 @@ package biotech.tileentity;
 
 import hydraulic.core.implement.ColorCode;
 import hydraulic.core.implement.IColorCoded;
+import hydraulic.core.implement.IPsiCreator;
 import hydraulic.core.implement.IReadOut;
 import hydraulic.core.liquids.LiquidData;
 import hydraulic.core.liquids.LiquidHandler;
@@ -40,7 +41,7 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements
-		IPacketReceiver, IColorCoded, IReadOut, IPressure {
+		IPacketReceiver, IColorCoded, IReadOut, IPsiCreator {
 	protected List<EntityCow> CowList = new ArrayList<EntityCow>();
 
 	// Watts being used per action
@@ -309,18 +310,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	}
 
 	@Override
-	public int presureOutput(LiquidData type, ForgeDirection dir) {
-		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) ? type
-				.getPressure() : 0);
-	}
-
-	@Override
-	public boolean canPressureToo(LiquidData type, ForgeDirection dir) {
-		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) && dir == ForgeDirection.DOWN
-				.getOpposite());
-	}
-
-	@Override
 	public String getMeterReading(EntityPlayer user, ForgeDirection side) {
 		return "Milk: " + this.milkStored + " Units";
 	}
@@ -335,6 +324,18 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 
 	public double getMaxElectricity() {
 		return electricityMaxStored;
+	}
+
+	@Override
+	public int getPressureOut(LiquidData type, ForgeDirection dir) {
+		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) ? type
+				.getPressure() : 0);
+	}
+
+	@Override
+	public boolean getCanPressureTo(LiquidData type, ForgeDirection dir) {
+		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) && dir == ForgeDirection.DOWN
+				.getOpposite());
 	}
 
 }
