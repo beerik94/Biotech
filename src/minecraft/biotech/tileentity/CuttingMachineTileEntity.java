@@ -29,6 +29,9 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	// How much power is stored?
 	private double electricityStored = 0;
 	private double electricityMaxStored = 5000;
+	
+	// Is the machine currently powered, and did it change?
+	public boolean prevIsPowered, isPowered = false;
 
 	private int facing;
 	private int playersUsing = 0;
@@ -55,6 +58,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			if (this.ticks % 40 == 0) {
 				GetTree();
 			}
+			System.out.println("Facing: " + this.getFacing());
 			/* Update Client */
 			if (this.playersUsing > 0 && this.ticks % 3 == 0) {
 				PacketManager.sendPacketToClients(getDescriptionPacket(),
@@ -84,22 +88,22 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		switch (this.getFacing()) {
 		case 2: // North
 			for (int i = 1; i < GetRange(); i++) {
-				ZPos = this.zCoord - i;
+				ZPos = this.zCoord + i;
 			}
 			break;
 		case 3: // South
 			for (int i = 1; i < GetRange(); i++) {
-				ZPos = this.zCoord + i;
+				ZPos = this.zCoord - i;
 			}
 			break;
 		case 4: // West
 			for (int i = 1; i < GetRange(); i++) {
-				XPos = this.xCoord - i;
+				XPos = this.xCoord + i;
 			}
 			break;
 		case 5: // East
 			for (int i = 1; i < GetRange(); i++) {
-				XPos = this.xCoord + i;
+				XPos = this.xCoord - i;
 			}
 			break;
 		}
