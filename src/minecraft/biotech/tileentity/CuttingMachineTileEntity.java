@@ -30,9 +30,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	private double electricityStored = 0;
 	private double electricityMaxStored = 5000;
 
-	// Is the machine currently powered, and did it change?
-	public boolean prevIsPowered, isPowered = false;
-
 	private int facing;
 	private int playersUsing = 0;
 	private int idleTicks;
@@ -55,7 +52,9 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			/* Per Tick Processes */
 			this.setPowered(true);
 			this.chargeUp();
-
+			if (this.ticks % 40 == 0) {
+				GetTree();
+			}
 			/* Update Client */
 			if (this.playersUsing > 0 && this.ticks % 3 == 0) {
 				PacketManager.sendPacketToClients(getDescriptionPacket(),
@@ -111,11 +110,10 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			if (otherBlock == Block.wood.blockID) {
 				YPos += 1;
 			} else {
-
+				DoCut(XPos, YPos - 1, ZPos);
 				return;
 			}
 		}
-
 	}
 
 	/**
@@ -129,7 +127,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 *            The Z position of the block
 	 */
 	public void DoCut(int x, int y, int z) {
-
+		worldObj.setBlockWithNotify(x, y, z, Block.wood.blockID);
 	}
 
 	/**
@@ -157,7 +155,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		// this.progressTime = tagCompound.getShort("Progress");
 
 		this.facing = tagCompound.getShort("facing");
-		this.isPowered = tagCompound.getBoolean("isPowered");
 		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
@@ -177,7 +174,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		// tagCompound.setShort("Progress", (short)this.progressTime);
 
 		tagCompound.setShort("facing", (short) this.facing);
-		tagCompound.setBoolean("isPowered", this.isPowered);
 		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
 
@@ -191,7 +187,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 				itemList.appendTag(tag);
 			}
 		}
-
 		tagCompound.setTag("Inventory", itemList);
 	}
 
@@ -206,7 +201,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			ByteArrayDataInput dataStream) {
 		try {
 			if (this.worldObj.isRemote) {
-				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
 			}
@@ -217,7 +211,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered,
-				this.facing, this.electricityStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
+				this.electricityStored);
 	}
 }
