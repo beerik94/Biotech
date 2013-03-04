@@ -25,14 +25,11 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_SEARCH = 25;
-	public static final double WATTS_PER_CUT = 125;
+	public static final double WATTS_PER_CUT = 500;
 
 	// How much power is stored?
 	private double electricityStored = 0;
 	private double electricityMaxStored = 5000;
-
-	// Is the machine currently powered, and did it change?
-	public boolean prevIsPowered, isPowered = false;
 
 	private int facing;
 	private int playersUsing = 0;
@@ -52,13 +49,18 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if (!worldObj.isRemote && this.HasRedstoneSignal()) {
+		if (!worldObj.isRemote && this.hasRedstone) {
 			/* Per Tick Processes */
-			this.setPowered(true);
 			this.chargeUp();
-			if (this.ticks % 40 == 0 && this.getElectricityStored() >= WATTS_PER_SEARCH) {
+			if (this.ticks % 40 == 0
+					&& this.getElectricityStored() >= WATTS_PER_SEARCH) {
 				GetTree();
 				this.setElectricityStored(WATTS_PER_SEARCH, false);
+				RemoveLeaves();
+			}
+			if(this.electricityStored <= 0)
+			{
+				this.electricityStored = 0;
 			}
 			System.out.println("Facing: " + this.getFacing());
 			/* Update Client */
@@ -69,20 +71,9 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		}
 	}
 
-	/**
-	 * Gets if this block is getting powered by redstone
-	 */
-	public boolean HasRedstoneSignal() {
-		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
-				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
-						zCoord)) {
-			return true;
-		}
-		return false;
-	}
-
 	// TODO Maybe add this feature in the future
-	// For now only the tree that is 2 blocks(and all the other blocks till the tree ends) above the woodcutter gets detected
+	// For now only the tree that is 2 blocks(and all the other blocks till the
+	// tree ends) above the woodcutter gets detected
 	/**
 	 * Check for Trees
 	 */
@@ -106,10 +97,12 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			System.out.println("Log Blocks: " + i);
 			i++;
 		}
-		if (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID && this.getElectricityStored() >= WATTS_PER_CUT) {
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID
+				&& this.getElectricityStored() >= WATTS_PER_CUT) {
 			for (int x = 2; x < i; x++) {
-				DoCut(this.xCoord, this.yCoord + x, this.zCoord);
+				DoCut(this.xCoord, this.yCoord + x, this.zCoord, true);
 			}
+			Replant();
 		}
 	}
 
@@ -122,8 +115,10 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 *            The Y position of the block
 	 * @param z
 	 *            The Z position of the block
+	 * @param wood 
+	 *            True for wood / False for leaves
 	 */
-	public void DoCut(int x, int y, int z) {
+	public void DoCut(int x, int y, int z, boolean wood) {
 		worldObj.setBlockWithNotify(x, y, z, 0);
 		this.setElectricityStored(WATTS_PER_CUT, false);
 	}
@@ -132,14 +127,36 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 * The replanting of saplings
 	 */
 	public void Replant() {
-
+		if(worldObj.getBlockId(this.xCoord, this.yCoord + 2, this.zCoord) == 0)
+		{
+			worldObj.setBlock(this.xCoord, this.yCoord + 2, this.zCoord, Block.sapling.blockID);
+		}
 	}
-	
+
 	/**
 	 * Removes leaves that are left behind.
 	 */
 	public void RemoveLeaves() {
-		
+		int xminrange = xCoord - 5;
+		int xmaxrange = xCoord + 5;
+		int yminrange = yCoord + 2;
+		int ymaxrange = yCoord + 20;
+		int zminrange = zCoord - 5;
+		int zmaxrange = zCoord + 5;
+
+		for (int xx = xminrange; xx <= xmaxrange; xx++)
+		{
+			for (int yy = yminrange; yy <= ymaxrange; yy++)
+			{
+				for (int zz = zminrange; zz <= zmaxrange; zz++)
+				{
+					if(worldObj.getBlockId(xx, yy, zz) == Block.leaves.blockID)
+					{
+						DoCut(xx, yy, zz, false);
+					}									
+				}
+			}
+		}
 	}
 
 	/**
@@ -160,6 +177,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		// this.progressTime = tagCompound.getShort("Progress");
 
 		this.facing = tagCompound.getShort("facing");
+		this.hasRedstone = tagCompound.getBoolean("hasRedstone");
 		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
@@ -179,6 +197,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		// tagCompound.setShort("Progress", (short)this.progressTime);
 
 		tagCompound.setShort("facing", (short) this.facing);
+		tagCompound.setBoolean("hasRedstone", this.hasRedstone);
 		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
 
@@ -231,7 +250,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	public double getElectricityStored() {
 		return electricityStored;
 	}
-	
+
 	/**
 	 * Sets the current volume of milk stored
 	 * 

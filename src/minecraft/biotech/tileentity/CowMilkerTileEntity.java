@@ -84,7 +84,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if (!worldObj.isRemote && this.HasRedstoneSignal()) {
+		if (!worldObj.isRemote && this.hasRedstone) {
 			/* Per Tick Processes */
 			this.setPowered(true);
 			this.chargeUp();
@@ -181,18 +181,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			}
 			System.out.println("filled: " + filled);
 		}
-	}
-
-	/**
-	 * gets if this block is getting powered by redstone
-	 */
-	public boolean HasRedstoneSignal() {
-		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
-				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
-						zCoord)) {
-			return true;
-		}
-		return false;
 	}
 
 	@Override

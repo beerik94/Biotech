@@ -44,7 +44,7 @@ public class CowMilkerGui extends GuiContainer {
 
 		if (this.tileEntity.isDisabled()) {
 			displayText = "Disabled!";
-		} else if (this.tileEntity.HasRedstoneSignal()) {
+		} else if (this.tileEntity.hasRedstone) {
 			displayText = "Working";
 		} else {
 			displayText = "Idle";

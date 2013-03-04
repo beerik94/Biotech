@@ -47,20 +47,20 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 	// Is the macine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
 
+	public boolean hasRedstone = false;
+	
 	private int facing;
 
 	public BasicMachineTileEntity() {
 		super();
 
 		this.inventory = new ItemStack[24];
-
-		ElectricityConnections.registerConnector(this,
-				EnumSet.allOf(ForgeDirection.class));
 	}
 
 	@Override
 	public void initiate() {
 		refreshConnectorsAndWorkArea();
+		chargeUp();
 	}
 
 	public void refreshConnectorsAndWorkArea() {
@@ -589,5 +589,17 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 	public double getMaxElectricity() {
 		return electricityMaxStored;
+	}
+	
+	/**
+	 * Gets if this block is getting powered by redstone
+	 */
+	public void HasRedstoneSignal() {
+		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
+				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
+						zCoord)) {
+			this.hasRedstone = true;
+		}
+		this.hasRedstone = false;
 	}
 }
