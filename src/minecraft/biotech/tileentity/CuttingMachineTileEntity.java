@@ -62,7 +62,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			{
 				this.electricityStored = 0;
 			}
-			System.out.println("Facing: " + this.getFacing());
 			/* Update Client */
 			if (this.playersUsing > 0 && this.ticks % 3 == 0) {
 				PacketManager.sendPacketToClients(getDescriptionPacket(),
@@ -94,7 +93,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		 */
 		int i = 2;
 		while (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) == Block.wood.blockID) {
-			System.out.println("Log Blocks: " + i);
 			i++;
 		}
 		if (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID
@@ -248,7 +246,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	}
 
 	public double getElectricityStored() {
-		return electricityStored;
+		return this.electricityStored;
 	}
 
 	/**
@@ -268,6 +266,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	}
 
 	public double getMaxElectricity() {
-		return electricityMaxStored;
+		return this.electricityMaxStored;
 	}
 }

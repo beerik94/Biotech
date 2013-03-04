@@ -231,7 +231,20 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 		if (!worldObj.isRemote) {
 			this.chargeUp();
-
+			
+			if (this.ticks % 30 == 0)
+			{
+				if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
+						|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
+								zCoord)) {
+					this.hasRedstone = true;
+				}
+				else
+				{
+					this.hasRedstone = false;
+				}
+			}
+			
 			if (this.ticks % 3 == 0 && this.playersUsing > 0) {
 				PacketManager.sendPacketToClients(getDescriptionPacket(),
 						this.worldObj, new Vector3(this), 12);
@@ -589,17 +602,5 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 	public double getMaxElectricity() {
 		return electricityMaxStored;
-	}
-	
-	/**
-	 * Gets if this block is getting powered by redstone
-	 */
-	public void HasRedstoneSignal() {
-		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
-				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
-						zCoord)) {
-			this.hasRedstone = true;
-		}
-		this.hasRedstone = false;
 	}
 }
