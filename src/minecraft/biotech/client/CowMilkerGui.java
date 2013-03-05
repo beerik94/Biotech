@@ -37,7 +37,7 @@ public class CowMilkerGui extends GuiContainer {
 	 */
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j) {
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 60, 6,
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4,
 				4210752);
 
 		String displayText = "";
