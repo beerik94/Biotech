@@ -18,8 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class CowMilkerGui extends GuiContainer {
 	private CowMilkerTileEntity tileEntity;
 
-	public static String MILKINGMANAGER_GUI = Biotech.FILE_PATH
-			+ "cowmilker.png";
+	public static String COWMILKER_GUI = Biotech.FILE_PATH
+			+ "GUI_CowMilker.png";
 
 	private int containerWidth;
 	private int containerHeight;
@@ -76,7 +76,7 @@ public class CowMilkerGui extends GuiContainer {
 	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		int picture = mc.renderEngine.getTexture(this.MILKINGMANAGER_GUI);
+		int picture = mc.renderEngine.getTexture(this.COWMILKER_GUI);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		this.mc.renderEngine.bindTexture(picture);
 
@@ -89,8 +89,8 @@ public class CowMilkerGui extends GuiContainer {
 		int scale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity
 				.getMaxMilk()) * 100);
 
-		this.drawTexturedModalRect(containerWidth + 137, containerHeight + 67
-				- scale, 176, 50 - scale, 8, scale);
+		this.drawTexturedModalRect(containerWidth + 215, containerHeight + 141
+				- scale, 352, 101 - scale, 15, scale);
 		if (this.tileEntity.bucketIn) {
 			this.drawTexturedModalRect(containerWidth + 153,
 					containerHeight + 33, 176, 51, 13,
