@@ -24,16 +24,10 @@ public class CowMilkerGui extends GuiContainer {
 	private int containerWidth;
 	private int containerHeight;
 
-	// protected int xSize = 352;
-	// protected int ySize = 331;
-
 	public CowMilkerGui(InventoryPlayer playerInventory,
 			CowMilkerTileEntity tileEntity) {
 		super(new CowMilkerContainer(playerInventory, tileEntity));
-
-		// this.width *= 2;
-		// this.height *= 2;
-
+		
 		this.tileEntity = tileEntity;
 	}
 
@@ -101,8 +95,8 @@ public class CowMilkerGui extends GuiContainer {
 		this.drawTexturedModalRect(containerWidth + 215, containerHeight + 141
 				- milkScale, 352, 101 - milkScale, 15, milkScale);
 
-		this.drawTexturedModalRect(containerWidth + 339, containerHeight + 141
-				- elecScale, 368, 101 - elecScale, 4, elecScale);
+		this.drawTexturedModalRect(containerWidth + 169, containerHeight + 70
+				- elecScale, 184, 50 - elecScale, 4, elecScale);
 
 		if (this.tileEntity.bucketIn) {
 			this.drawTexturedModalRect(containerWidth + 237,
