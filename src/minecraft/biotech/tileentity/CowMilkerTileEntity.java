@@ -84,51 +84,51 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public void updateEntity() {
 		super.updateEntity();
-		if (!worldObj.isRemote && this.hasRedstone) {
+		if (!worldObj.isRemote) {
 			/* Per Tick Processes */
-			this.setPowered(true);
 			this.chargeUp();
-			this.drainTo(ForgeDirection.DOWN);
+			if (this.hasRedstone) {
+				this.drainTo(ForgeDirection.DOWN);
 
-			/* SCAN FOR COWS */
-			if (this.ticks % 40 == 0) {
-				scanForCows();
-			}
-
-			/* Milk Cows */
-			if (this.ticks % 100 == 0) {
-				milkCows();
-				this.setPowered(false);
-			}
-
-			/* Update Client */
-			if (this.playersUsing > 0 && this.ticks % 3 == 0) {
-				PacketManager.sendPacketToClients(getDescriptionPacket(),
-						this.worldObj, new Vector3(this), 12);
-			}
-			System.out.println("Milk: " + this.getMilkStored());
-
-			if (milkStored >= 30 && inventory[2] != null
-					&& inventory[3] == null) {
-				this.bucketIn = true;
-				if (bucketTime >= bucketTimeMax) {
-					if (inventory[2].stackSize >= 1) {
-						inventory[2].stackSize -= 1;
-					} else {
-						inventory[2] = null;
-					}
-					ItemStack bMilk = new ItemStack(Item.bucketMilk);
-					inventory[3] = (bMilk);
-					milkStored -= 30;
-					bucketTime = 0;
-					this.bucketIn = false;
+				/* SCAN FOR COWS */
+				if (this.ticks % 40 == 0) {
+					scanForCows();
 				}
-			}
-			if (bucketTime < bucketTimeMax) {
-				bucketTime++;
-			}
-			if (milkStored >= milkMaxStored) {
-				milkStored = milkMaxStored;
+
+				/* Milk Cows */
+				if (this.ticks % 100 == 0) {
+					milkCows();
+				}
+
+				/* Update Client */
+				if (this.playersUsing > 0 && this.ticks % 3 == 0) {
+					PacketManager.sendPacketToClients(getDescriptionPacket(),
+							this.worldObj, new Vector3(this), 12);
+				}
+				System.out.println("Milk: " + this.getMilkStored());
+
+				if (milkStored >= 30 && inventory[2] != null
+						&& inventory[3] == null) {
+					this.bucketIn = true;
+					if (bucketTime >= bucketTimeMax) {
+						if (inventory[2].stackSize >= 1) {
+							inventory[2].stackSize -= 1;
+						} else {
+							inventory[2] = null;
+						}
+						ItemStack bMilk = new ItemStack(Item.bucketMilk);
+						inventory[3] = (bMilk);
+						milkStored -= 30;
+						bucketTime = 0;
+						this.bucketIn = false;
+					}
+				}
+				if (bucketTime < bucketTimeMax) {
+					bucketTime++;
+				}
+				if (milkStored >= milkMaxStored) {
+					milkStored = milkMaxStored;
+				}
 			}
 		}
 	}
@@ -149,7 +149,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk()) {
 			int vol = (10 * CowList.size());
 			this.setMilkStored(vol, true);
-			this.setElectricityStored(this.electricityStored -= this.WATTS_PER_TICK);
+			this.setElectricityStored(this.WATTS_PER_TICK, false);
 		}
 	}
 
@@ -189,7 +189,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		// this.progressTime = tagCompound.getShort("Progress");
 
 		this.facing = tagCompound.getShort("facing");
-		this.isPowered = tagCompound.getBoolean("isPowered");
 		this.milkStored = tagCompound.getInteger("milkStored");
 		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
@@ -210,7 +209,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		// tagCompound.setShort("Progress", (short)this.progressTime);
 
 		tagCompound.setShort("facing", (short) this.facing);
-		tagCompound.setBoolean("isPowered", this.isPowered);
 		tagCompound.setInteger("milkStored", (int) this.milkStored);
 		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
@@ -240,7 +238,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			ByteArrayDataInput dataStream) {
 		try {
 			if (this.worldObj.isRemote) {
-				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.electricityStored = dataStream.readDouble();
 				this.milkStored = dataStream.readInt();
@@ -252,8 +249,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered,
-				this.facing, this.electricityStored, this.milkStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
+				this.electricityStored, this.milkStored);
 	}
 
 	public int getFacing() {
@@ -264,6 +261,30 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		this.facing = facing;
 	}
 
+	
+	public double getElectricityStored() {
+		return this.electricityStored;
+	}
+
+	/**
+	 * Sets the current volume of milk stored
+	 * 
+	 * @param amount
+	 *            - volume sum
+	 * @param add
+	 *            - if true it will add the amount to the current sum
+	 */
+	public void setElectricityStored(double amount, boolean add) {
+		if (add) {
+			this.electricityStored += amount;
+		} else {
+			this.electricityStored -= amount;
+		}
+	}
+
+	public double getMaxElectricity() {
+		return this.electricityMaxStored;
+	}
 	/**
 	 * Sets the current volume of milk stored
 	 * 
@@ -300,18 +321,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public String getMeterReading(EntityPlayer user, ForgeDirection side) {
 		return "Milk: " + this.milkStored + " Units";
-	}
-
-	public double getElectricityStored() {
-		return electricityStored;
-	}
-
-	public void setElectricityStored(double joules) {
-		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
-	}
-
-	public double getMaxElectricity() {
-		return electricityMaxStored;
 	}
 
 	@Override

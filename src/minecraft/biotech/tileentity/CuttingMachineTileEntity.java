@@ -51,7 +51,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		super.updateEntity();
 		if (!worldObj.isRemote && this.hasRedstone) {
 			/* Per Tick Processes */
-			this.chargeUp();
+			
 			if (this.ticks % 40 == 0
 					&& this.getElectricityStored() >= WATTS_PER_SEARCH) {
 				GetTree();
@@ -68,6 +68,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 						this.worldObj, new Vector3(this), 12);
 			}
 		}
+		this.chargeUp();
 	}
 
 	// TODO Maybe add this feature in the future

@@ -24,9 +24,15 @@ public class CowMilkerGui extends GuiContainer {
 	private int containerWidth;
 	private int containerHeight;
 
+	// protected int xSize = 352;
+	// protected int ySize = 331;
+
 	public CowMilkerGui(InventoryPlayer playerInventory,
 			CowMilkerTileEntity tileEntity) {
 		super(new CowMilkerContainer(playerInventory, tileEntity));
+
+		// this.width *= 2;
+		// this.height *= 2;
 
 		this.tileEntity = tileEntity;
 	}
@@ -51,19 +57,19 @@ public class CowMilkerGui extends GuiContainer {
 		}
 
 		this.fontRenderer
-				.drawString("Status: " + displayText, 32, 17, 0x00CD00);
+				.drawString("Status: " + displayText, 26, 20, 0x00CD00);
 		this.fontRenderer.drawString(
 				"Voltage: "
 						+ ElectricInfo.getDisplayShort(
 								this.tileEntity.getVoltage(),
-								ElectricUnit.VOLTAGE), 32, 27, 0x00CD00);
+								ElectricUnit.VOLTAGE), 26, 30, 0x00CD00);
 		this.fontRenderer.drawString(
 				"Storage: "
 						+ ElectricInfo.getDisplayShort(
 								this.tileEntity.getElectricityStored(),
-								ElectricUnit.JOULES), 32, 37, 0x00CD00);
+								ElectricUnit.JOULES), 26, 40, 0x00CD00);
 		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored()
-				+ "/" + this.tileEntity.getMaxMilk(), 32, 47, 0x00CD00);
+				+ "/" + this.tileEntity.getMaxMilk(), 26, 50, 0x00CD00);
 
 		this.fontRenderer.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
@@ -80,20 +86,27 @@ public class CowMilkerGui extends GuiContainer {
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		this.mc.renderEngine.bindTexture(picture);
 
-		containerWidth = (this.width - this.xSize) / 2;
-		containerHeight = (this.height - this.ySize) / 2;
+		this.containerWidth = ((this.width - this.xSize) / 2);
+		this.containerHeight = ((this.height - this.ySize) / 2);
 
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0,
 				xSize, ySize);
 
-		int scale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity
+		int milkScale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity
 				.getMaxMilk()) * 100);
 
+		int elecScale = (int) (((double) this.tileEntity.getElectricityStored() / this.tileEntity
+				.getMaxElectricity()) * 100);
+
 		this.drawTexturedModalRect(containerWidth + 215, containerHeight + 141
-				- scale, 352, 101 - scale, 15, scale);
+				- milkScale, 352, 101 - milkScale, 15, milkScale);
+
+		this.drawTexturedModalRect(containerWidth + 339, containerHeight + 141
+				- elecScale, 368, 101 - elecScale, 4, elecScale);
+
 		if (this.tileEntity.bucketIn) {
-			this.drawTexturedModalRect(containerWidth + 153,
-					containerHeight + 33, 176, 51, 13,
+			this.drawTexturedModalRect(containerWidth + 237,
+					containerHeight + 73, 352, 122, 35,
 					this.tileEntity.bucketTimeMax);
 		}
 	}

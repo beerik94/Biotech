@@ -20,23 +20,23 @@ public class CowMilkerContainer extends Container {
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 51));
+		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 5, 50));
 
 		// Slot for Range Upgrade
-		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
+		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 5, 20));
 
 		// Slot for empty bucket
-		this.addSlotToContainer(new emptyBucketSlot(tileEntity, 2, 152, 16));
+		this.addSlotToContainer(new emptyBucketSlot(tileEntity, 2, 120, 20));
 
 		// Slot for filled bucket
-		this.addSlotToContainer(new milkBucketSlot(tileEntity, 3, 152, 51));
+		this.addSlotToContainer(new milkBucketSlot(tileEntity, 3, 120, 55));
 
 		int var3;
 
 		for (var3 = 0; var3 < 3; ++var3) {
 			for (int var4 = 0; var4 < 9; ++var4) {
 				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4
-						+ var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+						+ var3 * 9 + 9, 8 + var4 * 18, 85 + var3 * 18));
 			}
 		}
 

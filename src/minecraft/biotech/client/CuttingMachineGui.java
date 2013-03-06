@@ -18,7 +18,7 @@ public class CuttingMachineGui extends GuiContainer {
 	private CuttingMachineTileEntity tileEntity;
 
 	public static String CUTTINGMACHINE_GUI = Biotech.FILE_PATH
-			+ "woodcutter.png";
+			+ "GUI_CuttingMachine.png";
 
 	private int containerWidth;
 	private int containerHeight;
@@ -82,5 +82,11 @@ public class CuttingMachineGui extends GuiContainer {
 
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0,
 				xSize, ySize);
+		
+		int elecScale = (int) (((double) this.tileEntity.getElectricityStored() / this.tileEntity
+				.getMaxElectricity()) * 100);
+		
+		this.drawTexturedModalRect(containerWidth + 339, containerHeight + 141
+				- elecScale, 368, 101 - elecScale, 4, elecScale);
 	}
 }

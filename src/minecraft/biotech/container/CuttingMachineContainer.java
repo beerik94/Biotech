@@ -10,7 +10,6 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-
 public class CuttingMachineContainer extends Container {
 	private CuttingMachineTileEntity tileEntity;
 
@@ -19,11 +18,18 @@ public class CuttingMachineContainer extends Container {
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 51));
+		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 10, 99));
 
 		// Slot for Range Upgrade
-		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
-		
+		// this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
+
+		// Output Inventory
+		int outinv;
+
+		for (outinv = 0; outinv < 4; ++outinv) {
+			this.addSlotToContainer(new Slot(tileEntity, outinv + 5, 5, 5));
+		}
+
 		int var3;
 
 		for (var3 = 0; var3 < 3; ++var3) {
