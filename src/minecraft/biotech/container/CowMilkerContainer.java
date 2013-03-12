@@ -5,8 +5,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.prefab.SlotElectricItem;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.prefab.SlotSpecific;
 import biotech.slots.emptyBucketSlot;
 import biotech.slots.milkBucketSlot;
 import biotech.slots.rangeUpgradeSlot;
@@ -20,7 +20,7 @@ public class CowMilkerContainer extends Container {
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 5, 50));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 50, IItemElectric.class));
 
 		// Slot for Range Upgrade
 		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 5, 20));

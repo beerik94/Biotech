@@ -16,12 +16,8 @@ import biotech.Biotech;
 
 public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 		IInventory, ISidedInventory, IPacketReceiver {
+	
 	public static final double WATTS_PER_ACTION = 500;
-	public static final double WATTS_PER_IDLE_ACTION = 25;
-
-	// Time idle after a tick
-	public static final int IDLE_TIME_AFTER_ACTION = 80;
-	public static final int IDLE_TIME_NO_ACTION = 40;
 
 	public int currentX = 0;
 	public int currentZ = 0;
@@ -45,8 +41,6 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 			new ItemStack(Item.pumpkinSeeds, 1), new ItemStack(Item.carrot, 1),
 			new ItemStack(Item.potato, 1), };
 
-	private int idleTicks;
-
 	public FarmMachineTileEntity() {
 		super();
 	}
@@ -60,7 +54,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 		if (this.worldObj.isRemote) {
 			return;
 		}
-
+		/*
 		if (this.idleTicks > 0) {
 			if (this.ticks % 40 == 0)
 				this.setElectricityStored(this.WATTS_PER_IDLE_ACTION, false);
@@ -84,6 +78,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 				break;
 			}
 		}
+		*/
 
 		return;
 	}
@@ -104,8 +99,8 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 				getTopY(), zCoord + currentZ);
 
 		if (!worldObj.isRemote && canPlant(stack, placeBlock)) {
-			worldObj.setBlock(xCoord + currentX, getTopY() + 1, zCoord
-					+ currentZ, placeBlock.blockID);
+			worldObj.setBlockAndMetadataWithNotify(xCoord + currentX, getTopY() + 1, zCoord
+					+ currentZ, placeBlock.blockID, 0, 2);
 			decrStackSize(1, 1);
 			return true;
 		} else {
@@ -195,7 +190,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements
 		ItemStack circuit = this.inventory[2];
 		ItemStack resource = this.inventory[1];
 
-		if (this.getElectricityStored() >= this.WATTS_PER_ACTION) {
+		if (this.wattsReceived >= this.WATTS_PER_ACTION) {
 			if (hasBioCircuitInSlot() && hasResourcesInSlot()) {
 				if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds)
 						&& hasResourceOfType(resourceStacks[0])) {

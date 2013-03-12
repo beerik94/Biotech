@@ -6,8 +6,6 @@ import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import biotech.Biotech;
 import biotech.container.CowMilkerContainer;
 import biotech.tileentity.CowMilkerTileEntity;
@@ -52,18 +50,8 @@ public class CowMilkerGui extends GuiContainer {
 
 		this.fontRenderer
 				.drawString("Status: " + displayText, 26, 20, 0x00CD00);
-		this.fontRenderer.drawString(
-				"Voltage: "
-						+ ElectricInfo.getDisplayShort(
-								this.tileEntity.getVoltage(),
-								ElectricUnit.VOLTAGE), 26, 30, 0x00CD00);
-		this.fontRenderer.drawString(
-				"Storage: "
-						+ ElectricInfo.getDisplayShort(
-								this.tileEntity.getElectricityStored(),
-								ElectricUnit.JOULES), 26, 40, 0x00CD00);
 		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored()
-				+ "/" + this.tileEntity.getMaxMilk(), 26, 50, 0x00CD00);
+				+ "/" + this.tileEntity.getMaxMilk(), 26, 30, 0x00CD00);
 
 		this.fontRenderer.drawString(
 				StatCollector.translateToLocal("container.inventory"), 8,
@@ -89,14 +77,8 @@ public class CowMilkerGui extends GuiContainer {
 		int milkScale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity
 				.getMaxMilk()) * 100);
 
-		int elecScale = (int) ((this.tileEntity.getElectricityStored() / this.tileEntity
-				.getMaxElectricity()) / 50);
-
 		this.drawTexturedModalRect(containerWidth + 215, containerHeight + 141
 				- milkScale, 352, 101 - milkScale, 15, milkScale);
-
-		this.drawTexturedModalRect(containerWidth + 169, containerHeight + 71
-				- elecScale, 184, 50 - elecScale, 4, elecScale);
 
 		if (this.tileEntity.bucketIn) {
 			this.drawTexturedModalRect(containerWidth + 237,

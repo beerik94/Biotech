@@ -23,7 +23,7 @@ public class bioCircuitItem extends Item {
 		// Constructor Configuration
 		setCreativeTab(Biotech.tabBiotech);
 		setIconIndex(0);
-		setItemName("bioCircuit");
+		setUnlocalizedName("bioCircuit");
 		setHasSubtypes(true);
 	}
 

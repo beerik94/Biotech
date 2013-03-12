@@ -24,12 +24,8 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		IPacketReceiver {
 
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_SEARCH = 25;
-	public static final double WATTS_PER_CUT = 500;
-
-	// How much power is stored?
-	private double electricityStored = 0;
-	private double electricityMaxStored = 5000;
+	public static final double WATTS_PER_SEARCH = 200;
+	public static final double WATTS_PER_CUT = 700;
 
 	private int facing;
 	private int playersUsing = 0;
@@ -53,14 +49,10 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			/* Per Tick Processes */
 			
 			if (this.ticks % 40 == 0
-					&& this.getElectricityStored() >= WATTS_PER_SEARCH) {
+					&& this.wattsReceived >= WATTS_PER_SEARCH) {
 				GetTree();
-				this.setElectricityStored(WATTS_PER_SEARCH, false);
+				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_SEARCH / 4, 0);
 				RemoveLeaves();
-			}
-			if(this.electricityStored <= 0)
-			{
-				this.electricityStored = 0;
 			}
 			/* Update Client */
 			if (this.playersUsing > 0 && this.ticks % 3 == 0) {
@@ -97,7 +89,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 			i++;
 		}
 		if (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID
-				&& this.getElectricityStored() >= WATTS_PER_CUT) {
+				&& this.wattsReceived >= WATTS_PER_CUT) {
 			for (int x = 2; x < i; x++) {
 				DoCut(this.xCoord, this.yCoord + x, this.zCoord, true);
 			}
@@ -118,8 +110,8 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	 *            True for wood / False for leaves
 	 */
 	public void DoCut(int x, int y, int z, boolean wood) {
-		worldObj.setBlockWithNotify(x, y, z, 0);
-		this.setElectricityStored(WATTS_PER_CUT, false);
+		worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 2);
+		this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_CUT / 4, 0);
 	}
 
 	/**
@@ -128,7 +120,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 	public void Replant() {
 		if(worldObj.getBlockId(this.xCoord, this.yCoord + 2, this.zCoord) == 0)
 		{
-			worldObj.setBlock(this.xCoord, this.yCoord + 2, this.zCoord, Block.sapling.blockID);
+			worldObj.setBlockAndMetadataWithNotify(this.xCoord, this.yCoord + 2, this.zCoord, Block.sapling.blockID, 0, 2);
 		}
 	}
 
@@ -177,7 +169,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 		this.facing = tagCompound.getShort("facing");
 		this.hasRedstone = tagCompound.getBoolean("hasRedstone");
-		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
 		for (int i = 0; i < tagList.tagCount(); i++) {
@@ -197,7 +188,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setBoolean("hasRedstone", this.hasRedstone);
-		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
 
 		for (int i = 0; i < inventory.length; i++) {
@@ -225,7 +215,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 		try {
 			if (this.worldObj.isRemote) {
 				this.facing = dataStream.readInt();
-				this.electricityStored = dataStream.readDouble();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -234,8 +223,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
-				this.electricityStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
 	}
 
 	public int getFacing() {
@@ -244,29 +232,5 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements
 
 	public void setFacing(int facing) {
 		this.facing = facing;
-	}
-
-	public double getElectricityStored() {
-		return this.electricityStored;
-	}
-
-	/**
-	 * Sets the current volume of milk stored
-	 * 
-	 * @param amount
-	 *            - volume sum
-	 * @param add
-	 *            - if true it will add the amount to the current sum
-	 */
-	public void setElectricityStored(double amount, boolean add) {
-		if (add) {
-			this.electricityStored += amount;
-		} else {
-			this.electricityStored -= amount;
-		}
-	}
-
-	public double getMaxElectricity() {
-		return this.electricityMaxStored;
 	}
 }

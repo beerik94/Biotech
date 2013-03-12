@@ -15,16 +15,18 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import universalelectricity.components.common.block.BlockBasicMachine;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.electricity.ElectricityConnections;
+import universalelectricity.core.block.IConnector;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.implement.IConductor;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.block.IConductor;
+import universalelectricity.core.item.ElectricItemHelper;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityElectricityReceiver;
+import universalelectricity.prefab.tile.TileEntityElectricityRunnable;
 import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
@@ -34,21 +36,22 @@ import com.google.common.io.ByteArrayDataInput;
 // Has a powered state
 // Has an inventory
 
-public class BasicMachineTileEntity extends TileEntityElectricityReceiver
+public class BasicMachineTileEntity extends TileEntityElectricityRunnable
 		implements IInventory, ISidedInventory, IPacketReceiver {
 	protected ItemStack[] inventory;
 
-	// How much power is stored?
-	private double electricityStored = 0;
-	private double electricityMaxStored = 5000;
+	//this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK / 4, 0);
+	
+	// Watts being used per action
+	public static final double WATTS_PER_TICK = 500;
 
 	private int playersUsing = 0;
 
-	// Is the macine currently powered, and did it change?
+	// Is the machine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
 
 	public boolean hasRedstone = false;
-	
+
 	private int facing;
 
 	public BasicMachineTileEntity() {
@@ -58,90 +61,74 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 	}
 
 	@Override
-	public void initiate() {
-		refreshConnectorsAndWorkArea();
-		chargeUp();
-	}
-
-	public void refreshConnectorsAndWorkArea() {
-		int front = 0;
-
-		switch (this.getFacing()) {
-		case 2:
-			front = 3;
-			break;
-		case 3:
-			front = 2;
-			break;
-		case 4:
-			front = 5;
-			break;
-		case 5:
-			front = 4;
-			break;
-		default:
-			front = 3;
-			break;
-		}
-
-		ForgeDirection direction = ForgeDirection.getOrientation(front);
-
-		ElectricityConnections.registerConnector(this, EnumSet.of(direction));
-	}
-
-	@Override
-	public int getSizeInventory() {
+	public int getSizeInventory()
+	{
 		return this.inventory.length;
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int slotIndex) {
-		if (slotIndex >= this.inventory.length) {
-			System.out.println("Tried to access slot " + slotIndex);
-			return null;
-		}
-
-		return this.inventory[slotIndex];
+	public ItemStack getStackInSlot(int par1)
+	{
+		return this.inventory[par1];
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-		this.inventory[slot] = stack;
+	public ItemStack decrStackSize(int par1, int par2)
+	{
+		if (this.inventory[par1] != null)
+		{
+			ItemStack var3;
 
-		if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-			stack.stackSize = getInventoryStackLimit();
-		}
-	}
+			if (this.inventory[par1].stackSize <= par2)
+			{
+				var3 = this.inventory[par1];
+				this.inventory[par1] = null;
+				return var3;
+			}
+			else
+			{
+				var3 = this.inventory[par1].splitStack(par2);
 
-	@Override
-	public ItemStack decrStackSize(int slotIndex, int amount) {
-		ItemStack stack = getStackInSlot(slotIndex);
-
-		if (stack != null) {
-			if (stack.stackSize <= amount) {
-				setInventorySlotContents(slotIndex, null);
-			} else {
-				stack = stack.splitStack(amount);
-
-				if (stack.stackSize == 0) {
-					setInventorySlotContents(slotIndex, null);
+				if (this.inventory[par1].stackSize == 0)
+				{
+					this.inventory[par1] = null;
 				}
+
+				return var3;
 			}
 		}
-
-		return stack;
+		else
+		{
+			return null;
+		}
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int slotIndex) {
-		ItemStack stack = getStackInSlot(slotIndex);
-
-		if (stack != null) {
-			setInventorySlotContents(slotIndex, null);
+	public ItemStack getStackInSlotOnClosing(int par1)
+	{
+		if (this.inventory[par1] != null)
+		{
+			ItemStack var2 = this.inventory[par1];
+			this.inventory[par1] = null;
+			return var2;
 		}
-
-		return stack;
+		else
+		{
+			return null;
+		}
 	}
+
+	@Override
+	public void setInventorySlotContents(int par1, ItemStack par2ItemStack)
+	{
+		this.inventory[par1] = par2ItemStack;
+
+		if (par2ItemStack != null && par2ItemStack.stackSize > this.getInventoryStackLimit())
+		{
+			par2ItemStack.stackSize = this.getInventoryStackLimit();
+		}
+	}
+	
 
 	@Override
 	public int getInventoryStackLimit() {
@@ -149,19 +136,26 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 	}
 
 	@Override
-	public boolean isUseableByPlayer(EntityPlayer player) {
-		return worldObj.getBlockTileEntity(xCoord, yCoord, zCoord) == this
-				&& player.getDistanceSq(xCoord + 0.5, yCoord + 0.5,
-						zCoord + 0.5) < 64;
+	public boolean isUseableByPlayer(EntityPlayer par1EntityPlayer) {
+		return this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord,
+				this.zCoord) != this ? false
+				: par1EntityPlayer.getDistanceSq(this.xCoord + 0.5D,
+						this.yCoord + 0.5D, this.zCoord + 0.5D) <= 64.0D;
 	}
 
 	@Override
-	public void openChest() {
+	public void openChest()
+	{
+		if (!this.worldObj.isRemote)
+		{
+			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 15);
+		}
 		this.playersUsing++;
 	}
 
 	@Override
-	public void closeChest() {
+	public void closeChest()
+	{
 		this.playersUsing--;
 	}
 
@@ -172,7 +166,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 		this.facing = tagCompound.getShort("facing");
 		this.isPowered = tagCompound.getBoolean("isPowered");
-		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
 		for (int i = 0; i < tagList.tagCount(); i++) {
@@ -192,8 +185,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setBoolean("isPowered", this.isPowered);
-		tagCompound.setDouble("electricityStored",
-				(double) this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
 
 		for (int i = 0; i < inventory.length; i++) {
@@ -212,7 +203,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 	@Override
 	public String getInvName() {
-		return "BasicMachineInventory";
+		return "Basic Machine";
 	}
 
 	public void setPowered(boolean powered) {
@@ -231,20 +222,17 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 
 		if (!worldObj.isRemote) {
 			this.chargeUp();
-			
-			if (this.ticks % 30 == 0)
-			{
-				if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
-						|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
-								zCoord)) {
+
+			if (this.ticks % 30 == 0) {
+				if (worldObj.func_94577_B(xCoord, yCoord, zCoord)
+						!= 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord,
+								yCoord, zCoord)) {
 					this.hasRedstone = true;
-				}
-				else
-				{
+				} else {
 					this.hasRedstone = false;
 				}
 			}
-			
+
 			if (this.ticks % 3 == 0 && this.playersUsing > 0) {
 				PacketManager.sendPacketToClients(getDescriptionPacket(),
 						this.worldObj, new Vector3(this), 12);
@@ -274,58 +262,28 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 			front = 3;
 			break;
 		}
-		ForgeDirection direction = ForgeDirection.getOrientation(front);
-
-		TileEntity inputTile = Vector3.getTileEntityFromSide(this.worldObj,
-				new Vector3(this), direction);
-
-		ElectricityNetwork network = ElectricityNetwork
-				.getNetworkFromTileEntity(inputTile, direction);
-
-		if (inputTile != null && network != null) {
-			if (this.electricityStored < this.electricityMaxStored) {
-				double electricityNeeded = this.electricityMaxStored
-						- this.electricityStored;
-
-				network.startRequesting(this, electricityNeeded,
-						electricityNeeded >= getVoltage() ? getVoltage()
-								: electricityNeeded);
-
-				this.setElectricityStored(electricityStored
-						+ (network.consumeElectricity(this).getWatts()), true);
-
-				if (UniversalElectricity.isVoltageSensitive) {
-					ElectricityPack electricityPack = network
-							.consumeElectricity(this);
-					if (electricityPack.voltage > this.getVoltage()) {
-						this.worldObj.createExplosion(null, this.xCoord,
-								this.yCoord, this.zCoord, 2f, true);
-					}
-				}
-
-			} else if (electricityStored >= electricityMaxStored) {
-				network.stopRequesting(this);
-			}
-		}
-
-		if (this.inventory[0] != null
-				&& this.electricityStored < this.electricityMaxStored) {
-			if (this.inventory[0].getItem() instanceof IItemElectric) {
-				IItemElectric electricItem = (IItemElectric) this.inventory[0]
-						.getItem();
-
-				if (electricItem.canProduceElectricity()) {
-					double joulesReceived = electricItem
-							.onUse(electricItem.getMaxJoules(this.inventory[0]) * 0.005,
-									this.inventory[0]);
-					this.setElectricityStored(this.electricityStored
-							+ joulesReceived, true);
-				}
-			}
-		}
+		
+		/**
+		 * Attempts to charge using batteries.
+		 */
+		this.wattsReceived += ElectricItemHelper.dechargeItem(
+				this.inventory[0], WATTS_PER_TICK, this.getVoltage());
 
 	}
 
+	@Override
+	public ElectricityPack getRequest()
+	{
+		if (this.wattsReceived <= WATTS_PER_TICK)
+		{
+			return new ElectricityPack(WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+		}
+		else
+		{
+			return new ElectricityPack();
+		}
+	}
+	
 	@Override
 	public int getStartInventorySide(ForgeDirection side) {
 		ForgeDirection left, right;
@@ -559,7 +517,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 			if (this.worldObj.isRemote) {
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
-				this.electricityStored = dataStream.readDouble();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -569,7 +526,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered,
-				this.facing, this.electricityStored);
+				this.facing);
 	}
 
 	public int getFacing() {
@@ -580,27 +537,20 @@ public class BasicMachineTileEntity extends TileEntityElectricityReceiver
 		this.facing = facing;
 	}
 
-	public double getElectricityStored() {
-		return electricityStored;
+	@Override
+	public boolean canConnect(ForgeDirection direction) {
+		return direction == ForgeDirection.getOrientation(this.getFacing());
 	}
 
-	/**
-	 * Sets the current volume of milk stored
-	 * 
-	 * @param amount
-	 *            - volume sum
-	 * @param add
-	 *            - if true it will add the amount to the current sum
-	 */
-	public void setElectricityStored(double amount, boolean add) {
-		if (add) {
-			this.electricityStored += amount;
-		} else {
-			this.electricityStored -= amount;
-		}
+	@Override
+	public boolean func_94042_c() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
-	public double getMaxElectricity() {
-		return electricityMaxStored;
+	@Override
+	public boolean func_94041_b(int i, ItemStack itemstack) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

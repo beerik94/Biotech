@@ -12,7 +12,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.prefab.BlockMachine;
+import universalelectricity.prefab.block.BlockAdvanced;
 import biotech.Biotech;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
@@ -24,7 +24,7 @@ import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BiotechBlockMachine extends BlockMachine {
+public class BiotechBlockMachine extends BlockAdvanced {
 	// 0 == Farm
 	// 1 == Woodcutter
 	// 2 == Fertilizer
@@ -42,10 +42,9 @@ public class BiotechBlockMachine extends BlockMachine {
 	public static final int BIO_REFINERY_METADATA = 6;
 
 	public BiotechBlockMachine(int id, int textureIndex) {
-		super("BiotechBlockMachine", id, UniversalElectricity.machine,
-				Biotech.tabBiotech);
-
-		this.blockIndexInTexture = textureIndex;
+		super(id, UniversalElectricity.machine);
+		this.setCreativeTab(Biotech.tabBiotech);
+		//this.blockIndexInTexture = textureIndex;
 	}
 
 	@Override
@@ -293,9 +292,7 @@ public class BiotechBlockMachine extends BlockMachine {
 			break;
 		}
 
-		world.setBlockMetadataWithNotify(x, y, z, meta);
-
-		basicEntity.refreshConnectorsAndWorkArea();
+		world.setBlockMetadataWithNotify(x, y, z, meta, 3);
 
 		return true;
 	}

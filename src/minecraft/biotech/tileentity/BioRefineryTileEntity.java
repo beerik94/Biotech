@@ -1,12 +1,12 @@
 package biotech.tileentity;
-
+/*
 import hydraulic.core.implement.ColorCode;
 import hydraulic.core.implement.IColorCoded;
 import hydraulic.core.implement.IPsiReciever;
 import hydraulic.core.implement.IReadOut;
 import hydraulic.core.liquids.LiquidData;
 import hydraulic.core.liquids.LiquidHandler;
-
+*/
 import java.util.EnumSet;
 
 import biotech.Biotech;
@@ -32,33 +32,24 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidTank;
 import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.electricity.ElectricityConnections;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
 public class BioRefineryTileEntity extends BasicMachineTileEntity implements
-		IPacketReceiver, IColorCoded, IPsiReciever, IReadOut {
+		IPacketReceiver/*, IColorCoded, IPsiReciever, IReadOut*/ {
+	
 	// Watts being used per action / idle action
-	public static final double WATTS_PER_TICK = 50;
-	public static final double WATTS_PER_IDLE_TICK = 5.0;
-
-	// Time idle after a tick
-	public static final int IDLE_TIME_AFTER_ACTION = 60;
-	public static final int IDLE_TIME_NO_ACTION = 30;
+	public static final double WATTS_PER_TICK = 500;
 
 	// Is the machine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
 
-	// How much power is stored?
-	private double electricityStored = 0;
-	private double electricityMaxStored = 5000;
-
 	// Amount of milliBuckets of internal storage
-	private ColorCode color = ColorCode.WHITE;
+	//private ColorCode color = ColorCode.WHITE;
 	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private int milkStored = 0;
 	private int bucketVol = LiquidContainerRegistry.BUCKET_VOLUME;
@@ -88,15 +79,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 			}
 		}
 		super.updateEntity();
-	}
-
-	public boolean isRedstoneSignal() {
-		if (worldObj.isBlockGettingPowered(xCoord, yCoord, zCoord)
-				|| worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord,
-						zCoord)) {
-			return true;
-		}
-		return false;
 	}
 
 	/**
@@ -156,7 +138,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 
 		this.facing = tagCompound.getShort("facing");
 		this.isPowered = tagCompound.getBoolean("isPowered");
-		this.electricityStored = tagCompound.getDouble("electricityStored");
 		this.milkStored = tagCompound.getInteger("milkStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
@@ -176,7 +157,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 
 		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setBoolean("isPowered", this.isPowered);
-		tagCompound.setDouble("electricityStored", this.electricityStored);
 		tagCompound.setInteger("milkStored", this.milkStored);
 		NBTTagList itemList = new NBTTagList();
 
@@ -207,7 +187,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 			if (this.worldObj.isRemote) {
 				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
-				this.electricityStored = dataStream.readDouble();
 				this.milkStored = dataStream.readInt();
 			}
 		} catch (Exception e) {
@@ -218,7 +197,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered,
-				this.facing, this.electricityStored, this.milkStored);
+				this.facing, this.milkStored);
 	}
 
 	public int getFacing() {
@@ -227,18 +206,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 
 	public void setFacing(int facing) {
 		this.facing = facing;
-	}
-
-	public double getElectricityStored() {
-		return electricityStored;
-	}
-
-	public void setElectricityStored(double joules) {
-		electricityStored = Math.max(Math.min(joules, getMaxElectricity()), 0);
-	}
-
-	public double getMaxElectricity() {
-		return electricityMaxStored;
 	}
 
 	public int getMilkStored() {
@@ -264,7 +231,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	public int getMaxMilk() {
 		return this.milkStored;
 	}
-
+	/*
 	@Override
 	public String getMeterReading(EntityPlayer user, ForgeDirection side) {
 		return "Milk:" + this.milkStored;
@@ -289,5 +256,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	public void onReceivePressure(double pressure) {
 		// TODO Auto-generated method stub
 	}
-
+	*/
+	
+	
 }

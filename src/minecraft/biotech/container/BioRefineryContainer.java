@@ -5,8 +5,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.prefab.SlotElectricItem;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.prefab.SlotSpecific;
 import biotech.slots.bioFuelSlot;
 import biotech.slots.seedSlot;
 import biotech.tileentity.BioRefineryTileEntity;
@@ -19,7 +19,7 @@ public class BioRefineryContainer extends Container {
 		this.tileEntity = tileEntity;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 16));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 7, 16, IItemElectric.class));
 		// Biofuel output Slot
 		this.addSlotToContainer(new bioFuelSlot(tileEntity, 1, 151, 51));
 		// Seeds Input Slot

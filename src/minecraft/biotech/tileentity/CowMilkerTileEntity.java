@@ -1,11 +1,11 @@
 package biotech.tileentity;
 
-import hydraulic.core.implement.ColorCode;
-import hydraulic.core.implement.IColorCoded;
-import hydraulic.core.implement.IPsiCreator;
-import hydraulic.core.implement.IReadOut;
-import hydraulic.core.liquids.LiquidData;
-import hydraulic.core.liquids.LiquidHandler;
+//import hydraulic.core.implement.ColorCode;
+//import hydraulic.core.implement.IColorCoded;
+//import hydraulic.core.implement.IPsiCreator;
+//import hydraulic.core.implement.IReadOut;
+//import hydraulic.core.liquids.LiquidData;
+//import hydraulic.core.liquids.LiquidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import net.minecraftforge.liquids.LiquidTank;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.implement.IItemElectric;
+import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
@@ -41,15 +41,11 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements
-		IPacketReceiver, IColorCoded, IReadOut, IPsiCreator {
+		IPacketReceiver/*, IColorCoded, IReadOut, IPsiCreator*/ {
 	protected List<EntityCow> CowList = new ArrayList<EntityCow>();
 
 	// Watts being used per action
-	public static final double WATTS_PER_TICK = 25;
-
-	// How much power is stored?
-	private double electricityStored = 0;
-	private double electricityMaxStored = 5000;
+	public static final double WATTS_PER_TICK = 1000;
 
 	// How much milk is stored?
 	private int milkStored = 0;
@@ -61,7 +57,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	public int bucketTime = 0;
 
 	// Amount of milliBuckets of internal storage
-	private ColorCode color = ColorCode.WHITE;
+	//private ColorCode color = ColorCode.WHITE;
 
 	// Is the machine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
@@ -88,7 +84,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			/* Per Tick Processes */
 			this.chargeUp();
 			if (this.hasRedstone) {
-				this.drainTo(ForgeDirection.DOWN);
+				//this.drainTo(ForgeDirection.DOWN);
 
 				/* SCAN FOR COWS */
 				if (this.ticks % 40 == 0) {
@@ -149,7 +145,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk()) {
 			int vol = (10 * CowList.size());
 			this.setMilkStored(vol, true);
-			this.setElectricityStored(this.WATTS_PER_TICK, false);
+			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK / 4, 0);
 		}
 	}
 
@@ -165,10 +161,11 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		}
 		return 3;
 	}
-
+	
 	/**
 	 * Drains the contents of the internal tank to a block bellow it
 	 */
+	/*
 	public void drainTo(ForgeDirection dir) {
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX,
 				yCoord + dir.offsetY, zCoord + dir.offsetZ);
@@ -182,7 +179,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			System.out.println("filled: " + filled);
 		}
 	}
-
+	*/
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
@@ -190,7 +187,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 
 		this.facing = tagCompound.getShort("facing");
 		this.milkStored = tagCompound.getInteger("milkStored");
-		this.electricityStored = tagCompound.getDouble("electricityStored");
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 
 		for (int i = 0; i < tagList.tagCount(); i++) {
@@ -210,7 +206,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 
 		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setInteger("milkStored", (int) this.milkStored);
-		tagCompound.setDouble("electricityStored", this.electricityStored);
 		NBTTagList itemList = new NBTTagList();
 
 		for (int i = 0; i < inventory.length; i++) {
@@ -239,7 +234,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		try {
 			if (this.worldObj.isRemote) {
 				this.facing = dataStream.readInt();
-				this.electricityStored = dataStream.readDouble();
 				this.milkStored = dataStream.readInt();
 			}
 		} catch (Exception e) {
@@ -250,7 +244,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	@Override
 	public Packet getDescriptionPacket() {
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
-				this.electricityStored, this.milkStored);
+				this.milkStored);
 	}
 
 	public int getFacing() {
@@ -261,30 +255,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		this.facing = facing;
 	}
 
-	
-	public double getElectricityStored() {
-		return this.electricityStored;
-	}
-
-	/**
-	 * Sets the current volume of milk stored
-	 * 
-	 * @param amount
-	 *            - volume sum
-	 * @param add
-	 *            - if true it will add the amount to the current sum
-	 */
-	public void setElectricityStored(double amount, boolean add) {
-		if (add) {
-			this.electricityStored += amount;
-		} else {
-			this.electricityStored -= amount;
-		}
-	}
-
-	public double getMaxElectricity() {
-		return this.electricityMaxStored;
-	}
 	/**
 	 * Sets the current volume of milk stored
 	 * 
@@ -308,7 +278,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	public int getMaxMilk() {
 		return this.milkMaxStored;
 	}
-
+	/*
 	@Override
 	public ColorCode getColor() {
 		return ColorCode.WHITE;
@@ -334,5 +304,5 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) && dir == ForgeDirection.DOWN
 				.getOpposite());
 	}
-
+	*/
 }

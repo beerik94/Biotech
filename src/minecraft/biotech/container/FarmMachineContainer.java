@@ -5,8 +5,8 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.prefab.SlotElectricItem;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.prefab.SlotSpecific;
 import biotech.slots.bioCircuitSlot;
 import biotech.tileentity.FarmMachineTileEntity;
 
@@ -18,7 +18,7 @@ public class FarmMachineContainer extends Container {
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 7, 27));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 7, 27, IItemElectric.class));
 
 		// Slot for seeds
 		this.addSlotToContainer(new Slot(tileEntity, 1, 144, 7));

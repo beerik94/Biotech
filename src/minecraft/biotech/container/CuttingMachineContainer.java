@@ -1,7 +1,7 @@
 package biotech.container;
 
-import universalelectricity.core.implement.IItemElectric;
-import universalelectricity.prefab.SlotElectricItem;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.prefab.SlotSpecific;
 import biotech.slots.rangeUpgradeSlot;
 import biotech.tileentity.CuttingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +18,7 @@ public class CuttingMachineContainer extends Container {
 		this.tileEntity = te;
 
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotElectricItem(tileEntity, 0, 10, 99));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 10, 99, IItemElectric.class));
 
 		// Slot for Range Upgrade
 		// this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
