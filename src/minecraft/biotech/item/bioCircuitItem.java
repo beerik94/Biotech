@@ -1,11 +1,14 @@
 package biotech.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import biotech.Biotech;
 import cpw.mods.fml.relauncher.Side;
@@ -17,47 +20,66 @@ public class bioCircuitItem extends Item {
 			// Tiller
 			"wheatseeds", "melonseeds", "pumpkinseeds", "carrots", "potatoes",
 			"rangeupgrade", };
-
+	
+	private Icon iconUnProgrammed;
+	private Icon iconWheatSeeds;
+	private Icon iconMelonSeeds;
+	private Icon iconPumpkinSeeds;
+	private Icon iconCarrots;
+	private Icon iconPotatoes;
+	private Icon iconRangeUpgrade;
+	private Icon iconTreeSappling;
+	
+	
 	public bioCircuitItem(int id) {
 		super(id);
-		// Constructor Configuration
 		setCreativeTab(Biotech.tabBiotech);
-		setIconIndex(0);
 		setUnlocalizedName("bioCircuit");
 		setHasSubtypes(true);
 	}
-
+	
 	@SideOnly(Side.CLIENT)
-	public int getIconFromDamage(int par1) {
-		switch (par1) {
+	public void func_94581_a(IconRegister iconRegister)
+	{
+		this.iconUnProgrammed = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "UnProgrammed");
+		this.iconWheatSeeds = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "WheatSeeds");
+		this.iconMelonSeeds = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MelonSeeds");
+		this.iconPumpkinSeeds = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "PumpkinSeeds");
+		this.iconCarrots = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "Carrots");
+		this.iconPotatoes = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "Potatoes");
+		this.iconRangeUpgrade = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "RangeUpgrade");
+		this.iconTreeSappling = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "TreeSappling");
+	}
+	
+	@Override
+	public Icon getIconFromDamage(int damage)
+	{
+		switch (damage) {
 		case 0:
-			return 0; // unprogrammed
+			return this.iconUnProgrammed; // unprogrammed
 		case 1:
-			return 1; // wheatseeds
+			return this.iconWheatSeeds; // wheatseeds
 		case 2:
-			return 2; // melonseeds
+			return this.iconMelonSeeds; // melonseeds
 		case 3:
-			return 3; // pumpkinseeds
+			return this.iconPumpkinSeeds; // pumpkinseeds
 		case 4:
-			return 4; // carrots
+			return this.iconCarrots; // carrots
 		case 5:
-			return 5; // potatoes
+			return this.iconPotatoes; // potatoes
 		case 6:
-			return 8; // Range Upgrade
-
+			return this.iconRangeUpgrade; // Range Upgrade
 		}
-		return this.iconIndex;
+
+		return super.getIconFromDamage(damage);
 	}
 
 	@Override
 	public int getMetadata(int damageValue) {
 		return damageValue;
 	}
-
-	public String getTextureFile() {
-		return Biotech.ITEM_TEXTURE_FILE;
-	}
-
+	
+	/*
 	@Override
 	public String getItemNameIS(ItemStack stack) {
 		int sub = stack.getItemDamage();
@@ -68,7 +90,8 @@ public class bioCircuitItem extends Item {
 
 		return getItemName() + "." + subNames[sub];
 	}
-
+*/
+	
 	public ItemStack getStack(int count, int damageValue) {
 		ItemStack stack = new ItemStack(this, count);
 		stack.setItemDamage(damageValue);

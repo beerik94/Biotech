@@ -56,8 +56,13 @@ public class Biotech {
 
 	// Texture file paths
 	public static final String FILE_PATH = "/resources/biotech/textures/";
-	public static final String BLOCK_TEXTURE_FILE = FILE_PATH + "block.png";
-	public static final String ITEM_TEXTURE_FILE = FILE_PATH + "items.png";
+	public static final String BLOCK_FILE_PATH = FILE_PATH + "block/";
+	public static final String ITEM_FILE_PATH = FILE_PATH + "items/";
+	
+	public static final String TEXTURE_NAME_PREFIX = "biotech:";
+	
+	//public static final String BLOCK_TEXTURE_FILE = FILE_PATH + "block.png";
+	//public static final String ITEM_TEXTURE_FILE = FILE_PATH + "items.png";
 
 	// Public channel used in all communication
 	public static final String CHANNEL = "Biotech";
@@ -137,10 +142,6 @@ public class Biotech {
 
 	@PreInit
 	public void preInit(FMLPreInitializationEvent event) {
-		UniversalElectricity.register(this, UniversalElectricity.MAJOR_VERSION,
-				UniversalElectricity.MINOR_VERSION,
-				UniversalElectricity.REVISION_VERSION, true);
-
 		biotechLogger.setParent(FMLLog.getLogger());
 		biotechLogger.info("Starting Biotech");
 		biotechLogger.info("Loading config");
@@ -183,13 +184,6 @@ public class Biotech {
 		Config.save();
 
 		biotechLogger.info("Config loaded");
-	}
-
-	public static void initCommands(FMLServerStartingEvent event) {
-		if (enableChatCommand.value == "true") {
-			event.registerServerCommand(new CmdWorker());
-			biotechLogger.info("Biotech Command Enabled");
-		}
 	}
 
 	@Init

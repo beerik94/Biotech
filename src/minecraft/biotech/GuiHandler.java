@@ -27,8 +27,8 @@ import cpw.mods.fml.common.network.IGuiHandler;
 public class GuiHandler implements IGuiHandler {
 	public void preInit() {
 		// Preload textures
-		MinecraftForgeClient.preloadTexture(Biotech.BLOCK_TEXTURE_FILE);
-		MinecraftForgeClient.preloadTexture(Biotech.ITEM_TEXTURE_FILE);
+		//MinecraftForgeClient.preloadTexture(Biotech.BLOCK_TEXTURE_FILE);
+		//MinecraftForgeClient.preloadTexture(Biotech.ITEM_TEXTURE_FILE);
 
 		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH
 				+ "tillingmachine.png");

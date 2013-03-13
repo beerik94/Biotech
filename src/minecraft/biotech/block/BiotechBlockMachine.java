@@ -3,11 +3,13 @@ package biotech.block;
 import java.util.List;
 import java.util.Random;
 
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -29,79 +31,135 @@ public class BiotechBlockMachine extends BlockAdvanced {
 	// 1 == Woodcutter
 	// 2 == Fertilizer
 	// 3 == Miner
-	// 4 == Filler
-	// 5 == Cow Milker
-	// 6 == BioRefinery
+	// 4 == Cow Milker
+	// 5 == BioRefinery
 
 	public static final int FARM_METADATA = 0;
 	public static final int WOODCUTTER_METADATA = 1;
 	public static final int FERTILIZER_METADATA = 2;
 	public static final int MINER_METADATA = 3;
-	public static final int FILLER_METADATA = 4;
-	public static final int COW_MILKER_METADATA = 5;
-	public static final int BIO_REFINERY_METADATA = 6;
-
+	public static final int COW_MILKER_METADATA = 4;
+	public static final int BIO_REFINERY_METADATA = 5;
+	
+	//Front Sides
+	private Icon iconFarmer;
+	private Icon iconWoodcutter;
+	private Icon iconFertilizer;
+	private Icon iconMiner;
+	private Icon iconCowMilker;
+	private Icon iconBioRefinery;
+	
+	//Other Sides
+	private Icon iconEmptySide;
+	private Icon iconMilkSide;	
+	private Icon iconInputOn;
+	private Icon iconInputOff;
+	private Icon iconOutputOn;
+	private Icon iconOutputOff;
+	
 	public BiotechBlockMachine(int id, int textureIndex) {
 		super(id, UniversalElectricity.machine);
+		this.setUnlocalizedName("BioBlock");
 		this.setCreativeTab(Biotech.tabBiotech);
-		//this.blockIndexInTexture = textureIndex;
+		this.setStepSound(soundMetalFootstep);
+		this.setTextureFile(Biotech.BLOCK_FILE_PATH);
 	}
 
 	@Override
-	public String getTextureFile() {
-		return Biotech.BLOCK_TEXTURE_FILE;
+	public void func_94332_a(IconRegister par1IconRegister)
+	{
+		this.field_94336_cN = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
+		this.iconFarmer = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineFarmer");
+		this.iconWoodcutter = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineWoodCutter");
+		this.iconFertilizer = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineFertilizer");
+		this.iconMiner = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineMiner");
+		this.iconCowMilker = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineCowMilker");
+		this.iconBioRefinery = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineBioRefinery");
+		this.iconEmptySide = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
+		this.iconMilkSide = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineMilkSide");
+		this.iconInputOn = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOnSide");
+		this.iconInputOff = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOffSide");
+		this.iconOutputOn = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOnSide");
+		this.iconOutputOff = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOffSide");
 	}
 
 	@Override
-	public int getBlockTextureFromSideAndMetadata(int side, int meta) {
-		if (meta == 0 || meta == 1 || meta == 2 || meta == 3 || meta == 4) {
-			switch (side) {
-			case 0:
-				return 3;
-			case 1:
-				return 18;
+	public Icon getBlockTextureFromSideAndMetadata(int side, int meta) {
+		if(meta == 0)
+		{
+			switch(side){
+			case 0: 
+				return this.iconFarmer;
 			case 2:
-				return 32;
-			case 3:
-				return 3;
+				return this.iconInputOff;
 			default:
-				return 3;
+				return this.iconEmptySide;
 			}
 		}
-		else if (meta == 5) {
-			switch (side) {
-			case 0:
-				return 3;
-			case 1:
-				return 18;
+		else if(meta == 1)
+		{
+			switch(side){
+			case 0: 
+				return this.iconWoodcutter;
 			case 2:
-				return 32;
-			case 3:
-				return 3;
+				return this.iconInputOff;
 			default:
-				return 3;
+				return this.iconEmptySide;
 			}
-		} else if (meta == 6) {
-			switch (side) {
-			case 0:
-				return 3;
-			case 1:
-				return 18;
+		}
+		else if(meta == 2)
+		{
+			switch(side){
+			case 0: 
+				return this.iconFertilizer;
 			case 2:
-				return 32;
-			case 3:
-				return 3;
+				return this.iconInputOff;
 			default:
-				return 3;
+				return this.iconEmptySide;
 			}
-		} else {
-			return 3;
+		}
+		else if(meta == 3)
+		{
+			switch(side){
+			case 0: 
+				return this.iconMiner;
+			case 2:
+				return this.iconInputOff;
+			default:
+				return this.iconEmptySide;
+			}
+		}
+		else if(meta == 4)
+		{
+			switch(side){
+			case 0: 
+				return this.iconCowMilker;
+			case 2:
+				return this.iconInputOff;
+			default:
+				return this.iconEmptySide;
+			}
+		}
+		else if(meta == 5)
+		{
+			switch(side){
+			case 0: 
+				return this.iconBioRefinery;
+			case 2:
+				return this.iconInputOff;
+			default:
+				return this.iconEmptySide;
+			}
+		}
+		else
+		{
+			return this.iconEmptySide;
 		}
 	}
-
+	
 	@Override
 	@SideOnly(Side.CLIENT)
-	public int getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
+	public Icon getBlockTexture(IBlockAccess world, int x, int y, int z, int side) {
 		int metadata = world.getBlockMetadata(x, y, z);
 
 		BasicMachineTileEntity tileEntity = (BasicMachineTileEntity) world
@@ -145,47 +203,86 @@ public class BiotechBlockMachine extends BlockAdvanced {
 		default:
 			break;
 		}
-
-		if (metadata == 0 || metadata == 1 || metadata == 2 || metadata == 3 || metadata == 4) {
-			if (side == front) {
-				return tileEntity.isPowered ? 48 : 32;
-			} else if (side == back) {
-				return 3;
-			} else if (side == bottom) {
-				return 3;
-			} else if (side == top) {
-				return 18;
-			} else {
-				return 3;
+		
+		if(metadata == 0)
+		{
+			if(side == front)
+			{
+				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
 			}
-		} 
-		else if (metadata == 5) {
-			if (side == front) {
-				return tileEntity.isPowered ? 48 : 32;
-			} else if (side == back) {
-				return 3;
-			} else if (side == bottom) {
-				return 19;
-			} else if (side == top) {
-				return 18;
-			} else {
-				return 3;
+			else if(side == back)
+			{
+				return this.iconFarmer;
 			}
-		} else if (metadata == 6) {
-			if (side == front) {
-				return tileEntity.isPowered ? 48 : 32;
-			} else if (side == back) {
-				return 3;
-			} else if (side == bottom) {
-				return 19;
-			} else if (side == top) {
-				return 18;
-			} else {
-				return 3;
-			}
-		} else {
-			return 3;
 		}
+		else if(metadata == 1)
+		{
+			if(side == front)
+			{
+				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
+			}
+			else if(side == back)
+			{
+				return this.iconWoodcutter;
+			}
+		}
+		else if(metadata == 2)
+		{
+			if(side == front)
+			{
+				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
+			}
+			else if(side == back)
+			{
+				return this.iconFertilizer;
+			}
+		}
+		else if(metadata == 3)
+		{
+			if(side == front)
+			{
+				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
+			}
+			else if(side == back)
+			{
+				return this.iconMiner;
+			}
+		}
+		else if(metadata == 4)
+		{
+			if(side == front)
+			{
+				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
+			}
+			else if(side == back)
+			{
+				return this.iconCowMilker;
+			}
+			else if(side == bottom)
+			{
+				return this.iconMilkSide;
+			}
+		}
+		else if(metadata == 5)
+		{
+			if(side == front)
+			{
+				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
+			}
+			else if(side == back)
+			{
+				return this.iconBioRefinery;
+			}
+			else if(side == bottom)
+			{
+				return this.iconMilkSide;
+			}
+		}
+		else
+		{
+			return this.iconEmptySide;
+		}
+		return this.iconEmptySide;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -216,7 +313,7 @@ public class BiotechBlockMachine extends BlockAdvanced {
 
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z,
-			EntityLiving entity) {
+			EntityLiving entity, ItemStack itemStack) {
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 
 		if (tile instanceof BasicMachineTileEntity) {
