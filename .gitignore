@@ -8,8 +8,8 @@ CHANGELOG
 
 !/src/
 /src/minecraft/*
-/src/mods/*
-!/src/mods/biotech/
+/src/minecraft/mods/*
+!/src/minecraft/mods/biotech/
 !/src/minecraft/biotech/
 !/src/minecraft/hydraulics/api
 !/mcmod.info
