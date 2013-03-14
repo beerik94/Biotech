@@ -1,9 +1,6 @@
 package biotech.client;
 
 import org.lwjgl.opengl.GL11;
-
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import biotech.Biotech;
 import biotech.container.CuttingMachineContainer;
 import biotech.tileentity.CuttingMachineTileEntity;
@@ -16,9 +13,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class CuttingMachineGui extends GuiContainer {
 	private CuttingMachineTileEntity tileEntity;
-
-	public static String CUTTINGMACHINE_GUI = Biotech.FILE_PATH
-			+ "GUI_CuttingMachine.png";
 
 	private int containerWidth;
 	private int containerHeight;
@@ -62,14 +56,17 @@ public class CuttingMachineGui extends GuiContainer {
 	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		int picture = mc.renderEngine.getTexture(this.CUTTINGMACHINE_GUI);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.bindTexture(picture);
+		this.mc.renderEngine.func_98187_b(this.getTexture());
 
 		containerWidth = (this.width - this.xSize) / 2;
 		containerHeight = (this.height - this.ySize) / 2;
 
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0,
 				xSize, ySize);
+	}
+
+	public static String getTexture() {
+		return Biotech.GUI_PATH + "GUI_CuttingMachine.png";
 	}
 }

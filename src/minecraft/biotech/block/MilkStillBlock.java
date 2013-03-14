@@ -2,6 +2,7 @@ package biotech.block;
 
 import net.minecraft.block.BlockStationary;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
 import biotech.Biotech;
@@ -12,14 +13,13 @@ public class MilkStillBlock extends BlockStationary implements ILiquid {
 		super(id, Material.water);
 		setHardness(100F);
 		setLightOpacity(3);
-		setBlockName("Milk(Still)");
-
-		this.blockIndexInTexture = textureIndex;
+		setUnlocalizedName("Milk(Still)");
 	}
 
 	@Override
-	public String getTextureFile() {
-		return Biotech.BLOCK_TEXTURE_FILE;
+	public void func_94332_a(IconRegister par1IconRegister)
+	{
+		this.field_94336_cN = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MilkStill");
 	}
 
 	@Override

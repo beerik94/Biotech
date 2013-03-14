@@ -16,15 +16,14 @@ public class biotechItemBlock extends ItemBlock {
 	}
 
 	@Override
-	public String getItemNameIS(ItemStack itemstack) {
+	public String getUnlocalizedName(ItemStack itemstack){
 		int metadata = itemstack.getItemDamage();
-
-		return Block.blocksList[this.getBlockID()].getBlockName() + "."
-				+ metadata;
+		
+		return Block.blocksList[this.getBlockID()].getUnlocalizedName() + "." + metadata;
 	}
-
+	
 	@Override
-	public String getItemName() {
-		return Block.blocksList[this.getBlockID()].getBlockName() + ".0";
+	public String getUnlocalizedName(){
+		return Block.blocksList[this.getBlockID()].getUnlocalizedName() + ".0";
 	}
 }

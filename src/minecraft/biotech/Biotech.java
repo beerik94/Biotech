@@ -47,7 +47,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = "Biotech", name = "Biotech", version = "0.1.7", dependencies = "after:hydraulic")
+@Mod(modid = "Biotech", name = "Biotech", version = "0.1.7", dependencies = "after:BasicComponents;after:hydraulic")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 public class Biotech {
 	// The instance of your mod that Forge uses.
@@ -55,7 +55,8 @@ public class Biotech {
 	public static Biotech instance;
 
 	// Texture file paths
-	public static final String FILE_PATH = "/resources/biotech/textures/";
+	public static final String FILE_PATH = "/mods/biotech/textures/";
+	public static final String GUI_PATH = FILE_PATH + "gui/";
 	public static final String BLOCK_FILE_PATH = FILE_PATH + "block/";
 	public static final String ITEM_FILE_PATH = FILE_PATH + "items/";
 	
@@ -81,11 +82,12 @@ public class Biotech {
 
 	// Default config loader
 	public static final Configuration Config = new Configuration(new File(
-			Loader.instance().getConfigDir(), "Biotech/Biotech.cfg"));
+			Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
 
 	// Item templates
 	public static Item biotechPotionItem;
 	public static bioCircuitItem bioCircuit;
+	
 	// Metadata for BioCircuit
 	// 0 == unprogrammed
 	// 1 == wheatseeds
@@ -127,10 +129,7 @@ public class Biotech {
 	// Says where the client and server 'proxy' code is loaded.
 	@SidedProxy(clientSide = "biotech.client.ClientProxy", serverSide = "biotech.common.CommonProxy")
 	public static CommonProxy proxy;
-
-	// Chat commands
-	public static Property enableChatCommand;
-
+	
 	// Gui Handler
 	private GuiHandler guiHandler = new GuiHandler();
 
@@ -172,14 +171,6 @@ public class Biotech {
 		this.bioCircuitCarrots = bioCircuit.getStack(1, 4);
 		this.bioCircuitPotatoes = bioCircuit.getStack(1, 5);
 		this.bioCircuitRangeUpgrade = bioCircuit.getStack(1, 6);
-
-		/**
-		 * Enable the chat commands
-		 */
-		Property enableChatCommand = Config.get("general", "enableChatCommand",
-				true);
-
-		// guiHandler.preInit();
 
 		Config.save();
 

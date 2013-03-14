@@ -2,28 +2,24 @@ package biotech.block;
 
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.material.Material;
+import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
 import biotech.Biotech;
 
 public class MilkFlowingBlock extends BlockFluid implements ILiquid {
 
-	int numAdjacentSources = 0;
-	boolean isOptimalFlowDirection[] = new boolean[4];
-	int flowCost[] = new int[4];
-
 	public MilkFlowingBlock(int id, int textureIndex) {
 		super(id, Material.water);
 		setHardness(100F);
 		setLightOpacity(3);
-		setBlockName("Milk(Flowing)");
-
-		this.blockIndexInTexture = textureIndex;
+		setUnlocalizedName("Milk(Flowing)");
 	}
 
 	@Override
-	public String getTextureFile() {
-		return Biotech.BLOCK_TEXTURE_FILE;
+	public void func_94332_a(IconRegister par1IconRegister)
+	{
+		this.field_94336_cN = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MilkFlow");
 	}
 
 	@Override

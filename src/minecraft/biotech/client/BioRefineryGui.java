@@ -17,9 +17,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class BioRefineryGui extends GuiContainer {
 	private BioRefineryTileEntity tileEntity;
 
-	public static String BIOREFINERY_GUI = Biotech.FILE_PATH
-			+ "biorefinery.png";
-
 	private int containerWidth;
 	private int containerHeight;
 
@@ -65,9 +62,8 @@ public class BioRefineryGui extends GuiContainer {
 	 */
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
-		int picture = mc.renderEngine.getTexture(this.BIOREFINERY_GUI);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.bindTexture(picture);
+		this.mc.renderEngine.func_98187_b(this.getTexture());
 
 		containerWidth = (this.width - this.xSize) / 2;
 		containerHeight = (this.height - this.ySize) / 2;
@@ -81,4 +77,9 @@ public class BioRefineryGui extends GuiContainer {
 		this.drawTexturedModalRect(containerWidth + 137, containerHeight + 67
 				- scale, 176, 50 - scale, 8, scale);
 	}
+
+	public static String getTexture() {
+		return Biotech.GUI_PATH + "biorefinery.png";
+	}
+
 }

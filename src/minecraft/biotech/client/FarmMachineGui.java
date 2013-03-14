@@ -3,11 +3,7 @@ package biotech.client;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
-
 import org.lwjgl.opengl.GL11;
-
-import universalelectricity.core.electricity.ElectricInfo;
-import universalelectricity.core.electricity.ElectricInfo.ElectricUnit;
 import biotech.Biotech;
 import biotech.container.FarmMachineContainer;
 import biotech.container.PlantingMachineContainer;
@@ -55,12 +51,16 @@ public class FarmMachineGui extends GuiContainer {
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j) {
 		int picture = mc.renderEngine.getTexture(this.GUI);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.bindTexture(picture);
+		this.mc.renderEngine.func_98187_b(this.getTexture());
 
 		containerWidth = (this.width - this.xSize) / 2;
 		containerHeight = (this.height - this.ySize) / 2;
 
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0,
 				xSize, ySize);
+	}
+
+	public static String getTexture() {
+		return Biotech.GUI_PATH + "biorefinery.png";
 	}
 }

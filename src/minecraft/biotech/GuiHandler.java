@@ -3,7 +3,6 @@ package biotech;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
-import net.minecraftforge.client.MinecraftForgeClient;
 import biotech.client.BioRefineryGui;
 import biotech.client.CowMilkerGui;
 import biotech.client.CuttingMachineGui;
@@ -25,19 +24,6 @@ import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler {
-	public void preInit() {
-		// Preload textures
-		//MinecraftForgeClient.preloadTexture(Biotech.BLOCK_TEXTURE_FILE);
-		//MinecraftForgeClient.preloadTexture(Biotech.ITEM_TEXTURE_FILE);
-
-		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH
-				+ "tillingmachine.png");
-		MinecraftForgeClient.preloadTexture(Biotech.FILE_PATH
-				+ "plantingmachine.png");
-		MinecraftForgeClient
-				.preloadTexture(Biotech.FILE_PATH + "cowmilker.png");
-
-	}
 
 	@Override
 	public Object getServerGuiElement(int id, EntityPlayer player, World world,

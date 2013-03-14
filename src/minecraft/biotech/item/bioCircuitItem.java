@@ -3,6 +3,8 @@ package biotech.item;
 import java.util.ArrayList;
 import java.util.List;
 
+import universalelectricity.prefab.modifier.IModifier;
+
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityItem;
@@ -14,7 +16,7 @@ import biotech.Biotech;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioCircuitItem extends Item {
+public class bioCircuitItem extends Item implements IModifier {
 	public final static String[] subNames = { "unprogrammed",
 
 			// Tiller
@@ -78,20 +80,29 @@ public class bioCircuitItem extends Item {
 	public int getMetadata(int damageValue) {
 		return damageValue;
 	}
-	
-	/*
+
 	@Override
-	public String getItemNameIS(ItemStack stack) {
-		int sub = stack.getItemDamage();
-
-		if (sub >= subNames.length) {
-			sub = 0;
+	public String getName(ItemStack itemstack)
+	{
+		switch (itemstack.getItemDamage())
+		{
+			case 1:	
+				return "WheatSeeds";
+			case 2:	
+				return "MelonSeeds";
+			case 3:	
+				return "PumpkinSeeds";
+			case 4:	
+				return "Carrots";
+			case 5:	
+				return "Potatoes";
+			case 6:	
+				return "RangeUpgrade";
+			default:
+				return "UnProgrammed";
 		}
-
-		return getItemName() + "." + subNames[sub];
 	}
-*/
-	
+
 	public ItemStack getStack(int count, int damageValue) {
 		ItemStack stack = new ItemStack(this, count);
 		stack.setItemDamage(damageValue);
@@ -134,5 +145,11 @@ public class bioCircuitItem extends Item {
 			entity.delayBeforeCanPickup = 10;
 			world.spawnEntityInWorld(entity);
 		}
+	}
+
+	@Override
+	public int getEffectiveness(ItemStack itemstack) {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

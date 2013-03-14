@@ -62,7 +62,7 @@ public class BiotechBlockMachine extends BlockAdvanced {
 		this.setUnlocalizedName("BioBlock");
 		this.setCreativeTab(Biotech.tabBiotech);
 		this.setStepSound(soundMetalFootstep);
-		this.setTextureFile(Biotech.BLOCK_FILE_PATH);
+		//this.setTextureFile(Biotech.BLOCK_FILE_PATH);
 	}
 
 	@Override
