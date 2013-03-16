@@ -95,6 +95,11 @@ public class Biotech {
 	// 3 == pumpkinseeds
 	// 4 == carrots
 	// 5 == potatoes
+	// 6 == rangeupgrade
+	// 7 == treesappling
+	// 8 == pickaxecircuit
+	// 9 == shovelcircuit
+	// 10 == hoecircuit
 
 	// Tilling machine Circuits
 	public static ItemStack bioCircuitEmpty;
@@ -104,6 +109,10 @@ public class Biotech {
 	public static ItemStack bioCircuitCarrots;
 	public static ItemStack bioCircuitPotatoes;
 	public static ItemStack bioCircuitRangeUpgrade;
+	public static ItemStack bioCircuitTreeSappling;
+	public static ItemStack bioCircuitPickAxe;
+	public static ItemStack bioCircuitShovel;
+	public static ItemStack bioCircuitHoe;
 
 	// Mekanism bioFuel
 	public static ItemStack BioFuel = new ItemStack(
@@ -119,9 +128,8 @@ public class Biotech {
 	// 1 == Woodcutter
 	// 2 == Fertilizer
 	// 3 == Miner
-	// 4 == Filler
-	// 5 == Cow Milker
-	// 6 == BioRefinery
+	// 4 == Cow Milker
+	// 5 == BioRefinery
 
 	// Liquid Stack Milk
 	public static LiquidStack milkLiquid;
@@ -151,7 +159,7 @@ public class Biotech {
 		 * Define the items and blocks.
 		 */
 		this.bioCircuit = new bioCircuitItem(Config.getItem(
-				"biotech.BioCircuit", defaultBioItemId).getInt());
+				"biotech.bioCircuit", defaultBioItemId).getInt());
 
 		this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock(
 				"biotech.BiotechBlock", defaultBiotechBlockId).getInt(), 1)
@@ -164,14 +172,18 @@ public class Biotech {
 		/**
 		 * Define the subitems
 		 */
-		this.bioCircuitEmpty = bioCircuit.getStack(1, 0);
-		this.bioCircuitWheatSeeds = bioCircuit.getStack(1, 1);
-		this.bioCircuitMelonSeeds = bioCircuit.getStack(1, 2);
-		this.bioCircuitPumpkinSeeds = bioCircuit.getStack(1, 3);
-		this.bioCircuitCarrots = bioCircuit.getStack(1, 4);
-		this.bioCircuitPotatoes = bioCircuit.getStack(1, 5);
-		this.bioCircuitRangeUpgrade = bioCircuit.getStack(1, 6);
-
+		this.bioCircuitEmpty = bioCircuit.getStack(1, 0, "Bio Circuit - Empty");
+		this.bioCircuitWheatSeeds = bioCircuit.getStack(1, 1, "Bio Circuit - Wheat Seeds");
+		this.bioCircuitMelonSeeds = bioCircuit.getStack(1, 2, "Bio Circuit - Melon Seeds");
+		this.bioCircuitPumpkinSeeds = bioCircuit.getStack(1, 3, "Bio Circuit - Pumpkin Seeds");
+		this.bioCircuitCarrots = bioCircuit.getStack(1, 4, "Bio Circuit - Carrots");
+		this.bioCircuitPotatoes = bioCircuit.getStack(1, 5, "Bio Circuit - Potatoes");
+		this.bioCircuitRangeUpgrade = bioCircuit.getStack(1, 6, "Bio Circuit - Range Upgrade");
+		this.bioCircuitTreeSappling = bioCircuit.getStack(1, 7, "Bio Circuit - Tree Sappling");
+		this.bioCircuitPickAxe = bioCircuit.getStack(1, 8, "Bio Circuit - PickAxe");
+		this.bioCircuitShovel = bioCircuit.getStack(1, 9, "Bio Circuit - Shovel");
+		this.bioCircuitHoe = bioCircuit.getStack(1, 10, "Bio Circuit - Hoe");
+		
 		Config.save();
 
 		biotechLogger.info("Config loaded");
@@ -181,7 +193,7 @@ public class Biotech {
 	public void load(FMLInitializationEvent event) {
 
 		proxy.registerRenderers();
-
+		
 		/**
 		 * Handle the items that will be used in recipes. Just use the string in
 		 * the recipe like the milk manager recipe
@@ -193,9 +205,8 @@ public class Biotech {
 		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
 		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
 		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
-		ItemStack FillMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
-		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
-		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 6);
+		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
+		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
 
 		/**
 		 * Register the TileEntity's
@@ -243,6 +254,7 @@ public class Biotech {
 		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
 
 		// Subitems
+		LanguageRegistry.instance().addStringLocalization(bioCircuitEmpty, "Bio Ciruict - Empty");
 		LanguageRegistry.addName(bioCircuitEmpty, "Bio Circuit - Empty");
 		LanguageRegistry.addName(bioCircuitWheatSeeds,
 				"Bio Circuit - Wheat Seeds");
@@ -254,36 +266,38 @@ public class Biotech {
 		LanguageRegistry.addName(bioCircuitPotatoes, "Bio Circuit - Potaties");
 		LanguageRegistry.addName(bioCircuitRangeUpgrade,
 				"Bio Circuit - Range Upgrade");
-
+		/*
+		LanguageRegistry.addName(bioCircuitTreeSappling,
+				"Bio Circuit - Tree Sappling");
+		LanguageRegistry.addName(bioCircuitPickAxe,
+				"Bio Circuit - PickAxe");
+		LanguageRegistry.addName(bioCircuitShovel, "Bio Circuit - Shovel");
+		LanguageRegistry.addName(bioCircuitHoe, "Bio Circuit - Hoe");
+		*/
 		// Subblocks
 
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.0.name", "Farm");
+				"tile.BioBlock.0.name", "Farm");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.1.name", "Woodcutter");
+				"tile.BioBlock.1.name", "Woodcutter");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.2.name", "Fertilizer");
+				"tile.BioBlock.2.name", "Fertilizer");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.3.name", "Miner");
+				"tile.BioBlock.3.name", "Miner");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.4.name", "Filler");
+				"tile.BioBlock.4.name", "Cow Milker");
 		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.5.name", "Cow Milker");
-		LanguageRegistry.instance().addStringLocalization(
-				"tile.BiotechBlockMachine.6.name", "Bio Refinery");
+				"tile.BioBlock.5.name", "Bio Refinery");
 
 		// CreativeTab
 		LanguageRegistry.instance().addStringLocalization(
 				"itemGroup.tabBiotech", "Biotech");
 
 		// Recipes
-		// TODO Add Recipes for other machines
+		// TODO Add Recipes for other machines and items
 		/*
-		GameRegistry.addRecipe(new ShapedOreRecipe(TillMachine, new Object[] {
+		GameRegistry.addRecipe(new ShapedOreRecipe(FarmMachine, new Object[] {
 				"#%#", "@!@", "#$#", '@', Item.hoeStone, '!', "motor", '#',
-				itemStone, '$', "battery", '%', "basicCircuit" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(PlanMachine, new Object[] {
-				"#%#", "@!@", "#$#", '@', Item.appleRed, '!', "motor", '#',
 				itemStone, '$', "battery", '%', "basicCircuit" }));
 				*/
 		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] {

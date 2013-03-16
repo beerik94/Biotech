@@ -1,11 +1,11 @@
 package biotech.tileentity;
 
-//import hydraulic.core.implement.ColorCode;
-//import hydraulic.core.implement.IColorCoded;
-//import hydraulic.core.implement.IPsiCreator;
-//import hydraulic.core.implement.IReadOut;
-//import hydraulic.core.liquids.LiquidData;
-//import hydraulic.core.liquids.LiquidHandler;
+import hydraulic.core.implement.ColorCode;
+import hydraulic.core.implement.IColorCoded;
+import hydraulic.core.implement.IPsiCreator;
+import hydraulic.core.implement.IReadOut;
+import hydraulic.core.liquids.LiquidData;
+import hydraulic.core.liquids.LiquidHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ import biotech.Biotech;
 import com.google.common.io.ByteArrayDataInput;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements
-		IPacketReceiver/*, IColorCoded, IReadOut, IPsiCreator*/ {
+		IPacketReceiver, IColorCoded, IReadOut, IPsiCreator {
 	protected List<EntityCow> CowList = new ArrayList<EntityCow>();
 
 	// Watts being used per action
@@ -57,7 +57,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	public int bucketTime = 0;
 
 	// Amount of milliBuckets of internal storage
-	//private ColorCode color = ColorCode.WHITE;
+	private ColorCode color = ColorCode.WHITE;
 
 	// Is the machine currently powered, and did it change?
 	public boolean prevIsPowered, isPowered = false;
@@ -84,7 +84,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			/* Per Tick Processes */
 			this.chargeUp();
 			if (this.hasRedstone) {
-				//this.drainTo(ForgeDirection.DOWN);
+				this.drainTo(ForgeDirection.DOWN);
 
 				/* SCAN FOR COWS */
 				if (this.ticks % 40 == 0) {
@@ -145,7 +145,8 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		if (CowList.size() != 0 && this.getMilkStored() < this.getMaxMilk()) {
 			int vol = (10 * CowList.size());
 			this.setMilkStored(vol, true);
-			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK / 4, 0);
+			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK
+					/ 4, 0);
 		}
 	}
 
@@ -161,11 +162,11 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 		}
 		return 3;
 	}
-	
+
 	/**
 	 * Drains the contents of the internal tank to a block bellow it
 	 */
-	/*
+	
 	public void drainTo(ForgeDirection dir) {
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX,
 				yCoord + dir.offsetY, zCoord + dir.offsetZ);
@@ -179,7 +180,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			System.out.println("filled: " + filled);
 		}
 	}
-	*/
+	 
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
 		super.readFromNBT(tagCompound);
@@ -233,6 +234,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 			ByteArrayDataInput dataStream) {
 		try {
 			if (this.worldObj.isRemote) {
+				this.isPowered = dataStream.readBoolean();
 				this.facing = dataStream.readInt();
 				this.milkStored = dataStream.readInt();
 			}
@@ -243,7 +245,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 
 	@Override
 	public Packet getDescriptionPacket() {
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing,
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing,
 				this.milkStored);
 	}
 
@@ -278,7 +280,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	public int getMaxMilk() {
 		return this.milkMaxStored;
 	}
-	/*
+
 	@Override
 	public ColorCode getColor() {
 		return ColorCode.WHITE;
@@ -294,15 +296,16 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements
 	}
 
 	@Override
-	public int getPressureOut(LiquidData type, ForgeDirection dir) {
-		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) ? type
-				.getPressure() : 0);
+	public int getPressureOut(LiquidStack stack, ForgeDirection dir) {
+		if (stack != null && this.color.isValidLiquid(stack)) {
+			return LiquidHandler.get(stack).getPressure();
+		}
+		return 0;
 	}
 
 	@Override
-	public boolean getCanPressureTo(LiquidData type, ForgeDirection dir) {
-		return ((type.getColor() == color || type.getColor() == ColorCode.NONE) && dir == ForgeDirection.DOWN
-				.getOpposite());
+	public boolean getCanPressureTo(LiquidStack stack, ForgeDirection dir) {
+		return dir == ForgeDirection.DOWN.getOpposite()
+				&& this.color.isValidLiquid(stack);
 	}
-	*/
 }

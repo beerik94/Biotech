@@ -1,12 +1,10 @@
 package biotech.tileentity;
-/*
+
 import hydraulic.core.implement.ColorCode;
 import hydraulic.core.implement.IColorCoded;
 import hydraulic.core.implement.IPsiReciever;
 import hydraulic.core.implement.IReadOut;
-import hydraulic.core.liquids.LiquidData;
-import hydraulic.core.liquids.LiquidHandler;
-*/
+
 import java.util.EnumSet;
 
 import biotech.Biotech;
@@ -40,8 +38,8 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
 public class BioRefineryTileEntity extends BasicMachineTileEntity implements
-		IPacketReceiver/*, IColorCoded, IPsiReciever, IReadOut*/ {
-	
+		IPacketReceiver, IColorCoded, IPsiReciever, IReadOut {
+
 	// Watts being used per action / idle action
 	public static final double WATTS_PER_TICK = 500;
 
@@ -49,7 +47,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	public boolean prevIsPowered, isPowered = false;
 
 	// Amount of milliBuckets of internal storage
-	//private ColorCode color = ColorCode.WHITE;
+	private ColorCode color = ColorCode.WHITE;
 	private static final int milkMaxStored = 15 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private int milkStored = 0;
 	private int bucketVol = LiquidContainerRegistry.BUCKET_VOLUME;
@@ -231,12 +229,12 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	public int getMaxMilk() {
 		return this.milkStored;
 	}
-	/*
+
 	@Override
 	public String getMeterReading(EntityPlayer user, ForgeDirection side) {
 		return "Milk:" + this.milkStored;
 	}
-	
+
 	@Override
 	public ColorCode getColor() {
 		return ColorCode.WHITE;
@@ -256,7 +254,4 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements
 	public void onReceivePressure(double pressure) {
 		// TODO Auto-generated method stub
 	}
-	*/
-	
-	
 }

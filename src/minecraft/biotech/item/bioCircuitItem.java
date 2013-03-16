@@ -18,10 +18,8 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class bioCircuitItem extends Item implements IModifier {
 	public final static String[] subNames = { "unprogrammed",
-
-			// Tiller
 			"wheatseeds", "melonseeds", "pumpkinseeds", "carrots", "potatoes",
-			"rangeupgrade", };
+			"rangeupgrade", "treesappling", "pickaxecircuit", "shovelcircuit", "hoecircuit", };
 	
 	private Icon iconUnProgrammed;
 	private Icon iconWheatSeeds;
@@ -31,12 +29,14 @@ public class bioCircuitItem extends Item implements IModifier {
 	private Icon iconPotatoes;
 	private Icon iconRangeUpgrade;
 	private Icon iconTreeSappling;
+	private Icon iconPickAxeCircuit;
+	private Icon iconShovelCircuit;
+	private Icon iconHoeCircuit;
 	
 	
 	public bioCircuitItem(int id) {
 		super(id);
 		setCreativeTab(Biotech.tabBiotech);
-		setUnlocalizedName("bioCircuit");
 		setHasSubtypes(true);
 	}
 	
@@ -51,6 +51,9 @@ public class bioCircuitItem extends Item implements IModifier {
 		this.iconPotatoes = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "Potatoes");
 		this.iconRangeUpgrade = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "RangeUpgrade");
 		this.iconTreeSappling = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "TreeSappling");
+		this.iconPickAxeCircuit = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "PickAxeCircuit");
+		this.iconShovelCircuit = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "ShovelCircuit");
+		this.iconHoeCircuit = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "HoeCircuit");
 	}
 	
 	@Override
@@ -58,19 +61,27 @@ public class bioCircuitItem extends Item implements IModifier {
 	{
 		switch (damage) {
 		case 0:
-			return this.iconUnProgrammed; // unprogrammed
+			return this.iconUnProgrammed;
 		case 1:
-			return this.iconWheatSeeds; // wheatseeds
+			return this.iconWheatSeeds;
 		case 2:
-			return this.iconMelonSeeds; // melonseeds
+			return this.iconMelonSeeds;
 		case 3:
-			return this.iconPumpkinSeeds; // pumpkinseeds
+			return this.iconPumpkinSeeds;
 		case 4:
-			return this.iconCarrots; // carrots
+			return this.iconCarrots;
 		case 5:
-			return this.iconPotatoes; // potatoes
+			return this.iconPotatoes;
 		case 6:
-			return this.iconRangeUpgrade; // Range Upgrade
+			return this.iconRangeUpgrade;
+		case 7:
+			return this.iconTreeSappling;
+		case 8:
+			return this.iconPickAxeCircuit;
+		case 9:
+			return this.iconShovelCircuit;
+		case 10:
+			return this.iconHoeCircuit;
 		}
 
 		return super.getIconFromDamage(damage);
@@ -98,12 +109,20 @@ public class bioCircuitItem extends Item implements IModifier {
 				return "Potatoes";
 			case 6:	
 				return "RangeUpgrade";
+			case 7:
+				return "TreeSappling";
+			case 8:
+				return "PickAxe";
+			case 9:
+				return "Shovel";
+			case 10:
+				return "Hoe";
 			default:
 				return "UnProgrammed";
 		}
 	}
 
-	public ItemStack getStack(int count, int damageValue) {
+	public ItemStack getStack(int count, int damageValue, String name) {
 		ItemStack stack = new ItemStack(this, count);
 		stack.setItemDamage(damageValue);
 		if(damageValue == 6)
@@ -119,7 +138,7 @@ public class bioCircuitItem extends Item implements IModifier {
 
 	@SideOnly(Side.CLIENT)
 	@Override
-	public void getSubItems(int unknown, CreativeTabs tab, List subItems) {
+	public void getSubItems(int i, CreativeTabs tab, List subItems) {
 		for (int meta = 1; meta < subNames.length; meta++) {
 			subItems.add(new ItemStack(this, 1, meta));
 		}
