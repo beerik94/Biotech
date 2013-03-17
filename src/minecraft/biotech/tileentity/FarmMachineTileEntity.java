@@ -14,298 +14,340 @@ import biotech.Biotech;
 // Has a powered state
 // Has an inventory
 
-public class FarmMachineTileEntity extends BasicMachineTileEntity implements
-		IInventory, ISidedInventory, IPacketReceiver {
+public class FarmMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+{
 	
-	public static final double WATTS_PER_ACTION = 500;
-
-	public int currentX = 0;
-	public int currentZ = 0;
-	public int currentY = 0;
-
-	public int minX, maxX;
-	public int minZ, maxZ;
-
-	private Block tilledField = Block.tilledField;
-	private Block wheatseedsField = Block.crops;
-	private Block melonStemField = Block.melonStem;
-	private Block pumpkinStemField = Block.pumpkinStem;
-	private Block carrotField = Block.carrot;
-	private Block potatoField = Block.potato;
-
+	public static final double	WATTS_PER_ACTION	= 500;
+	
+	public int					currentX			= 0;
+	public int					currentZ			= 0;
+	public int					currentY			= 0;
+	
+	public int					minX, maxX;
+	public int					minZ, maxZ;
+	
+	private Block				tilledField			= Block.tilledField;
+	private Block				wheatseedsField		= Block.crops;
+	private Block				melonStemField		= Block.melonStem;
+	private Block				pumpkinStemField	= Block.pumpkinStem;
+	private Block				carrotField			= Block.carrot;
+	private Block				potatoField			= Block.potato;
+	
 	// TODO Add variables to indicate maximum workarea size. Should be based on
 	// CommandItem usage?
-
-	final ItemStack[] resourceStacks = new ItemStack[] {
-			new ItemStack(Item.seeds, 1), new ItemStack(Item.melonSeeds, 1),
-			new ItemStack(Item.pumpkinSeeds, 1), new ItemStack(Item.carrot, 1),
-			new ItemStack(Item.potato, 1), };
-
-	public FarmMachineTileEntity() {
+	
+	final ItemStack[]			resourceStacks		= new ItemStack[] { new ItemStack(Item.seeds, 1), new ItemStack(Item.melonSeeds, 1), new ItemStack(Item.pumpkinSeeds, 1), new ItemStack(Item.carrot, 1), new ItemStack(Item.potato, 1), };
+	
+	public FarmMachineTileEntity()
+	{
 		super();
 	}
-
+	
 	@Override
-	public void updateEntity() {
+	public void updateEntity()
+	{
 		super.updateEntity();
-
+		
 		// Biotech.biotechLogger.info("UpdateEntity");
-
-		if (this.worldObj.isRemote) {
+		
+		if (this.worldObj.isRemote)
+		{
 			return;
 		}
 		/*
-		if (this.idleTicks > 0) {
-			if (this.ticks % 40 == 0)
-				this.setElectricityStored(this.WATTS_PER_IDLE_ACTION, false);
-
-			--this.idleTicks;
-			return;
-		}
-
-		while (canDoWork()) {
-			this.setPowered(true);
-
-			if (doWork()) {
-				this.setElectricityStored(this.WATTS_PER_ACTION, false);
-				this.idleTicks = this.IDLE_TIME_AFTER_ACTION;
-				advanceLocation();
-				this.setPowered(false);
-				break;
-			} else {
-				this.idleTicks = this.IDLE_TIME_NO_ACTION;
-				advanceLocation();
-				break;
-			}
-		}
-		*/
-
+		 * if (this.idleTicks > 0) {
+		 * if (this.ticks % 40 == 0)
+		 * this.setElectricityStored(this.WATTS_PER_IDLE_ACTION, false);
+		 * 
+		 * --this.idleTicks;
+		 * return;
+		 * }
+		 * 
+		 * while (canDoWork()) {
+		 * this.setPowered(true);
+		 * 
+		 * if (doWork()) {
+		 * this.setElectricityStored(this.WATTS_PER_ACTION, false);
+		 * this.idleTicks = this.IDLE_TIME_AFTER_ACTION;
+		 * advanceLocation();
+		 * this.setPowered(false);
+		 * break;
+		 * } else {
+		 * this.idleTicks = this.IDLE_TIME_NO_ACTION;
+		 * advanceLocation();
+		 * break;
+		 * }
+		 * }
+		 */
+		
 		return;
 	}
-
-	public int getTopY() {/*
-						 * for (int y = 0; y < 4; y++) { if
-						 * (this.worldObj.getBlockMaterial(this.xCoord +
-						 * this.currentX, this.yCoord + y, this.zCoord +
-						 * this.currentZ) == Material.air) { return y - 1; } }
-						 * 
-						 * return -1;
-						 */
+	
+	public int getTopY()
+	{/*
+	 * for (int y = 0; y < 4; y++) { if
+	 * (this.worldObj.getBlockMaterial(this.xCoord +
+	 * this.currentX, this.yCoord + y, this.zCoord +
+	 * this.currentZ) == Material.air) { return y - 1; } }
+	 * 
+	 * return -1;
+	 */
 		return this.yCoord - 1;
 	}
-
-	public boolean plantResource(ItemStack stack, Block placeBlock) {
-		int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX,
-				getTopY(), zCoord + currentZ);
-
-		if (!worldObj.isRemote && canPlant(stack, placeBlock)) {
-			worldObj.setBlockAndMetadataWithNotify(xCoord + currentX, getTopY() + 1, zCoord
-					+ currentZ, placeBlock.blockID, 0, 2);
+	
+	public boolean plantResource(ItemStack stack, Block placeBlock)
+	{
+		int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
+		
+		if (!worldObj.isRemote && canPlant(stack, placeBlock))
+		{
+			worldObj.setBlockAndMetadataWithNotify(xCoord + currentX, getTopY() + 1, zCoord + currentZ, placeBlock.blockID, 0, 2);
 			decrStackSize(1, 1);
 			return true;
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-
-	public boolean canPlant(ItemStack stack, Block placeBlock) {
-		if (hasResourceOfType(stack)) {
-			if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds)
-					|| hasBioCircuitOfType(Biotech.bioCircuitCarrots)
-					|| hasBioCircuitOfType(Biotech.bioCircuitPotatoes)) {
-				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord
-						+ currentZ) == tilledField.blockID
-						&& worldObj.getBlockId(xCoord + currentX,
-								getTopY() + 1, zCoord + currentZ) != placeBlock.blockID
-						&& worldObj.isAirBlock(xCoord + currentX,
-								getTopY() + 1, zCoord + currentZ)) {
+	
+	public boolean canPlant(ItemStack stack, Block placeBlock)
+	{
+		if (hasResourceOfType(stack))
+		{
+			if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) || hasBioCircuitOfType(Biotech.bioCircuitCarrots) || hasBioCircuitOfType(Biotech.bioCircuitPotatoes))
+			{
+				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
+				{
 					return true;
-				} else {
+				}
+				else
+				{
 					return false;
 				}
-			} else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds)
-					&& hasResourceOfType(resourceStacks[1])) {
-				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord
-						+ currentZ) == tilledField.blockID
-						&& worldObj.getBlockId(xCoord + currentX,
-								getTopY() + 1, zCoord + currentZ) != placeBlock.blockID
-						&& worldObj.isAirBlock(xCoord + currentX,
-								getTopY() + 1, zCoord + currentZ)) {
+			}
+			else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+			{
+				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
+				{
 					return true;
-				} else {
+				}
+				else
+				{
 					return false;
 				}
-			} else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds)
-					&& hasResourceOfType(resourceStacks[2])) {
-				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord
-						+ currentZ) == tilledField.blockID
-						&& worldObj.getBlockId(xCoord + currentX,
-								getTopY() + 1, zCoord + currentZ) != placeBlock.blockID
-						&& worldObj.isAirBlock(xCoord + currentX,
-								getTopY() + 1, zCoord + currentZ)) {
+			}
+			else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
+			{
+				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
+				{
 					return true;
-				} else {
+				}
+				else
+				{
 					return false;
 				}
-			} else {
+			}
+			else
+			{
 				return false;
 			}
-		} else {
+		}
+		else
+		{
 			return false;
 		}
 	}
-
-	public boolean doWork() {
-		if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds)
-				&& hasResourceOfType(resourceStacks[0])) {
-			if (canPlant(resourceStacks[0], wheatseedsField)) {
+	
+	public boolean doWork()
+	{
+		if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
+		{
+			if (canPlant(resourceStacks[0], wheatseedsField))
+			{
 				return plantResource(resourceStacks[0], wheatseedsField);
 			}
-		} else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds)
-				&& hasResourceOfType(resourceStacks[1])) {
-			if (canPlant(resourceStacks[1], melonStemField)) {
+		}
+		else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+		{
+			if (canPlant(resourceStacks[1], melonStemField))
+			{
 				return plantResource(resourceStacks[1], melonStemField);
 			}
-		} else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds)
-				&& hasResourceOfType(resourceStacks[2])) {
-			if (canPlant(resourceStacks[2], pumpkinStemField)) {
+		}
+		else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
+		{
+			if (canPlant(resourceStacks[2], pumpkinStemField))
+			{
 				return plantResource(resourceStacks[2], pumpkinStemField);
 			}
-		} else if (hasBioCircuitOfType(Biotech.bioCircuitCarrots)
-				&& hasResourceOfType(resourceStacks[3])) {
-			if (canPlant(resourceStacks[3], carrotField)) {
+		}
+		else if (hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
+		{
+			if (canPlant(resourceStacks[3], carrotField))
+			{
 				return plantResource(resourceStacks[3], carrotField);
 			}
-		} else if (hasBioCircuitOfType(Biotech.bioCircuitPotatoes)
-				&& hasResourceOfType(resourceStacks[4])) {
-			if (canPlant(resourceStacks[4], potatoField)) {
+		}
+		else if (hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
+		{
+			if (canPlant(resourceStacks[4], potatoField))
+			{
 				return plantResource(resourceStacks[4], potatoField);
 			}
 		}
-
+		
 		return false;
 	}
-
-	public boolean canDoWork() {
+	
+	public boolean canDoWork()
+	{
 		ItemStack circuit = this.inventory[2];
 		ItemStack resource = this.inventory[1];
-
-		if (this.wattsReceived >= this.WATTS_PER_ACTION) {
-			if (hasBioCircuitInSlot() && hasResourcesInSlot()) {
-				if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds)
-						&& hasResourceOfType(resourceStacks[0])) {
+		
+		if (this.wattsReceived >= this.WATTS_PER_ACTION)
+		{
+			if (hasBioCircuitInSlot() && hasResourcesInSlot())
+			{
+				if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
+				{
 					return true;
-				} else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds)
-						&& hasResourceOfType(resourceStacks[1])) {
+				}
+				else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+				{
 					return true;
-				} else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds)
-						&& hasResourceOfType(resourceStacks[2])) {
+				}
+				else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
+				{
 					return true;
-				} else if (hasBioCircuitOfType(Biotech.bioCircuitCarrots)
-						&& hasResourceOfType(resourceStacks[3])) {
+				}
+				else if (hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
+				{
 					return true;
-				} else if (hasBioCircuitOfType(Biotech.bioCircuitPotatoes)
-						&& hasResourceOfType(resourceStacks[4])) {
+				}
+				else if (hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
+				{
 					return true;
 				}
 			}
 		}
-
+		
 		return false;
 	}
-
-	private boolean hasResourcesInSlot() {
+	
+	private boolean hasResourcesInSlot()
+	{
 		ItemStack slot = this.inventory[1];
-
-		if (slot == null) {
+		
+		if (slot == null)
+		{
 			return false;
 		}
-
-		for (int i = 0; i < resourceStacks.length; i++) {
-			if (slot.itemID == resourceStacks[i].itemID) {
+		
+		for (int i = 0; i < resourceStacks.length; i++)
+		{
+			if (slot.itemID == resourceStacks[i].itemID)
+			{
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
-	public boolean hasBioCircuitInSlot() {
+	
+	public boolean hasBioCircuitInSlot()
+	{
 		ItemStack slot = this.inventory[2];
-
-		if (slot == null) {
+		
+		if (slot == null)
+		{
 			return false;
 		}
-
-		if (slot.itemID == Biotech.bioCircuitEmpty.itemID) {
+		
+		if (slot.itemID == Biotech.bioCircuitEmpty.itemID)
+		{
 			return true;
 		}
-
+		
 		return false;
 	}
-
-	public boolean hasResourceOfType(ItemStack itemStack) {
+	
+	public boolean hasResourceOfType(ItemStack itemStack)
+	{
 		ItemStack slot = this.inventory[1];
-
-		if (slot == null) {
+		
+		if (slot == null)
+		{
 			return false;
 		}
-
-		if (slot.itemID == itemStack.itemID) {
-			if (slot.getItemDamage() == itemStack.getItemDamage()) {
+		
+		if (slot.itemID == itemStack.itemID)
+		{
+			if (slot.getItemDamage() == itemStack.getItemDamage())
+			{
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
-	public boolean hasBioCircuitOfType(ItemStack itemStack) {
+	
+	public boolean hasBioCircuitOfType(ItemStack itemStack)
+	{
 		ItemStack slot = this.inventory[2];
-
-		if (slot == null) {
+		
+		if (slot == null)
+		{
 			return false;
 		}
-
-		if (slot.itemID == itemStack.itemID) {
-			if (slot.getItemDamage() == itemStack.getItemDamage()) {
+		
+		if (slot.itemID == itemStack.itemID)
+		{
+			if (slot.getItemDamage() == itemStack.getItemDamage())
+			{
 				return true;
 			}
 		}
-
+		
 		return false;
 	}
-
-	private void advanceLocation() {
+	
+	private void advanceLocation()
+	{
 		this.currentX++;
-
-		if (this.currentX > this.maxX) {
+		
+		if (this.currentX > this.maxX)
+		{
 			this.currentX = this.minX;
 			this.currentZ++;
-
-			if (this.currentZ > this.maxZ) {
+			
+			if (this.currentZ > this.maxZ)
+			{
 				this.currentZ = this.minZ;
 			}
 		}
 	}
-
+	
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound) {
+	public void readFromNBT(NBTTagCompound tagCompound)
+	{
 		super.readFromNBT(tagCompound);
 		// this.progressTime = tagCompound.getShort("Progress");
-
+		
 	}
-
+	
 	@Override
-	public void writeToNBT(NBTTagCompound tagCompound) {
+	public void writeToNBT(NBTTagCompound tagCompound)
+	{
 		super.writeToNBT(tagCompound);
 		// tagCompound.setShort("Progress", (short)this.progressTime);
-
+		
 	}
-
+	
 	@Override
-	public String getInvName() {
+	public String getInvName()
+	{
 		return "TillingMachine";
 	}
-
+	
 }
