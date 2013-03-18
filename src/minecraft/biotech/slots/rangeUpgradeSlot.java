@@ -17,6 +17,6 @@ public class rangeUpgradeSlot extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.itemID == Biotech.bioCircuitRangeUpgrade.itemID;
+		return itemstack.getItemDamage() == 6;
 	}
 }

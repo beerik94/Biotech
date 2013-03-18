@@ -76,7 +76,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		this.iconFertilizer = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineFertilizer");
 		this.iconMiner = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineMiner");
 		this.iconCowMilker = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineCowMilker");
-		this.iconBioRefinery = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineCowMilker");
+		this.iconBioRefinery = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRefinery");
 		this.iconEmptySide = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
 		this.iconMilkSide = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineMilkSide");
 		this.iconInputOn = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOnSide");

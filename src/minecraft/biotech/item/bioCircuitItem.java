@@ -40,7 +40,7 @@ public class bioCircuitItem extends Item
 		super(id);
 		setCreativeTab(Biotech.tabBiotech);
 		setHasSubtypes(true);
-		setUnlocalizedName("Bio Circuit");
+		setUnlocalizedName("bioCircuit");
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -69,7 +69,7 @@ public class bioCircuitItem extends Item
 	{
 		int meta = i.getItemDamage();
 		
-		return i.getItem().getUnlocalizedName() + "." + meta;
+		return this.getUnlocalizedName() + "." + meta;
 	}
 	
 	public ItemStack getStack(int count, int damageValue, String name)

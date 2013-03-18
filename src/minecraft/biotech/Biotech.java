@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.liquids.LiquidContainerData;
@@ -85,6 +87,19 @@ public class Biotech
 	// Item templates
 	public static Item					biotechPotionItem;
 	public static bioCircuitItem		bioCircuit;
+	
+	// Itemstacks for different biocircuits
+	public static ItemStack				UnProgrammed;
+	public static ItemStack				WheatSeeds;
+	public static ItemStack				MelonSeeds;
+	public static ItemStack				PumpkinSeeds;
+	public static ItemStack				Carrots;
+	public static ItemStack				Potatoes;
+	public static ItemStack				RangeUpgrade;
+	public static ItemStack				TreeSappling;
+	public static ItemStack				Pickaxe;
+	public static ItemStack				Shovel;
+	public static ItemStack				Hoe;
 	
 	// Metadata for BioCircuit
 	// 0 == unprogrammed
@@ -182,6 +197,18 @@ public class Biotech
 		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
 		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
 		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
+		ItemStack UnProgrammed = new ItemStack(Biotech.bioCircuit, 1, 0);
+		ItemStack WheatSeeds = new ItemStack(Biotech.bioCircuit, 1, 1);
+		ItemStack MelonSeeds = new ItemStack(Biotech.bioCircuit, 1, 2);
+		ItemStack PumpkinSeeds = new ItemStack(Biotech.bioCircuit, 1, 3);
+		ItemStack Carrots = new ItemStack(Biotech.bioCircuit, 1, 4);
+		ItemStack Potatoes = new ItemStack(Biotech.bioCircuit, 1, 5);
+		ItemStack RangeUpgrade = new ItemStack(Biotech.bioCircuit, 1, 6);
+		ItemStack TreeSappling = new ItemStack(Biotech.bioCircuit, 1, 7);
+		ItemStack Pickaxe = new ItemStack(Biotech.bioCircuit, 1, 8);
+		ItemStack Shovel = new ItemStack(Biotech.bioCircuit, 1, 9);
+		ItemStack Hoe = new ItemStack(Biotech.bioCircuit, 1, 10);
+		
 		
 		/**
 		 * Register the TileEntity's
@@ -202,39 +229,39 @@ public class Biotech
 		// Registration
 		
 		/**
-		 * Handle localization and add names for all items
+		 * Handle language support
 		 */
-		
-		// Blocks
-		LanguageRegistry.addName(milkMoving, "Milk(Flowing)");
-		LanguageRegistry.addName(milkStill, "Milk(Still)");
-		
-		// Items
-		LanguageRegistry.addName(bioCircuit, "Bio Circuit");
-		
-		// Subitems
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.0.name", "Bio Ciruict - Empty");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.1.name", "Bio Ciruict - Wheat Seeds");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.2.name", "Bio Ciruict - Melon Seeds");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.3.name", "Bio Ciruict - Pumpkin Seeds");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.4.name", "Bio Ciruict - Carrots");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.5.name", "Bio Ciruict - Potatoes");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.6.name", "Bio Ciruict - Range Upgrade");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.7.name", "Bio Ciruict - Tree Sappling");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.8.name", "Bio Ciruict - Pickaxe");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.9.name", "Bio Ciruict - Shovel");
-		LanguageRegistry.instance().addStringLocalization("tile.bioCircuit.10.name", "Bio Ciruict - Hoe");
-		
-		// Subblocks
-		LanguageRegistry.instance().addStringLocalization("tile.BioBlock.0.name", "Farm");
-		LanguageRegistry.instance().addStringLocalization("tile.BioBlock.1.name", "Woodcutter");
-		LanguageRegistry.instance().addStringLocalization("tile.BioBlock.2.name", "Fertilizer");
-		LanguageRegistry.instance().addStringLocalization("tile.BioBlock.3.name", "Miner");
-		LanguageRegistry.instance().addStringLocalization("tile.BioBlock.4.name", "Cow Milker");
-		LanguageRegistry.instance().addStringLocalization("tile.BioBlock.5.name", "Bio Refinery");
-		
-		// CreativeTab
-		LanguageRegistry.instance().addStringLocalization("itemGroup.tabBiotech", "Biotech");
+		int languages = 0;
+
+		for (String language : LANGUAGES_SUPPORTED)
+		{
+			LanguageRegistry.instance().loadLocalization(LANGUAGE_PATH + language + ".properties", language, false);
+
+			if (LanguageRegistry.instance().getStringLocalization("children", language) != "")
+			{
+				try
+				{
+					String[] children = LanguageRegistry.instance().getStringLocalization("children", language).split(",");
+
+					for (String child : children)
+					{
+						if (child != "" && child != null)
+						{
+							LanguageRegistry.instance().loadLocalization(LANGUAGE_PATH + language + ".properties", child, false);
+							languages++;
+						}
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+			}
+		}
+		int unofficialLanguages = 0;
+		unofficialLanguages = langLoad();
+
+		System.out.println(NAME + ": Loaded " + languages + " Official and " + unofficialLanguages + " unofficial languages");
 		
 		// Recipes
 		// TODO Add Recipes for other machines and items
@@ -255,5 +282,53 @@ public class Biotech
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		biotechLogger.info("Biotech fully loaded");
+	}
+	
+	public static File[] ListLanguages()
+	{
+		String folderDir = "";
+		if (MinecraftServer.getServer().isDedicatedServer())
+		{
+			folderDir = "mods/" + "BiotechLanguages";
+		}
+		else if (!MinecraftServer.getServer().isDedicatedServer())
+		{
+			folderDir = Minecraft.getMinecraftDir() + File.separator + "mods" + File.separator + "BiotechLanguages";
+		}
+
+		File folder = new File(folderDir);
+
+		if (!folder.exists())
+			folder.mkdirs();
+
+		String files;
+		File[] listOfFiles = folder.listFiles();
+
+		return listOfFiles;
+	}
+
+	public static int langLoad()
+	{
+		int unofficialLanguages = 0;
+		try
+		{
+			for (File langFile : ListLanguages())
+			{
+				if (langFile.exists())
+				{
+					String name = langFile.getName();
+					if (name.endsWith(".lang"))
+					{
+						String lang = name.substring(0, name.length() - 4);
+						LanguageRegistry.instance().loadLocalization(langFile.toString(), lang, false);
+						unofficialLanguages++;
+					}
+				}
+			}
+		}
+		catch (Exception e)
+		{
+		}
+		return unofficialLanguages;
 	}
 }

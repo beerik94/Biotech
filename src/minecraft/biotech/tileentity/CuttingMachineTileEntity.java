@@ -166,7 +166,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		if (getStackInSlot(1) != null)
 		{
-			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade))
+			if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
 			{
 				return (getStackInSlot(1).stackSize * 2 + 2);
 			}

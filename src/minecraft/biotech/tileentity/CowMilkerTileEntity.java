@@ -170,7 +170,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		if (getStackInSlot(1) != null)
 		{
-			if (inventory[1].isItemEqual(Biotech.bioCircuitRangeUpgrade))
+			if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
 			{
 				return (getStackInSlot(1).stackSize + 5);
 			}

@@ -115,7 +115,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	{
 		if (hasResourceOfType(stack))
 		{
-			if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) || hasBioCircuitOfType(Biotech.bioCircuitCarrots) || hasBioCircuitOfType(Biotech.bioCircuitPotatoes))
+			if (hasBioCircuitOfType(Biotech.WheatSeeds) || hasBioCircuitOfType(Biotech.Carrots) || hasBioCircuitOfType(Biotech.Potatoes))
 			{
 				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
 				{
@@ -126,7 +126,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 					return false;
 				}
 			}
-			else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+			else if (hasBioCircuitOfType(Biotech.MelonSeeds) && hasResourceOfType(resourceStacks[1]))
 			{
 				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
 				{
@@ -137,7 +137,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 					return false;
 				}
 			}
-			else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
+			else if (hasBioCircuitOfType(Biotech.PumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
 			{
 				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
 				{
@@ -161,35 +161,35 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	
 	public boolean doWork()
 	{
-		if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
+		if (hasBioCircuitOfType(Biotech.WheatSeeds) && hasResourceOfType(resourceStacks[0]))
 		{
 			if (canPlant(resourceStacks[0], wheatseedsField))
 			{
 				return plantResource(resourceStacks[0], wheatseedsField);
 			}
 		}
-		else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+		else if (hasBioCircuitOfType(Biotech.MelonSeeds) && hasResourceOfType(resourceStacks[1]))
 		{
 			if (canPlant(resourceStacks[1], melonStemField))
 			{
 				return plantResource(resourceStacks[1], melonStemField);
 			}
 		}
-		else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
+		else if (hasBioCircuitOfType(Biotech.PumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
 		{
 			if (canPlant(resourceStacks[2], pumpkinStemField))
 			{
 				return plantResource(resourceStacks[2], pumpkinStemField);
 			}
 		}
-		else if (hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
+		else if (hasBioCircuitOfType(Biotech.Carrots) && hasResourceOfType(resourceStacks[3]))
 		{
 			if (canPlant(resourceStacks[3], carrotField))
 			{
 				return plantResource(resourceStacks[3], carrotField);
 			}
 		}
-		else if (hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
+		else if (hasBioCircuitOfType(Biotech.Potatoes) && hasResourceOfType(resourceStacks[4]))
 		{
 			if (canPlant(resourceStacks[4], potatoField))
 			{
@@ -209,23 +209,23 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 		{
 			if (hasBioCircuitInSlot() && hasResourcesInSlot())
 			{
-				if (hasBioCircuitOfType(Biotech.bioCircuitWheatSeeds) && hasResourceOfType(resourceStacks[0]))
+				if (hasBioCircuitOfType(Biotech.WheatSeeds) && hasResourceOfType(resourceStacks[0]))
 				{
 					return true;
 				}
-				else if (hasBioCircuitOfType(Biotech.bioCircuitMelonSeeds) && hasResourceOfType(resourceStacks[1]))
+				else if (hasBioCircuitOfType(Biotech.MelonSeeds) && hasResourceOfType(resourceStacks[1]))
 				{
 					return true;
 				}
-				else if (hasBioCircuitOfType(Biotech.bioCircuitPumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
+				else if (hasBioCircuitOfType(Biotech.PumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
 				{
 					return true;
 				}
-				else if (hasBioCircuitOfType(Biotech.bioCircuitCarrots) && hasResourceOfType(resourceStacks[3]))
+				else if (hasBioCircuitOfType(Biotech.Carrots) && hasResourceOfType(resourceStacks[3]))
 				{
 					return true;
 				}
-				else if (hasBioCircuitOfType(Biotech.bioCircuitPotatoes) && hasResourceOfType(resourceStacks[4]))
+				else if (hasBioCircuitOfType(Biotech.Potatoes) && hasResourceOfType(resourceStacks[4]))
 				{
 					return true;
 				}
@@ -264,7 +264,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 			return false;
 		}
 		
-		if (slot.itemID == Biotech.bioCircuitEmpty.itemID)
+		if (slot.itemID == Biotech.UnProgrammed.itemID)
 		{
 			return true;
 		}
