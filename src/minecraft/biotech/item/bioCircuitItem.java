@@ -21,7 +21,7 @@ public class bioCircuitItem extends Item
 {
 	private final static String[]	subNames	= { "unprogrammed", "wheatseeds", "melonseeds", "pumpkinseeds", "carrots", "potatoes", "rangeupgrade", "treesappling", "pickaxecircuit", "shovelcircuit", "hoecircuit", };
 	
-	private Icon[] icons = new Icon[subNames.length];
+	private Icon[]					icons		= new Icon[subNames.length];
 	
 	private Icon					iconUnProgrammed;
 	private Icon					iconWheatSeeds;
@@ -46,7 +46,8 @@ public class bioCircuitItem extends Item
 	@SideOnly(Side.CLIENT)
 	public void func_94581_a(IconRegister iconRegister)
 	{
-		for(int i = 0; i < subNames.length; i++){
+		for (int i = 0; i < subNames.length; i++)
+		{
 			
 			this.icons[i] = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + subNames[i]);
 		}

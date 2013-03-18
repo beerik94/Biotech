@@ -35,7 +35,7 @@ public class BioRefineryGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j)
 	{
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 60, 6, 4210752);
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4, 4210752);
 		
 		String displayText = "";
 		
@@ -54,7 +54,10 @@ public class BioRefineryGui extends GuiContainer
 		
 		this.fontRenderer.drawString("Status: " + displayText, 32, 17, 0x00CD00);
 		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 32, 27, 0x00CD00);
-		
+		if (this.tileEntity.hasRedstone)
+		{
+			this.fontRenderer.drawString("Working: " + this.tileEntity.working + "%", 32, 28, 0x00CD00);
+		}
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
@@ -80,7 +83,7 @@ public class BioRefineryGui extends GuiContainer
 	
 	public static String getTexture()
 	{
-		return Biotech.GUI_PATH + "biorefinery.png";
+		return Biotech.GUI_PATH + "GUI_BioRefinery.png";
 	}
 	
 }

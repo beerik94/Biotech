@@ -231,8 +231,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		if (!worldObj.isRemote)
 		{
-			this.chargeUp();
-			
 			if (this.ticks % 30 == 0)
 			{
 				if (worldObj.func_94577_B(xCoord, yCoord, zCoord) != 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
@@ -252,9 +250,10 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		}
 	}
 	
+	/*
 	/**
 	 * Charges up the tileEntities energy storage
-	 */
+	 *
 	public void chargeUp()
 	{
 		int front = 0;
@@ -279,10 +278,11 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		/**
 		 * Attempts to charge using batteries.
-		 */
+		 *
 		this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
 		
 	}
+	*/
 	
 	@Override
 	public ElectricityPack getRequest()
@@ -472,26 +472,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 			}
 			
 			if (slot.stackSize + itemStack.stackSize <= slot.getMaxStackSize())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
-	public boolean hasToolInToolArea(ItemStack itemStack)
-	{
-		for (int i = 18; i < 21; i++)
-		{
-			ItemStack slot = inventory[i];
-			
-			if (slot == null)
-			{
-				continue;
-			}
-			
-			if (slot.itemID == itemStack.itemID)
 			{
 				return true;
 			}

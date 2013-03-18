@@ -27,6 +27,18 @@ public class FarmMachineContainer extends Container
 		// Slot BioCircuit
 		this.addSlotToContainer(new bioCircuitSlot(tileEntity, 2, 7, 7));
 		
+		//Output Slots
+		int slotID = 3;
+		
+		for (int var1 = 0; var1 < 3; var1++)
+		{
+			for (int var2 = 0; var2 < 2; var2++)
+			{
+				this.addSlotToContainer(new Slot(par1InventoryPlayer, slotID, 110 + var2 * 18, 20 + var1 * 18));
+				slotID++;
+			}
+		}
+		
 		int var3;
 		
 		for (var3 = 0; var3 < 3; ++var3)

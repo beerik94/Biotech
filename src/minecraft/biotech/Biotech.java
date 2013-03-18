@@ -209,7 +209,6 @@ public class Biotech
 		ItemStack Shovel = new ItemStack(Biotech.bioCircuit, 1, 9);
 		ItemStack Hoe = new ItemStack(Biotech.bioCircuit, 1, 10);
 		
-		
 		/**
 		 * Register the TileEntity's
 		 */
@@ -232,17 +231,17 @@ public class Biotech
 		 * Handle language support
 		 */
 		int languages = 0;
-
+		
 		for (String language : LANGUAGES_SUPPORTED)
 		{
 			LanguageRegistry.instance().loadLocalization(LANGUAGE_PATH + language + ".properties", language, false);
-
+			
 			if (LanguageRegistry.instance().getStringLocalization("children", language) != "")
 			{
 				try
 				{
 					String[] children = LanguageRegistry.instance().getStringLocalization("children", language).split(",");
-
+					
 					for (String child : children)
 					{
 						if (child != "" && child != null)
@@ -260,7 +259,7 @@ public class Biotech
 		}
 		int unofficialLanguages = 0;
 		unofficialLanguages = langLoad();
-
+		
 		System.out.println(NAME + ": Loaded " + languages + " Official and " + unofficialLanguages + " unofficial languages");
 		
 		// Recipes
@@ -295,18 +294,18 @@ public class Biotech
 		{
 			folderDir = Minecraft.getMinecraftDir() + File.separator + "mods" + File.separator + "BiotechLanguages";
 		}
-
+		
 		File folder = new File(folderDir);
-
+		
 		if (!folder.exists())
 			folder.mkdirs();
-
+		
 		String files;
 		File[] listOfFiles = folder.listFiles();
-
+		
 		return listOfFiles;
 	}
-
+	
 	public static int langLoad()
 	{
 		int unofficialLanguages = 0;

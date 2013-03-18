@@ -1,13 +1,29 @@
 package biotech.tileentity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import com.google.common.io.ByteArrayDataInput;
+
 import net.minecraft.block.Block;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
+import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
+import universalelectricity.prefab.network.PacketManager;
 import biotech.Biotech;
+import biotech.helpers.Util;
 
 // Default machine TileEntity
 // Has a power connection at the back
@@ -19,12 +35,10 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	
 	public static final double	WATTS_PER_ACTION	= 500;
 	
-	public int					currentX			= 0;
-	public int					currentZ			= 0;
-	public int					currentY			= 0;
+	private int					facing;
+	private int					playersUsing		= 0;
 	
-	public int					minX, maxX;
-	public int					minZ, maxZ;
+	Random random;
 	
 	private Block				tilledField			= Block.tilledField;
 	private Block				wheatseedsField		= Block.crops;
@@ -33,10 +47,9 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	private Block				carrotField			= Block.carrot;
 	private Block				potatoField			= Block.potato;
 	
-	// TODO Add variables to indicate maximum workarea size. Should be based on
-	// CommandItem usage?
-	
-	final ItemStack[]			resourceStacks		= new ItemStack[] { new ItemStack(Item.seeds, 1), new ItemStack(Item.melonSeeds, 1), new ItemStack(Item.pumpkinSeeds, 1), new ItemStack(Item.carrot, 1), new ItemStack(Item.potato, 1), };
+	protected Item[]			resourceStacks		= new Item[] { Item.seeds, Item.carrot, Item.potato, };
+	protected Block[]			cropStacks			= new Block[] { Block.crops, Block.carrot, Block.potato, };
+	protected ItemStack[]		harvestStacks		= new ItemStack[] { new ItemStack(Item.wheat, 1), new ItemStack(Item.carrot, 1), new ItemStack(Item.potato, 1), };
 	
 	public FarmMachineTileEntity()
 	{
@@ -48,283 +61,142 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	{
 		super.updateEntity();
 		
-		// Biotech.biotechLogger.info("UpdateEntity");
-		
-		if (this.worldObj.isRemote)
+		/* Update Client */
+		if (!worldObj.isRemote && this.playersUsing > 0 && this.ticks % 3 == 0)
 		{
-			return;
+			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 		}
-		/*
-		 * if (this.idleTicks > 0) {
-		 * if (this.ticks % 40 == 0)
-		 * this.setElectricityStored(this.WATTS_PER_IDLE_ACTION, false);
-		 * 
-		 * --this.idleTicks;
-		 * return;
-		 * }
-		 * 
-		 * while (canDoWork()) {
-		 * this.setPowered(true);
-		 * 
-		 * if (doWork()) {
-		 * this.setElectricityStored(this.WATTS_PER_ACTION, false);
-		 * this.idleTicks = this.IDLE_TIME_AFTER_ACTION;
-		 * advanceLocation();
-		 * this.setPowered(false);
-		 * break;
-		 * } else {
-		 * this.idleTicks = this.IDLE_TIME_NO_ACTION;
-		 * advanceLocation();
-		 * break;
-		 * }
-		 * }
-		 */
-		
-		return;
 	}
 	
-	public int getTopY()
-	{/*
-	 * for (int y = 0; y < 4; y++) { if
-	 * (this.worldObj.getBlockMaterial(this.xCoord +
-	 * this.currentX, this.yCoord + y, this.zCoord +
-	 * this.currentZ) == Material.air) { return y - 1; } }
-	 * 
-	 * return -1;
+	public int AreaSize()
+	{
+		if (this.inventory[2].getItemDamage() == 6)
+		{
+			return (3 * this.inventory[2].stackSize);
+		}
+		return 3;
+	}
+	
+	/**
+	 * Calculates the work area base on the AreaSize
 	 */
-		return this.yCoord - 1;
-	}
-	
-	public boolean plantResource(ItemStack stack, Block placeBlock)
+	public void workArea()
 	{
-		int currentBlockBlockid = worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ);
-		
-		if (!worldObj.isRemote && canPlant(stack, placeBlock))
-		{
-			worldObj.setBlockAndMetadataWithNotify(xCoord + currentX, getTopY() + 1, zCoord + currentZ, placeBlock.blockID, 0, 2);
-			decrStackSize(1, 1);
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public boolean canPlant(ItemStack stack, Block placeBlock)
-	{
-		if (hasResourceOfType(stack))
-		{
-			if (hasBioCircuitOfType(Biotech.WheatSeeds) || hasBioCircuitOfType(Biotech.Carrots) || hasBioCircuitOfType(Biotech.Potatoes))
-			{
-				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else if (hasBioCircuitOfType(Biotech.MelonSeeds) && hasResourceOfType(resourceStacks[1]))
-			{
-				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else if (hasBioCircuitOfType(Biotech.PumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
-			{
-				if (worldObj.getBlockId(xCoord + currentX, getTopY(), zCoord + currentZ) == tilledField.blockID && worldObj.getBlockId(xCoord + currentX, getTopY() + 1, zCoord + currentZ) != placeBlock.blockID && worldObj.isAirBlock(xCoord + currentX, getTopY() + 1, zCoord + currentZ))
-				{
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	public boolean doWork()
-	{
-		if (hasBioCircuitOfType(Biotech.WheatSeeds) && hasResourceOfType(resourceStacks[0]))
-		{
-			if (canPlant(resourceStacks[0], wheatseedsField))
-			{
-				return plantResource(resourceStacks[0], wheatseedsField);
-			}
-		}
-		else if (hasBioCircuitOfType(Biotech.MelonSeeds) && hasResourceOfType(resourceStacks[1]))
-		{
-			if (canPlant(resourceStacks[1], melonStemField))
-			{
-				return plantResource(resourceStacks[1], melonStemField);
-			}
-		}
-		else if (hasBioCircuitOfType(Biotech.PumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
-		{
-			if (canPlant(resourceStacks[2], pumpkinStemField))
-			{
-				return plantResource(resourceStacks[2], pumpkinStemField);
-			}
-		}
-		else if (hasBioCircuitOfType(Biotech.Carrots) && hasResourceOfType(resourceStacks[3]))
-		{
-			if (canPlant(resourceStacks[3], carrotField))
-			{
-				return plantResource(resourceStacks[3], carrotField);
-			}
-		}
-		else if (hasBioCircuitOfType(Biotech.Potatoes) && hasResourceOfType(resourceStacks[4]))
-		{
-			if (canPlant(resourceStacks[4], potatoField))
-			{
-				return plantResource(resourceStacks[4], potatoField);
-			}
-		}
-		
-		return false;
-	}
-	
-	public boolean canDoWork()
-	{
-		ItemStack circuit = this.inventory[2];
-		ItemStack resource = this.inventory[1];
-		
-		if (this.wattsReceived >= this.WATTS_PER_ACTION)
-		{
-			if (hasBioCircuitInSlot() && hasResourcesInSlot())
-			{
-				if (hasBioCircuitOfType(Biotech.WheatSeeds) && hasResourceOfType(resourceStacks[0]))
-				{
-					return true;
-				}
-				else if (hasBioCircuitOfType(Biotech.MelonSeeds) && hasResourceOfType(resourceStacks[1]))
-				{
-					return true;
-				}
-				else if (hasBioCircuitOfType(Biotech.PumpkinSeeds) && hasResourceOfType(resourceStacks[2]))
-				{
-					return true;
-				}
-				else if (hasBioCircuitOfType(Biotech.Carrots) && hasResourceOfType(resourceStacks[3]))
-				{
-					return true;
-				}
-				else if (hasBioCircuitOfType(Biotech.Potatoes) && hasResourceOfType(resourceStacks[4]))
-				{
-					return true;
-				}
-			}
-		}
-		
-		return false;
-	}
-	
-	private boolean hasResourcesInSlot()
-	{
-		ItemStack slot = this.inventory[1];
-		
-		if (slot == null)
-		{
-			return false;
-		}
+		int xmin = this.xCoord + 2;
+		int xmax = this.xCoord + 2 + AreaSize();
+		int zmin = this.zCoord + 2;
+		int zmax = this.zCoord + 2 + AreaSize();
 		
 		for (int i = 0; i < resourceStacks.length; i++)
 		{
-			if (slot.itemID == resourceStacks[i].itemID)
+			if (this.inventory[1].itemID == resourceStacks[i].itemID)
 			{
-				return true;
+				for (int xx = xmin; xx < xmax; xx++)
+				{
+					for (int zz = zmin; zz < zmax; zz++)
+					{
+						if (worldObj.getBlockId(xx, this.yCoord, zz) != Block.tilledField.blockID)
+						{
+							tillLand(xx, this.yCoord, zz);
+						}
+						if (worldObj.getBlockId(xx, this.yCoord, zz) == Block.tilledField.blockID)
+						{
+							PlantSeed(xx, this.yCoord + 1, zz, resourceStacks[i].itemID);
+						}
+						else if (worldObj.getBlockId(xx, this.yCoord, zz) == Block.tilledField.blockID && worldObj.getBlockId(xx, this.yCoord + 1, zz) == cropStacks[i].blockID)
+						{
+							HarvestPlant(xx, this.yCoord + 1, zz, harvestStacks[i]);
+						}
+					}
+				}
 			}
 		}
-		
-		return false;
 	}
 	
-	public boolean hasBioCircuitInSlot()
+	/**
+	 * Makes dirt tilledDirt at given position
+	 * 
+	 * @param x
+	 *            position
+	 * @param y
+	 *            position
+	 * @param z
+	 *            position
+	 */
+	public void tillLand(int x, int y, int z)
 	{
-		ItemStack slot = this.inventory[2];
 		
-		if (slot == null)
-		{
-			return false;
-		}
-		
-		if (slot.itemID == Biotech.UnProgrammed.itemID)
-		{
-			return true;
-		}
-		
-		return false;
 	}
 	
-	public boolean hasResourceOfType(ItemStack itemStack)
+	/**
+	 * Plants the given seed at the given position
+	 * 
+	 * @param x
+	 *            position
+	 * @param y
+	 *            position
+	 * @param z
+	 *            position
+	 * @param seed
+	 *            that has to be planted
+	 */
+	public void PlantSeed(int x, int y, int z, int seed)
 	{
-		ItemStack slot = this.inventory[1];
 		
-		if (slot == null)
-		{
-			return false;
-		}
+	}
+	
+	/**
+	 * Harvests the plant at the given position
+	 * 
+	 * @param x
+	 *            position
+	 * @param y
+	 *            position
+	 * @param z
+	 *            position
+	 * @param plant
+	 *            that has to be harvested
+	 */
+	public void HarvestPlant(int x, int y, int z, ItemStack plant)
+	{
+		worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 2);
 		
-		if (slot.itemID == itemStack.itemID)
+		for (int i = 3; i < 8; i++)
 		{
-			if (slot.getItemDamage() == itemStack.getItemDamage())
+			if (this.inventory[i] == null)
 			{
-				return true;
+				this.inventory[i] = (plant);
+			}
+			if(this.inventory[i] != null && this.inventory[i].stackSize <= 60)
+			{
+				int plantRandom = random.nextInt(3);
+				this.inventory[i].stackSize += plantRandom;
 			}
 		}
-		
-		return false;
-	}
-	
-	public boolean hasBioCircuitOfType(ItemStack itemStack)
-	{
-		ItemStack slot = this.inventory[2];
-		
-		if (slot == null)
+		if(this.inventory[1] != null && this.inventory[1].stackSize <= 60)
 		{
-			return false;
+			int plantRandom = random.nextInt(3);
+			this.inventory[1].stackSize += plantRandom;
 		}
-		
-		if (slot.itemID == itemStack.itemID)
+		else if(this.inventory[1].stackSize > 64)
 		{
-			if (slot.getItemDamage() == itemStack.getItemDamage())
-			{
-				return true;
-			}
+			ItemStack added = Util.addToRandomInventory(plant, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
 		}
-		
-		return false;
-	}
-	
-	private void advanceLocation()
-	{
-		this.currentX++;
-		
-		if (this.currentX > this.maxX)
+		else
 		{
-			this.currentX = this.minX;
-			this.currentZ++;
+			float f = worldObj.rand.nextFloat() * 0.8F + 0.1F;
+			float f1 = worldObj.rand.nextFloat() * 0.8F + 0.1F;
+			float f2 = worldObj.rand.nextFloat() * 0.8F + 0.1F;
+
+			EntityItem entityitem = new EntityItem(worldObj, xCoord + f, yCoord + f1 + 0.5F, zCoord + f2, plant);
 			
-			if (this.currentZ > this.maxZ)
-			{
-				this.currentZ = this.minZ;
-			}
+			entityitem.delayBeforeCanPickup = 10;
+
+			float f3 = 0.05F;
+			entityitem.motionX = (float) worldObj.rand.nextGaussian() * f3;
+			entityitem.motionY = (float) worldObj.rand.nextGaussian() * f3 + 1.0F;
+			entityitem.motionZ = (float) worldObj.rand.nextGaussian() * f3;
+			worldObj.spawnEntityInWorld(entityitem);
 		}
 	}
 	
@@ -332,22 +204,69 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	public void readFromNBT(NBTTagCompound tagCompound)
 	{
 		super.readFromNBT(tagCompound);
-		// this.progressTime = tagCompound.getShort("Progress");
+		this.facing = tagCompound.getShort("facing");
+		NBTTagList tagList = tagCompound.getTagList("Inventory");
 		
+		for (int i = 0; i < tagList.tagCount(); i++)
+		{
+			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
+			byte slot = tag.getByte("Slot");
+			
+			if (slot >= 0 && slot < inventory.length)
+			{
+				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
+			}
+		}
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound)
 	{
 		super.writeToNBT(tagCompound);
-		// tagCompound.setShort("Progress", (short)this.progressTime);
+		tagCompound.setShort("facing", (short) this.facing);
+		NBTTagList itemList = new NBTTagList();
 		
+		for (int i = 0; i < inventory.length; i++)
+		{
+			ItemStack stack = inventory[i];
+			
+			if (stack != null)
+			{
+				NBTTagCompound tag = new NBTTagCompound();
+				tag.setByte("Slot", (byte) i);
+				stack.writeToNBT(tag);
+				itemList.appendTag(tag);
+			}
+		}
+		tagCompound.setTag("Inventory", itemList);
 	}
 	
 	@Override
 	public String getInvName()
 	{
-		return "TillingMachine";
+		return "Farmer";
+	}
+	
+	@Override
+	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	{
+		try
+		{
+			if (this.worldObj.isRemote)
+			{
+				this.facing = dataStream.readInt();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
 	}
 	
 }

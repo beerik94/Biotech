@@ -85,7 +85,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 		if (!worldObj.isRemote)
 		{
 			/* Per Tick Processes */
-			this.chargeUp();
 			if (this.hasRedstone)
 			{
 				this.drainTo(ForgeDirection.DOWN);
@@ -272,16 +271,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	public Packet getDescriptionPacket()
 	{
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored);
-	}
-	
-	public int getFacing()
-	{
-		return facing;
-	}
-	
-	public void setFacing(int facing)
-	{
-		this.facing = facing;
 	}
 	
 	/**

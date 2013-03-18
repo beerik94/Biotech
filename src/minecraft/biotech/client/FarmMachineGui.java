@@ -29,7 +29,7 @@ public class FarmMachineGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j)
 	{
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 60, 6, 4210752);
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4, 4210752);
 		
 		String displayText = "";
 		
@@ -65,6 +65,6 @@ public class FarmMachineGui extends GuiContainer
 	
 	public static String getTexture()
 	{
-		return Biotech.GUI_PATH + "biorefinery.png";
+		return Biotech.GUI_PATH + "GUI_FarmingMachine.png";
 	}
 }

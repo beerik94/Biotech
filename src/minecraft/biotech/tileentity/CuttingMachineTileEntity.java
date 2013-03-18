@@ -29,14 +29,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	
 	private int					facing;
 	private int					playersUsing		= 0;
-	private int					idleTicks;
-	
-	public int					currentX			= 0;
-	public int					currentZ			= 0;
-	public int					currentY			= 0;
-	
-	public int					minX, maxX;
-	public int					minZ, maxZ;
 	
 	public CuttingMachineTileEntity()
 	{
@@ -49,7 +41,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		super.updateEntity();
 		if (!worldObj.isRemote && this.hasRedstone)
 		{
-			/* Per Tick Processes */
+			/* Per 40 Tick Processes */
 			
 			if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_SEARCH)
 			{
@@ -57,13 +49,12 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_SEARCH / 4, 0);
 				RemoveLeaves();
 			}
-			/* Update Client */
-			if (this.playersUsing > 0 && this.ticks % 3 == 0)
-			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
-			}
 		}
-		this.chargeUp();
+		/* Update Client */
+		if (!worldObj.isRemote && this.playersUsing > 0 && this.ticks % 3 == 0)
+		{
+			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+		}
 	}
 	
 	// TODO Maybe add this feature in the future
@@ -164,11 +155,11 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	 */
 	public int GetRange()
 	{
-		if (getStackInSlot(1) != null)
+		if (inventory[1] != null)
 		{
 			if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
 			{
-				return (getStackInSlot(1).stackSize * 2 + 2);
+				return (inventory[1].stackSize * 2 + 2);
 			}
 		}
 		return 2;
@@ -247,15 +238,5 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	public Packet getDescriptionPacket()
 	{
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
-	}
-	
-	public int getFacing()
-	{
-		return facing;
-	}
-	
-	public void setFacing(int facing)
-	{
-		this.facing = facing;
 	}
 }

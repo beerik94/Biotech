@@ -39,22 +39,22 @@ import universalelectricity.prefab.network.PacketManager;
 
 public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPsiReciever, IReadOut
 {
-	
 	// Watts being used per action / idle action
-	public static final double	WATTS_PER_TICK	= 500;
+	public static final double	WATTS_PER_TICK		= 500;
+	public static final int		MAX_PROCESS_TIME	= 120;
+	public int					PROCESS_TIME		= 0;
 	
 	// Is the machine currently powered, and did it change?
 	public boolean				prevIsPowered, isPowered = false;
 	
 	// Amount of milliBuckets of internal storage
-	private ColorCode			color			= ColorCode.WHITE;
-	private static final int	milkMaxStored	= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
-	private int					milkStored		= 0;
-	private int					bucketVol		= LiquidContainerRegistry.BUCKET_VOLUME;
-	
+	private ColorCode			color				= ColorCode.WHITE;
+	private static final int	milkMaxStored		= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
+	private int					milkStored			= 0;
+	private int					bucketVol			= LiquidContainerRegistry.BUCKET_VOLUME;
 	private int					facing;
-	private int					playersUsing	= 0;
-	private int					idleTicks;
+	private int					playersUsing		= 0;
+	public double				working				= 0;
 	
 	public BioRefineryTileEntity()
 	{
@@ -71,15 +71,17 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
 			this.fillFrom(ForgeDirection.DOWN);
-			this.chargeUp();
-			if (this.inventory[1] != null && this.ticks % 25 == 0)
-			{
-				this.Refine();
-			}
 			if (this.getMilkStored() >= this.getMaxMilk())
 			{
 				this.milkStored = this.getMaxMilk();
 			}
+			if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME && this.hasRedstone)
+			{
+				this.Refine();
+				this.PROCESS_TIME = 0;
+			}
+			working = (((MAX_PROCESS_TIME - (MAX_PROCESS_TIME - PROCESS_TIME)) / MAX_PROCESS_TIME) * 100);
+			PROCESS_TIME++;
 		}
 		super.updateEntity();
 	}
@@ -89,8 +91,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	 */
 	public void Refine()
 	{
-		
-		if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol)
+		if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol || this.inventory[1] == null && this.getMilkStored() >= bucketVol)
 		{
 			if (this.inventory[1] == null)
 			{
@@ -105,7 +106,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 		
 		if (this.inventory[2] != null)
 		{
-			if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
+			if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= bucketVol || this.inventory[2].getItem() == Item.seeds && this.inventory[1] == null && this.milkStored >= bucketVol)
 			{
 				if (this.inventory[1] == null)
 				{
@@ -117,11 +118,11 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					this.inventory[1].stackSize += 4;
 				}
 			}
-			else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 && this.milkStored >= 1000)
+			else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 && this.milkStored >= bucketVol || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null && this.milkStored >= bucketVol)
 			{
 				this.inventory[1].stackSize += 4;
 			}
-			else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 && this.milkStored >= 1000)
+			else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 && this.milkStored >= bucketVol || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null && this.milkStored >= bucketVol)
 			{
 				this.inventory[1].stackSize += 10;
 				
@@ -219,16 +220,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public Packet getDescriptionPacket()
 	{
 		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored);
-	}
-	
-	public int getFacing()
-	{
-		return facing;
-	}
-	
-	public void setFacing(int facing)
-	{
-		this.facing = facing;
 	}
 	
 	public int getMilkStored()
