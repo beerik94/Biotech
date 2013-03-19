@@ -35,7 +35,7 @@ public class BioRefineryGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j)
 	{
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4, 4210752);
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 57, 4, 4210752);
 		
 		String displayText = "";
 		
@@ -43,7 +43,7 @@ public class BioRefineryGui extends GuiContainer
 		{
 			displayText = "Disabled!";
 		}
-		else if (this.tileEntity.hasRedstone)
+		else if (this.tileEntity.checkRedstone())
 		{
 			displayText = "Working";
 		}
@@ -52,11 +52,11 @@ public class BioRefineryGui extends GuiContainer
 			displayText = "Idle";
 		}
 		
-		this.fontRenderer.drawString("Status: " + displayText, 32, 17, 0x00CD00);
-		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 32, 27, 0x00CD00);
+		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
+		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 28, 32, 0x00CD00);
 		if (this.tileEntity.hasRedstone)
 		{
-			this.fontRenderer.drawString("Working: " + this.tileEntity.working + "%", 32, 28, 0x00CD00);
+			this.fontRenderer.drawString("Refining: " + this.tileEntity.working + "%", 28, 42, 0x00CD00);
 		}
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
@@ -78,7 +78,7 @@ public class BioRefineryGui extends GuiContainer
 		
 		int scale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 100);
 		
-		this.drawTexturedModalRect(containerWidth + 137, containerHeight + 67 - scale, 176, 50 - scale, 8, scale);
+		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - scale, 176, 50 - scale, 8, scale);
 	}
 	
 	public static String getTexture()

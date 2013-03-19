@@ -167,6 +167,8 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		this.facing = tagCompound.getShort("facing");
 		this.isPowered = tagCompound.getBoolean("isPowered");
+		this.hasRedstone = tagCompound.getBoolean("hasRedstone");
+		
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 		
 		for (int i = 0; i < tagList.tagCount(); i++)
@@ -189,6 +191,8 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setBoolean("isPowered", this.isPowered);
+		tagCompound.setBoolean("hasRedstone", this.hasRedstone);
+		
 		NBTTagList itemList = new NBTTagList();
 		
 		for (int i = 0; i < inventory.length; i++)
@@ -231,22 +235,23 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		if (!worldObj.isRemote)
 		{
-			if (this.ticks % 30 == 0)
-			{
-				if (worldObj.func_94577_B(xCoord, yCoord, zCoord) != 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-				{
-					this.hasRedstone = true;
-				}
-				else
-				{
-					this.hasRedstone = false;
-				}
-			}
-			
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
+			System.out.println("Redstone: " + hasRedstone);
+		}
+	}
+	
+	public boolean checkRedstone()
+	{
+		if (worldObj.isBlockIndirectlyProvidingPowerTo(xCoord, yCoord, zCoord, facing) != 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+		{
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 	

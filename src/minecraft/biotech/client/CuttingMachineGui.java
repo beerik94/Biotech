@@ -32,7 +32,7 @@ public class CuttingMachineGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j)
 	{
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4, 4210752);
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 57, 4, 4210752);
 		
 		String displayText = "";
 		
@@ -49,7 +49,7 @@ public class CuttingMachineGui extends GuiContainer
 			displayText = "Idle";
 		}
 		
-		this.fontRenderer.drawString("Status: " + displayText, 32, 17, 0x00CD00);
+		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	

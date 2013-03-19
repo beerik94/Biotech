@@ -66,13 +66,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	private int					playersUsing	= 0;
 	private int					idleTicks;
 	
-	public int					currentX		= 0;
-	public int					currentZ		= 0;
-	public int					currentY		= 0;
-	
-	public int					minX, maxX;
-	public int					minZ, maxZ;
-	
 	public CowMilkerTileEntity()
 	{
 		super();
@@ -83,8 +76,13 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		super.updateEntity();
 		if (!worldObj.isRemote)
-		{
+		{			
 			/* Per Tick Processes */
+			if (this.ticks % 20 == 0)
+			{
+				this.checkRedstone();
+			}
+			
 			if (this.hasRedstone)
 			{
 				this.drainTo(ForgeDirection.DOWN);
@@ -106,8 +104,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 				{
 					PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 				}
-				System.out.println("Milk: " + this.getMilkStored());
-				
 				if (milkStored >= 30 && inventory[2] != null && inventory[3] == null)
 				{
 					this.bucketIn = true;

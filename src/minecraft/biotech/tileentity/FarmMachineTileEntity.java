@@ -25,10 +25,6 @@ import universalelectricity.prefab.network.PacketManager;
 import biotech.Biotech;
 import biotech.helpers.Util;
 
-// Default machine TileEntity
-// Has a power connection at the back
-// Has a powered state
-// Has an inventory
 
 public class FarmMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
 {
@@ -37,6 +33,9 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	
 	private int					facing;
 	private int					playersUsing		= 0;
+	
+	// Is the machine currently powered, and did it change?
+	public boolean				prevIsPowered, isPowered = false;
 	
 	Random random;
 	
@@ -61,10 +60,26 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	{
 		super.updateEntity();
 		
-		/* Update Client */
-		if (!worldObj.isRemote && this.playersUsing > 0 && this.ticks % 3 == 0)
+		if(!worldObj.isRemote)
 		{
-			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			/* Per Tick Processes */
+			if (this.ticks % 20 == 0)
+			{
+				checkRedstone();
+			}
+			
+			/* Per 40 Tick Processes */
+			if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION && this.inventory[1] != null)
+			{
+				workArea();
+				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
+			}
+			
+			/* Update Client */
+			if (this.playersUsing > 0 && this.ticks % 3 == 0)
+			{
+				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			}
 		}
 	}
 	

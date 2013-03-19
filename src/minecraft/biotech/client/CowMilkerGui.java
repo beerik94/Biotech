@@ -32,7 +32,7 @@ public class CowMilkerGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j)
 	{
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4, 4210752);
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 57, 4, 4210752);
 		
 		String displayText = "";
 		
@@ -49,8 +49,8 @@ public class CowMilkerGui extends GuiContainer
 			displayText = "Idle";
 		}
 		
-		this.fontRenderer.drawString("Status: " + displayText, 26, 20, 0x00CD00);
-		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 26, 30, 0x00CD00);
+		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
+		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 28, 32, 0x00CD00);
 		
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
@@ -72,11 +72,11 @@ public class CowMilkerGui extends GuiContainer
 		
 		int milkScale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 100);
 		
-		this.drawTexturedModalRect(containerWidth + 215, containerHeight + 141 - milkScale, 352, 101 - milkScale, 15, milkScale);
+		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - milkScale, 176, 50 - milkScale, 8, milkScale);
 		
 		if (this.tileEntity.bucketIn)
 		{
-			this.drawTexturedModalRect(containerWidth + 237, containerHeight + 73, 352, 122, 35, this.tileEntity.bucketTimeMax);
+			this.drawTexturedModalRect(containerWidth + 119, containerHeight + 37, 176, 51, 18, this.tileEntity.bucketTimeMax);
 		}
 	}
 	

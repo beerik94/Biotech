@@ -11,9 +11,6 @@ import biotech.tileentity.FarmMachineTileEntity;
 public class FarmMachineGui extends GuiContainer
 {
 	private FarmMachineTileEntity	tileEntity;
-	
-	public static String			GUI	= Biotech.FILE_PATH + "farmmachine.png";
-	
 	private int						containerWidth;
 	private int						containerHeight;
 	
@@ -27,7 +24,7 @@ public class FarmMachineGui extends GuiContainer
 	@Override
 	protected void drawGuiContainerForegroundLayer(int i, int j)
 	{
-		this.fontRenderer.drawString(this.tileEntity.getInvName(), 65, 4, 4210752);
+		this.fontRenderer.drawString(this.tileEntity.getInvName(), 70, 4, 4210752);
 		
 		String displayText = "";
 		
@@ -44,14 +41,13 @@ public class FarmMachineGui extends GuiContainer
 			displayText = "Idle";
 		}
 		
-		this.fontRenderer.drawString("Status: " + displayText, 32, 18, 0x00CD00);
+		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
 	{
-		int picture = mc.renderEngine.getTexture(this.GUI);
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		this.mc.renderEngine.func_98187_b(this.getTexture());
 		

@@ -91,22 +91,9 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	 */
 	public void Refine()
 	{
-		if (this.inventory[1].stackSize <= 62 && this.getMilkStored() >= bucketVol || this.inventory[1] == null && this.getMilkStored() >= bucketVol)
+		if (this.getMilkStored() >= bucketVol)
 		{
-			if (this.inventory[1] == null)
-			{
-				this.inventory[1] = (Biotech.BioFuel);
-				this.inventory[1].stackSize += 1;
-			}
-			else
-			{
-				this.inventory[1].stackSize += 2;
-			}
-		}
-		
-		if (this.inventory[2] != null)
-		{
-			if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 && this.milkStored >= bucketVol || this.inventory[2].getItem() == Item.seeds && this.inventory[1] == null && this.milkStored >= bucketVol)
+			if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 			{
 				if (this.inventory[1] == null)
 				{
@@ -115,20 +102,40 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 				}
 				else
 				{
+					this.inventory[1].stackSize += 2;
+				}
+				this.setMilkStored(bucketVol, false);
+			}
+			
+			if (this.inventory[2] != null)
+			{
+				if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.seeds && this.inventory[1] == null)
+				{
+					if (this.inventory[1] == null)
+					{
+						this.inventory[1] = (Biotech.BioFuel);
+						this.inventory[1].stackSize += 1;
+					}
+					else
+					{
+						this.inventory[1].stackSize += 4;
+					}
+					this.setMilkStored(bucketVol, false);
+				}
+				else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null)
+				{
 					this.inventory[1].stackSize += 4;
+					this.setMilkStored(bucketVol, false);
+				}
+				else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null)
+				{
+					this.inventory[1].stackSize += 10;
+					this.setMilkStored(bucketVol, false);
+					
 				}
 			}
-			else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 && this.milkStored >= bucketVol || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null && this.milkStored >= bucketVol)
-			{
-				this.inventory[1].stackSize += 4;
-			}
-			else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 && this.milkStored >= bucketVol || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null && this.milkStored >= bucketVol)
-			{
-				this.inventory[1].stackSize += 10;
-				
-			}
 		}
-		this.setMilkStored(bucketVol, false);
+		
 	}
 	
 	/**
@@ -249,7 +256,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	
 	public int getMaxMilk()
 	{
-		return this.milkStored;
+		return this.milkMaxStored;
 	}
 	
 	@Override

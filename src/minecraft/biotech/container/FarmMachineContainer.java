@@ -19,23 +19,20 @@ public class FarmMachineContainer extends Container
 		this.tileEntity = te;
 		
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 7, 27, IItemElectric.class));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 49, IItemElectric.class));
 		
 		// Slot for seeds
-		this.addSlotToContainer(new Slot(tileEntity, 1, 144, 7));
+		this.addSlotToContainer(new Slot(tileEntity, 1, 153, 20));
 		
 		// Slot BioCircuit
-		this.addSlotToContainer(new bioCircuitSlot(tileEntity, 2, 7, 7));
+		this.addSlotToContainer(new bioCircuitSlot(tileEntity, 2, 5, 20));
 		
 		//Output Slots
-		int slotID = 3;
-		
-		for (int var1 = 0; var1 < 3; var1++)
+		for (int var1 = 0; var1 < 3; ++var1)
 		{
-			for (int var2 = 0; var2 < 2; var2++)
+			for (int var2 = 0; var2 < 2; ++var2)
 			{
-				this.addSlotToContainer(new Slot(par1InventoryPlayer, slotID, 110 + var2 * 18, 20 + var1 * 18));
-				slotID++;
+				this.addSlotToContainer(new Slot(tileEntity, var2 + var1 * 3 + 3, 110 + var2 * 18, 20 + var1 * 18));
 			}
 		}
 		
@@ -45,7 +42,7 @@ public class FarmMachineContainer extends Container
 		{
 			for (int var4 = 0; var4 < 9; ++var4)
 			{
-				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 85 + var3 * 18));
 			}
 		}
 		

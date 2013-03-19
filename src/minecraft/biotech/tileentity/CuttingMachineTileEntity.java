@@ -30,6 +30,9 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	private int					facing;
 	private int					playersUsing		= 0;
 	
+	// Is the machine currently powered, and did it change?
+	public boolean				prevIsPowered, isPowered = false;
+	
 	public CuttingMachineTileEntity()
 	{
 		super();
@@ -39,21 +42,31 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if (!worldObj.isRemote && this.hasRedstone)
+		if (!worldObj.isRemote)
 		{
-			/* Per 40 Tick Processes */
-			
-			if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_SEARCH)
+			/* Per Tick Processes */
+			if (this.ticks % 20 == 0)
 			{
-				GetTree();
-				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_SEARCH / 4, 0);
-				RemoveLeaves();
+				checkRedstone();
 			}
-		}
-		/* Update Client */
-		if (!worldObj.isRemote && this.playersUsing > 0 && this.ticks % 3 == 0)
-		{
-			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			
+			if (this.hasRedstone)
+			{
+				/* Per 40 Tick Processes */
+				
+				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_SEARCH)
+				{
+					GetTree();
+					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_SEARCH / 4, 0);
+					RemoveLeaves();
+				}
+			}
+			
+			/* Update Client */
+			if (this.playersUsing > 0 && this.ticks % 3 == 0)
+			{
+				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+			}
 		}
 	}
 	

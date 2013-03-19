@@ -19,17 +19,18 @@ public class CuttingMachineContainer extends Container
 		this.tileEntity = te;
 		
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 10, 99, IItemElectric.class));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 50, IItemElectric.class));
 		
 		// Slot for Range Upgrade
 		// this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
 		
 		// Output Inventory
-		int outinv;
-		
-		for (outinv = 0; outinv < 4; ++outinv)
+		for (int var1 = 0; var1 < 3; ++var1)
 		{
-			this.addSlotToContainer(new Slot(tileEntity, outinv + 5, 5, 5));
+			for (int var2 = 0; var2 < 2; ++var2)
+			{
+				this.addSlotToContainer(new Slot(tileEntity, var2 + var1 * 3 + 1, 116 + var2 * 18, 20 + var1 * 18));
+			}
 		}
 		
 		int var3;
@@ -38,7 +39,7 @@ public class CuttingMachineContainer extends Container
 		{
 			for (int var4 = 0; var4 < 9; ++var4)
 			{
-				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 85 + var3 * 18));
 			}
 		}
 		

@@ -20,20 +20,27 @@ public class BioRefineryContainer extends Container
 		this.tileEntity = tileEntity;
 		
 		// Electric Input Slot
-		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 7, 16, IItemElectric.class));
+		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 50, IItemElectric.class));
+		
 		// Biofuel output Slot
-		this.addSlotToContainer(new bioFuelSlot(tileEntity, 1, 151, 51));
+		this.addSlotToContainer(new bioFuelSlot(tileEntity, 1, 131, 20));
+		
 		// Seeds Input Slot
-		this.addSlotToContainer(new seedSlot(tileEntity, 2, 151, 16));
+		this.addSlotToContainer(new seedSlot(tileEntity, 2, 5, 20));
 		
 		int var3;
 		
-		for (var3 = 0; var3 < 1; ++var3)
+		for (var3 = 0; var3 < 3; ++var3)
 		{
 			for (int var4 = 0; var4 < 9; ++var4)
 			{
-				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 84 + var3 * 18));
+				this.addSlotToContainer(new Slot(par1InventoryPlayer, var4 + var3 * 9 + 9, 8 + var4 * 18, 85 + var3 * 18));
 			}
+		}
+		
+		for (var3 = 0; var3 < 9; ++var3)
+		{
+			this.addSlotToContainer(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
 		}
 		tileEntity.openChest();
 	}
