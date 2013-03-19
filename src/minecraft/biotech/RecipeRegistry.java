@@ -6,6 +6,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class RecipeRegistry 
 {
@@ -15,10 +16,7 @@ public class RecipeRegistry
 		 * Handle the items that will be used in recipes. Just use the string in
 		 * the recipe like the milk manager recipe
 		 */
-		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
-		ItemStack basicCircuit = new ItemStack(OreDictionary.getOreID("basicCircuit"), 1, 0);
-		ItemStack copperWire = new ItemStack(OreDictionary.getOreID("copperWire"), 1, 0);
 		ItemStack FarmMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
 		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
 		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
@@ -39,11 +37,11 @@ public class RecipeRegistry
 		GameRegistry.addRecipe(new ShapedOreRecipe(BioRefinery, new Object[] { "@$@", "%!%", "@@@", '@', Item.ingotIron, '!', "motor", '$', "basicCircuit", '%', Item.bucketEmpty }));
 		
 		//Items
-		GameRegistry.addShapelessRecipe(UnProgrammed, new Object[] { basicCircuit, Item.redstone, copperWire});
-		GameRegistry.addShapelessRecipe(WheatSeeds, new Object[] { UnProgrammed, Item.seeds});
-		GameRegistry.addShapelessRecipe(Carrots, new Object[] { UnProgrammed, Item.carrot});
-		GameRegistry.addShapelessRecipe(Potatoes, new Object[] { UnProgrammed, Item.potato});
-		GameRegistry.addShapelessRecipe(RangeUpgrade, new Object[] { UnProgrammed, Item.redstone, Item.compass});
+		GameRegistry.addRecipe(new ShapelessOreRecipe(UnProgrammed, new Object[] { "basicCircuit", Item.redstone, "copperWire"}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(WheatSeeds, new Object[] { UnProgrammed, Item.seeds}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(Carrots, new Object[] { UnProgrammed, Item.carrot}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(Potatoes, new Object[] { UnProgrammed, Item.potato}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(RangeUpgrade, new Object[] { UnProgrammed, Item.redstone, Item.compass}));
 		
 	}
 	
