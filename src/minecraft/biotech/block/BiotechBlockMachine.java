@@ -21,8 +21,6 @@ import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
 import biotech.tileentity.FarmMachineTileEntity;
-import biotech.tileentity.PlantingMachineTileEntity;
-import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

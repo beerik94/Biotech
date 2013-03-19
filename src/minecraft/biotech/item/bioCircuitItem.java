@@ -19,21 +19,16 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class bioCircuitItem extends Item
 {
-	private final static String[]	subNames	= { "unprogrammed", "wheatseeds", "melonseeds", "pumpkinseeds", "carrots", "potatoes", "rangeupgrade", "treesappling", "pickaxecircuit", "shovelcircuit", "hoecircuit", };
+	private final static String[]	subNames	= { "unprogrammed", "wheatseeds", "carrots", "potatoes", "rangeupgrade", /*"treesappling",*/ };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	
 	private Icon					iconUnProgrammed;
 	private Icon					iconWheatSeeds;
-	private Icon					iconMelonSeeds;
-	private Icon					iconPumpkinSeeds;
 	private Icon					iconCarrots;
 	private Icon					iconPotatoes;
 	private Icon					iconRangeUpgrade;
-	private Icon					iconTreeSappling;
-	private Icon					iconPickAxeCircuit;
-	private Icon					iconShovelCircuit;
-	private Icon					iconHoeCircuit;
+//	private Icon					iconTreeSappling;
 	
 	public bioCircuitItem(int id, int damage)
 	{
@@ -77,7 +72,7 @@ public class bioCircuitItem extends Item
 	{
 		ItemStack stack = new ItemStack(this, count);
 		stack.setItemDamage(damageValue);
-		if (damageValue == 6)
+		if (damageValue == 4)
 		{
 			this.setMaxStackSize(4);
 		}
@@ -92,7 +87,7 @@ public class bioCircuitItem extends Item
 	@Override
 	public void getSubItems(int i, CreativeTabs tab, List subItems)
 	{
-		for (int meta = 1; meta < subNames.length; meta++)
+		for (int meta = 0; meta < subNames.length; meta++)
 		{
 			subItems.add(new ItemStack(this, 1, meta));
 		}

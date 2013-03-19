@@ -101,7 +101,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 						}
 						if (worldObj.getBlockId(xx, this.yCoord, zz) == Block.tilledField.blockID)
 						{
-							PlantSeed(xx, this.yCoord + 1, zz, resourceStacks[i].itemID);
+							PlantSeed(xx, this.yCoord + 1, zz, cropStacks[i].blockID);
 						}
 						else if (worldObj.getBlockId(xx, this.yCoord, zz) == Block.tilledField.blockID && worldObj.getBlockId(xx, this.yCoord + 1, zz) == cropStacks[i].blockID)
 						{
@@ -125,7 +125,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void tillLand(int x, int y, int z)
 	{
-		
+		worldObj.setBlockAndMetadataWithNotify(x, y, z, Block.tilledField.blockID, 0, 2);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void PlantSeed(int x, int y, int z, int seed)
 	{
-		
+		worldObj.setBlockAndMetadataWithNotify(x, y + 1, z, seed, 0, 3);
 	}
 	
 	/**

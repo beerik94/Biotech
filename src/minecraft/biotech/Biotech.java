@@ -16,7 +16,6 @@ import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
-import universalelectricity.core.UniversalElectricity;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
 import biotech.block.BiotechBlockMachine;
@@ -30,8 +29,6 @@ import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
 import biotech.tileentity.FarmMachineTileEntity;
-import biotech.tileentity.PlantingMachineTileEntity;
-import biotech.tileentity.TillingMachineTileEntity;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -43,7 +40,6 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -91,28 +87,18 @@ public class Biotech
 	// Itemstacks for different biocircuits
 	public static ItemStack				UnProgrammed;
 	public static ItemStack				WheatSeeds;
-	public static ItemStack				MelonSeeds;
-	public static ItemStack				PumpkinSeeds;
 	public static ItemStack				Carrots;
 	public static ItemStack				Potatoes;
 	public static ItemStack				RangeUpgrade;
-	public static ItemStack				TreeSappling;
-	public static ItemStack				Pickaxe;
-	public static ItemStack				Shovel;
-	public static ItemStack				Hoe;
+	//public static ItemStack				TreeSappling;
 	
 	// Metadata for BioCircuit
 	// 0 == unprogrammed
 	// 1 == wheatseeds
-	// 2 == melonseeds
-	// 3 == pumpkinseeds
-	// 4 == carrots
-	// 5 == potatoes
-	// 6 == rangeupgrade
-	// 7 == treesappling
-	// 8 == pickaxecircuit
-	// 9 == shovelcircuit
-	// 10 == hoecircuit
+	// 2 == carrots
+	// 3 == potatoes
+	// 4 == rangeupgrade
+	// 5 == treesappling
 	
 	// Mekanism bioFuel
 	public static ItemStack				BioFuel				= new ItemStack(OreDictionary.getOreID("itemBioFuel"), 1, 0);
@@ -182,33 +168,6 @@ public class Biotech
 	@Init
 	public void load(FMLInitializationEvent event)
 	{
-		
-		proxy.registerRenderers();
-		
-		/**
-		 * Handle the items that will be used in recipes. Just use the string in
-		 * the recipe like the milk manager recipe
-		 */
-		ItemStack itemBioFuel = new ItemStack(OreDictionary.getOreID("bioFuel"), 1, 0);
-		ItemStack itemStone = new ItemStack(Block.stone, 1);
-		ItemStack FarmMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
-		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
-		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
-		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
-		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
-		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
-		ItemStack UnProgrammed = new ItemStack(Biotech.bioCircuit, 1, 0);
-		ItemStack WheatSeeds = new ItemStack(Biotech.bioCircuit, 1, 1);
-		ItemStack MelonSeeds = new ItemStack(Biotech.bioCircuit, 1, 2);
-		ItemStack PumpkinSeeds = new ItemStack(Biotech.bioCircuit, 1, 3);
-		ItemStack Carrots = new ItemStack(Biotech.bioCircuit, 1, 4);
-		ItemStack Potatoes = new ItemStack(Biotech.bioCircuit, 1, 5);
-		ItemStack RangeUpgrade = new ItemStack(Biotech.bioCircuit, 1, 6);
-		ItemStack TreeSappling = new ItemStack(Biotech.bioCircuit, 1, 7);
-		ItemStack Pickaxe = new ItemStack(Biotech.bioCircuit, 1, 8);
-		ItemStack Shovel = new ItemStack(Biotech.bioCircuit, 1, 9);
-		ItemStack Hoe = new ItemStack(Biotech.bioCircuit, 1, 10);
-		
 		/**
 		 * Register the TileEntity's
 		 */
@@ -225,7 +184,10 @@ public class Biotech
 		GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
 		GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
 		
-		// Registration
+		/**
+		 * Call the recipe registry
+		 */
+		RecipeRegistry.Recipes();
 		
 		/**
 		 * Handle language support
@@ -261,18 +223,6 @@ public class Biotech
 		unofficialLanguages = langLoad();
 		
 		System.out.println(NAME + ": Loaded " + languages + " Official and " + unofficialLanguages + " unofficial languages");
-		
-		// Recipes
-		// TODO Add Recipes for other machines and items
-		/*
-		 * GameRegistry.addRecipe(new ShapedOreRecipe(FarmMachine, new Object[]
-		 * {
-		 * "#%#", "@!@", "#$#", '@', Item.hoeStone, '!', "motor", '#',
-		 * itemStone, '$', "battery", '%', "basicCircuit" }));
-		 */
-		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] { "#%#", "@!@", "#$#", '@', Item.axeStone, '!', "motor", '#', itemStone, '$', "battery", '%', "basicCircuit" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] { "@$@", "@!@", "@#@", '@', Item.ingotIron, '!', "motor", '#', "battery", '$', "basicCircuit" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(BioRefinery, new Object[] { "@$@", "%!%", "@#@", '@', Item.ingotIron, '!', "motor", '#', "battery", '$', "basicCircuit", '%', Item.bucketEmpty }));
 		
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}

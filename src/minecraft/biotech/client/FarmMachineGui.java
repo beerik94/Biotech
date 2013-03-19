@@ -6,9 +6,7 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import biotech.Biotech;
 import biotech.container.FarmMachineContainer;
-import biotech.container.PlantingMachineContainer;
 import biotech.tileentity.FarmMachineTileEntity;
-import biotech.tileentity.PlantingMachineTileEntity;
 
 public class FarmMachineGui extends GuiContainer
 {
