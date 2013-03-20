@@ -22,16 +22,9 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class CuttingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver
 {
-	
 	// Watts being used per action / idle action
 	public static final double	WATTS_PER_SEARCH	= 200;
 	public static final double	WATTS_PER_CUT		= 700;
-	
-	private int					facing;
-	private int					playersUsing		= 0;
-	
-	// Is the machine currently powered, and did it change?
-	public boolean				prevIsPowered, isPowered = false;
 	
 	public CuttingMachineTileEntity()
 	{
@@ -44,13 +37,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{
-			/* Per Tick Processes */
-			if (this.ticks % 20 == 0)
-			{
-				checkRedstone();
-			}
-			
-			if (this.hasRedstone)
+			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Processes */
 				
@@ -60,12 +47,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_SEARCH / 4, 0);
 					RemoveLeaves();
 				}
-			}
-			
-			/* Update Client */
-			if (this.playersUsing > 0 && this.ticks % 3 == 0)
-			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
 		}
 	}
@@ -179,77 +160,8 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound)
-	{
-		super.readFromNBT(tagCompound);
-		// this.progressTime = tagCompound.getShort("Progress");
-		
-		this.facing = tagCompound.getShort("facing");
-		this.hasRedstone = tagCompound.getBoolean("hasRedstone");
-		NBTTagList tagList = tagCompound.getTagList("Inventory");
-		
-		for (int i = 0; i < tagList.tagCount(); i++)
-		{
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			byte slot = tag.getByte("Slot");
-			
-			if (slot >= 0 && slot < inventory.length)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-			}
-		}
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
-	{
-		super.writeToNBT(tagCompound);
-		// tagCompound.setShort("Progress", (short)this.progressTime);
-		
-		tagCompound.setShort("facing", (short) this.facing);
-		tagCompound.setBoolean("hasRedstone", this.hasRedstone);
-		NBTTagList itemList = new NBTTagList();
-		
-		for (int i = 0; i < inventory.length; i++)
-		{
-			ItemStack stack = inventory[i];
-			
-			if (stack != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte) i);
-				stack.writeToNBT(tag);
-				itemList.appendTag(tag);
-			}
-		}
-		tagCompound.setTag("Inventory", itemList);
-	}
-	
-	@Override
 	public String getInvName()
 	{
 		return "Wood Cutter";
-	}
-	
-	@Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
-				this.facing = dataStream.readInt();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
 	}
 }

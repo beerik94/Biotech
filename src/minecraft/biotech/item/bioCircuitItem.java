@@ -30,12 +30,13 @@ public class bioCircuitItem extends Item
 	private Icon					iconRangeUpgrade;
 //	private Icon					iconTreeSappling;
 	
-	public bioCircuitItem(int id, int damage)
+	public bioCircuitItem(int id)
 	{
 		super(id);
 		setCreativeTab(Biotech.tabBiotech);
 		setHasSubtypes(true);
 		setUnlocalizedName("bioCircuit");
+		setMaxStackSize(4);
 	}
 	
 	@SideOnly(Side.CLIENT)
@@ -65,21 +66,6 @@ public class bioCircuitItem extends Item
 		int meta = i.getItemDamage();
 		
 		return this.getUnlocalizedName() + "." + meta;
-	}
-	
-	public ItemStack getStack(int count, int damageValue, String name)
-	{
-		ItemStack stack = new ItemStack(this, count);
-		stack.setItemDamage(damageValue);
-		if (damageValue == 4)
-		{
-			this.setMaxStackSize(4);
-		}
-		else
-		{
-			this.setMaxStackSize(1);
-		}
-		return stack;
 	}
 	
 	@SideOnly(Side.CLIENT)

@@ -30,13 +30,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 {
 	
 	public static final double	WATTS_PER_ACTION	= 500;
-	
-	private int					facing;
-	private int					playersUsing		= 0;
-	
-	// Is the machine currently powered, and did it change?
-	public boolean				prevIsPowered, isPowered = false;
-	
+
 	Random random;
 	
 	private Block				tilledField			= Block.tilledField;
@@ -62,24 +56,22 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 		
 		if(!worldObj.isRemote)
 		{
-			/* Per 40 Tick Processes */
-			if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION && this.inventory[1] != null)
+			if(this.checkRedstone())
 			{
-				this.workArea();
-				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
+				/* Per 40 Tick Processes */
+				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION && this.inventory[1] != null)
+				{
+					this.workArea();
+					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
+				}
 			}
-			
-			/* Update Client */
-			if (this.playersUsing > 0 && this.ticks % 3 == 0)
-			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
-			}
+			System.out.println(this.getFacing());
 		}
 	}
 	
 	public int AreaSize()
 	{
-		if(this.inventory[2] != null && this.inventory[2].getItemDamage() == 6)
+		if(this.inventory[2] != null)
 		{
 			return (3 * this.inventory[2].stackSize);
 		}
@@ -95,7 +87,6 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 		int xmax = this.xCoord + 2 + AreaSize();
 		int zmin = this.zCoord + 2;
 		int zmax = this.zCoord + 2 + AreaSize();
-		System.out.println("workArea");
 		for (int i = 0; i < resourceStacks.length; i++)
 		{
 			if (this.inventory[1].itemID == resourceStacks[i].itemID)
@@ -135,7 +126,6 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	public void tillLand(int x, int y, int z)
 	{
 		worldObj.setBlockAndMetadataWithNotify(x, y, z, Block.tilledField.blockID, 0, 2);
-		System.out.println("tillLand");
 	}
 	
 	/**
@@ -152,8 +142,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void PlantSeed(int x, int y, int z, int seed)
 	{
-		worldObj.setBlockAndMetadataWithNotify(x, y + 1, z, seed, 0, 3);
-		System.out.println("PlantSeed");
+		worldObj.setBlockAndMetadataWithNotify(x, y, z, seed, 0, 3);
 	}
 	
 	/**
@@ -170,7 +159,6 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void HarvestPlant(int x, int y, int z, ItemStack plant)
 	{
-		System.out.println("HarvestPlant");
 		worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 2);
 		
 		for (int i = 3; i < 8; i++)
@@ -213,72 +201,9 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound)
-	{
-		super.readFromNBT(tagCompound);
-		this.facing = tagCompound.getShort("facing");
-		NBTTagList tagList = tagCompound.getTagList("Inventory");
-		
-		for (int i = 0; i < tagList.tagCount(); i++)
-		{
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			byte slot = tag.getByte("Slot");
-			
-			if (slot >= 0 && slot < inventory.length)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-			}
-		}
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
-	{
-		super.writeToNBT(tagCompound);
-		tagCompound.setShort("facing", (short) this.facing);
-		NBTTagList itemList = new NBTTagList();
-		
-		for (int i = 0; i < inventory.length; i++)
-		{
-			ItemStack stack = inventory[i];
-			
-			if (stack != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte) i);
-				stack.writeToNBT(tag);
-				itemList.appendTag(tag);
-			}
-		}
-		tagCompound.setTag("Inventory", itemList);
-	}
-	
-	@Override
 	public String getInvName()
 	{
 		return "Farmer";
-	}
-	
-	@Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
-				this.facing = dataStream.readInt();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
 	}
 	
 }

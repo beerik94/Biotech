@@ -17,6 +17,6 @@ public class rangeUpgradeSlot extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.getItemDamage() == 6;
+		return itemstack.getItemDamage() == 4;
 	}
 }

@@ -7,7 +7,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.SlotSpecific;
-import biotech.slots.bioCircuitSlot;
+import biotech.slots.rangeUpgradeSlot;
 import biotech.tileentity.FarmMachineTileEntity;
 
 public class FarmMachineContainer extends Container
@@ -25,7 +25,7 @@ public class FarmMachineContainer extends Container
 		this.addSlotToContainer(new Slot(tileEntity, 1, 153, 20));
 		
 		// Slot BioCircuit
-		this.addSlotToContainer(new bioCircuitSlot(tileEntity, 2, 5, 20));
+		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 2, 5, 20));
 		
 		//Output Slots
 		for (int var1 = 0; var1 < 3; ++var1)

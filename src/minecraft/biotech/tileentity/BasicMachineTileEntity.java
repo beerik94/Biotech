@@ -39,25 +39,16 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 {
 	protected ItemStack[]		inventory;
 	
-	// this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK / 4,
-	// 0);
-	
 	// Watts being used per action
-	public static final double	WATTS_PER_TICK	= 500;
-	
-	private int					playersUsing	= 0;
-	
+	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
-	public boolean				prevIsPowered, isPowered = false;
-	
-	public boolean				hasRedstone		= false;
-	
+	public boolean				prevIsPowered, isPowered = false;	
 	private int					facing;
+	private int					playersUsing		= 0;
 	
 	public BasicMachineTileEntity()
 	{
 		super();
-		this.RefreshConnections();
 		this.inventory = new ItemStack[24];
 	}
 	
@@ -166,7 +157,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		this.facing = tagCompound.getShort("facing");
 		this.isPowered = tagCompound.getBoolean("isPowered");
-		this.hasRedstone = tagCompound.getBoolean("hasRedstone");
 		
 		NBTTagList tagList = tagCompound.getTagList("Inventory");
 		
@@ -190,7 +180,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		
 		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setBoolean("isPowered", this.isPowered);
-		tagCompound.setBoolean("hasRedstone", this.hasRedstone);
 		
 		NBTTagList itemList = new NBTTagList();
 		
@@ -253,29 +242,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		}
 	}
 	
-	public void RefreshConnections()
-	{
-		int front = 0;
-		switch (this.getFacing())
-		{
-			case 2:
-				front = 3;
-				break;
-			case 3:
-				front = 2;
-				break;
-			case 4:
-				front = 5;
-				break;
-			case 5:
-				front = 4;
-				break;
-			default:
-				front = 3;
-				break;
-		}
-	}
-	
 	/**
 	 * Charges up the tileEntities energy storage
 	 */
@@ -284,16 +250,16 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		/**
 		 * Attempts to charge using batteries.
 		 */
-		this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
+		this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], MAX_WATTS_RECEIVED, this.getVoltage());
 		
 	}
 	
 	@Override
 	public ElectricityPack getRequest()
 	{
-		if (this.wattsReceived <= WATTS_PER_TICK)
+		if (this.wattsReceived <= MAX_WATTS_RECEIVED)
 		{
-			return new ElectricityPack(WATTS_PER_TICK / this.getVoltage(), this.getVoltage());
+			return new ElectricityPack(MAX_WATTS_RECEIVED / this.getVoltage(), this.getVoltage());
 		}
 		else
 		{
@@ -580,7 +546,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		switch(this.getFacing())
+		switch (this.getFacing())
 		{
 			case 2:
 				return direction == ForgeDirection.getOrientation(3);

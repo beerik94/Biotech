@@ -44,16 +44,11 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public static final int		MAX_PROCESS_TIME	= 120;
 	public int					PROCESS_TIME		= 0;
 	
-	// Is the machine currently powered, and did it change?
-	public boolean				prevIsPowered, isPowered = false;
-	
 	// Amount of milliBuckets of internal storage
 	private ColorCode			color				= ColorCode.WHITE;
 	private static final int	milkMaxStored		= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private int					milkStored			= 0;
 	private int					bucketVol			= LiquidContainerRegistry.BUCKET_VOLUME;
-	private int					facing;
-	private int					playersUsing		= 0;
 	public double				working				= 0;
 	
 	public BioRefineryTileEntity()
@@ -66,22 +61,21 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	{
 		if (!worldObj.isRemote)
 		{
-			if (this.ticks % 3 == 0 && this.playersUsing > 0)
+			if(this.checkRedstone())
 			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+				this.fillFrom(ForgeDirection.DOWN);
+				if (this.getMilkStored() >= this.getMaxMilk())
+				{
+					this.milkStored = this.getMaxMilk();
+				}
+				if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME)
+				{
+					this.Refine();
+					this.PROCESS_TIME = 0;
+				}
+				working = (((MAX_PROCESS_TIME - (MAX_PROCESS_TIME - PROCESS_TIME)) / MAX_PROCESS_TIME) * 100);
+				PROCESS_TIME++;
 			}
-			this.fillFrom(ForgeDirection.DOWN);
-			if (this.getMilkStored() >= this.getMaxMilk())
-			{
-				this.milkStored = this.getMaxMilk();
-			}
-			if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME)
-			{
-				this.Refine();
-				this.PROCESS_TIME = 0;
-			}
-			working = (((MAX_PROCESS_TIME - (MAX_PROCESS_TIME - PROCESS_TIME)) / MAX_PROCESS_TIME) * 100);
-			PROCESS_TIME++;
 		}
 		super.updateEntity();
 	}
@@ -155,48 +149,14 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public void readFromNBT(NBTTagCompound tagCompound)
 	{
 		super.readFromNBT(tagCompound);
-		
-		this.facing = tagCompound.getShort("facing");
-		this.isPowered = tagCompound.getBoolean("isPowered");
 		this.milkStored = tagCompound.getInteger("milkStored");
-		NBTTagList tagList = tagCompound.getTagList("Inventory");
-		
-		for (int i = 0; i < tagList.tagCount(); i++)
-		{
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			byte slot = tag.getByte("Slot");
-			
-			if (slot >= 0 && slot < inventory.length)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-			}
-		}
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound)
 	{
 		super.writeToNBT(tagCompound);
-		
-		tagCompound.setShort("facing", (short) this.facing);
-		tagCompound.setBoolean("isPowered", this.isPowered);
 		tagCompound.setInteger("milkStored", this.milkStored);
-		NBTTagList itemList = new NBTTagList();
-		
-		for (int i = 0; i < inventory.length; i++)
-		{
-			ItemStack stack = inventory[i];
-			
-			if (stack != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte) i);
-				stack.writeToNBT(tag);
-				itemList.appendTag(tag);
-			}
-		}
-		
-		tagCompound.setTag("Inventory", itemList);
 	}
 	
 	@Override
@@ -212,8 +172,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 		{
 			if (this.worldObj.isRemote)
 			{
-				this.isPowered = dataStream.readBoolean();
-				this.facing = dataStream.readInt();
 				this.milkStored = dataStream.readInt();
 			}
 		}
@@ -226,7 +184,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored);
 	}
 	
 	public int getMilkStored()

@@ -58,14 +58,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	
 	// Amount of milliBuckets of internal storage
 	private ColorCode			color			= ColorCode.WHITE;
-	
-	// Is the machine currently powered, and did it change?
-	public boolean				prevIsPowered, isPowered = false;
-	
-	private int					facing;
-	private int					playersUsing	= 0;
-	private int					idleTicks;
-	
+
 	public CowMilkerTileEntity()
 	{
 		super();
@@ -83,7 +76,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 				this.checkRedstone();
 			}
 			
-			if (this.hasRedstone)
+			if (this.checkRedstone())
 			{
 				this.drainTo(ForgeDirection.DOWN);
 				
@@ -99,11 +92,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 					milkCows();
 				}
 				
-				/* Update Client */
-				if (this.playersUsing > 0 && this.ticks % 3 == 0)
-				{
-					PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
-				}
 				if (milkStored >= 30 && inventory[2] != null && inventory[3] == null)
 				{
 					this.bucketIn = true;
@@ -163,12 +151,9 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	
 	public int getScanRange()
 	{
-		if (getStackInSlot(1) != null)
+		if (this.inventory[1] != null)
 		{
-			if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
-			{
-				return (getStackInSlot(1).stackSize + 5);
-			}
+			return (this.inventory[1].stackSize + 5);
 		}
 		return 3;
 	}
@@ -195,48 +180,14 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	public void readFromNBT(NBTTagCompound tagCompound)
 	{
 		super.readFromNBT(tagCompound);
-		// this.progressTime = tagCompound.getShort("Progress");
-		
-		this.facing = tagCompound.getShort("facing");
 		this.milkStored = tagCompound.getInteger("milkStored");
-		NBTTagList tagList = tagCompound.getTagList("Inventory");
-		
-		for (int i = 0; i < tagList.tagCount(); i++)
-		{
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			byte slot = tag.getByte("Slot");
-			
-			if (slot >= 0 && slot < inventory.length)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-			}
-		}
 	}
 	
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound)
 	{
 		super.writeToNBT(tagCompound);
-		// tagCompound.setShort("Progress", (short)this.progressTime);
-		
-		tagCompound.setShort("facing", (short) this.facing);
 		tagCompound.setInteger("milkStored", (int) this.milkStored);
-		NBTTagList itemList = new NBTTagList();
-		
-		for (int i = 0; i < inventory.length; i++)
-		{
-			ItemStack stack = inventory[i];
-			
-			if (stack != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte) i);
-				stack.writeToNBT(tag);
-				itemList.appendTag(tag);
-			}
-		}
-		
-		tagCompound.setTag("Inventory", itemList);
 	}
 	
 	@Override
@@ -252,8 +203,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 		{
 			if (this.worldObj.isRemote)
 			{
-				this.isPowered = dataStream.readBoolean();
-				this.facing = dataStream.readInt();
 				this.milkStored = dataStream.readInt();
 			}
 		}
@@ -266,7 +215,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing, this.milkStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored);
 	}
 	
 	/**
