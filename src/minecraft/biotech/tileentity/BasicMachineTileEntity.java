@@ -15,7 +15,6 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import universalelectricity.components.common.block.BlockBasicMachine;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.core.block.IConnector;
 import universalelectricity.core.electricity.ElectricityNetwork;
@@ -58,7 +57,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public BasicMachineTileEntity()
 	{
 		super();
-		
+		this.RefreshConnections();
 		this.inventory = new ItemStack[24];
 	}
 	
@@ -232,14 +231,13 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public void updateEntity()
 	{
 		super.updateEntity();
-		
+		this.chargeUp();
 		if (!worldObj.isRemote)
 		{
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-			System.out.println("Redstone: " + hasRedstone);
 		}
 	}
 	
@@ -255,11 +253,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		}
 	}
 	
-	/*
-	/**
-	 * Charges up the tileEntities energy storage
-	 *
-	public void chargeUp()
+	public void RefreshConnections()
 	{
 		int front = 0;
 		switch (this.getFacing())
@@ -280,14 +274,19 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 				front = 3;
 				break;
 		}
-		
+	}
+	
+	/**
+	 * Charges up the tileEntities energy storage
+	 */
+	public void chargeUp()
+	{
 		/**
 		 * Attempts to charge using batteries.
-		 *
+		 */
 		this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
 		
 	}
-	*/
 	
 	@Override
 	public ElectricityPack getRequest()
@@ -581,7 +580,19 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	@Override
 	public boolean canConnect(ForgeDirection direction)
 	{
-		return direction == ForgeDirection.getOrientation(this.getFacing());
+		switch(this.getFacing())
+		{
+			case 2:
+				return direction == ForgeDirection.getOrientation(3);
+			case 3:
+				return direction == ForgeDirection.getOrientation(2);
+			case 4:
+				return direction == ForgeDirection.getOrientation(5);
+			case 5:
+				return direction == ForgeDirection.getOrientation(4);
+			default:
+				return direction == ForgeDirection.getOrientation(3);
+		}
 	}
 	
 	@Override

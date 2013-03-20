@@ -32,7 +32,7 @@ public class FarmMachineGui extends GuiContainer
 		{
 			displayText = "Disabled!";
 		}
-		else if (this.tileEntity.hasRedstone)
+		else if (this.tileEntity.checkRedstone())
 		{
 			displayText = "Working";
 		}

@@ -62,16 +62,10 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 		
 		if(!worldObj.isRemote)
 		{
-			/* Per Tick Processes */
-			if (this.ticks % 20 == 0)
-			{
-				checkRedstone();
-			}
-			
 			/* Per 40 Tick Processes */
 			if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION && this.inventory[1] != null)
 			{
-				workArea();
+				this.workArea();
 				this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
 			}
 			
@@ -85,7 +79,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	
 	public int AreaSize()
 	{
-		if (this.inventory[2].getItemDamage() == 6)
+		if(this.inventory[2] != null && this.inventory[2].getItemDamage() == 6)
 		{
 			return (3 * this.inventory[2].stackSize);
 		}
@@ -101,7 +95,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 		int xmax = this.xCoord + 2 + AreaSize();
 		int zmin = this.zCoord + 2;
 		int zmax = this.zCoord + 2 + AreaSize();
-		
+		System.out.println("workArea");
 		for (int i = 0; i < resourceStacks.length; i++)
 		{
 			if (this.inventory[1].itemID == resourceStacks[i].itemID)
@@ -141,6 +135,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	public void tillLand(int x, int y, int z)
 	{
 		worldObj.setBlockAndMetadataWithNotify(x, y, z, Block.tilledField.blockID, 0, 2);
+		System.out.println("tillLand");
 	}
 	
 	/**
@@ -158,6 +153,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	public void PlantSeed(int x, int y, int z, int seed)
 	{
 		worldObj.setBlockAndMetadataWithNotify(x, y + 1, z, seed, 0, 3);
+		System.out.println("PlantSeed");
 	}
 	
 	/**
@@ -174,6 +170,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void HarvestPlant(int x, int y, int z, ItemStack plant)
 	{
+		System.out.println("HarvestPlant");
 		worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 2);
 		
 		for (int i = 3; i < 8; i++)

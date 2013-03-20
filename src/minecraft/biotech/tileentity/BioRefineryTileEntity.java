@@ -75,7 +75,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 			{
 				this.milkStored = this.getMaxMilk();
 			}
-			if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME && this.hasRedstone)
+			if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME)
 			{
 				this.Refine();
 				this.PROCESS_TIME = 0;

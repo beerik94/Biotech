@@ -43,7 +43,6 @@ public class bioCircuitItem extends Item
 	{
 		for (int i = 0; i < subNames.length; i++)
 		{
-			
 			this.icons[i] = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + subNames[i]);
 		}
 	}
