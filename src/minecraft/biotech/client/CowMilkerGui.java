@@ -63,7 +63,7 @@ public class CowMilkerGui extends GuiContainer
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
 	{
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.func_98187_b(this.getTexture());
+		this.mc.renderEngine.bindTexture(this.getTexture());
 		
 		this.containerWidth = ((this.width - this.xSize) / 2);
 		this.containerHeight = ((this.height - this.ySize) / 2);

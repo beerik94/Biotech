@@ -125,7 +125,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void tillLand(int x, int y, int z)
 	{
-		worldObj.setBlockAndMetadataWithNotify(x, y, z, Block.tilledField.blockID, 0, 2);
+		worldObj.setBlock(x, y, z, Block.tilledField.blockID, 0, 2);
 	}
 	
 	/**
@@ -142,7 +142,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void PlantSeed(int x, int y, int z, int seed)
 	{
-		worldObj.setBlockAndMetadataWithNotify(x, y, z, seed, 0, 3);
+		worldObj.setBlock(x, y, z, seed, 0, 3);
 	}
 	
 	/**
@@ -159,7 +159,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void HarvestPlant(int x, int y, int z, ItemStack plant)
 	{
-		worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 2);
+		worldObj.setBlock(x, y, z, 0, 0, 2);
 		
 		for (int i = 3; i < 8; i++)
 		{

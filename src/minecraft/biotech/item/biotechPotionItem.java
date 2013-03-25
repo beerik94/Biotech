@@ -59,17 +59,17 @@ public class biotechPotionItem extends Potion
 		this.liquidColor = par3;
 		
 	}
-	
+	/*
 	/**
 	 * Sets the index for the icon displayed in the player's inventory when the
 	 * status is active.
-	 */
+	 *
 	protected biotechPotionItem setIconIndex(int par1, int par2)
 	{
 		this.statusIconIndex = par1 + par2 * 8;
 		return this;
 	}
-	
+	*/
 	/**
 	 * returns the ID of the potion
 	 */

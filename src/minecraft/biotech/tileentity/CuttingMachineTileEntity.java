@@ -102,7 +102,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	 */
 	public void DoCut(int x, int y, int z, boolean wood)
 	{
-		worldObj.setBlockAndMetadataWithNotify(x, y, z, 0, 0, 2);
+		worldObj.setBlock(x, y, z, 0, 0, 2);
 		this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_CUT / 4, 0);
 	}
 	
@@ -113,7 +113,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	{
 		if (worldObj.getBlockId(this.xCoord, this.yCoord + 2, this.zCoord) == 0)
 		{
-			worldObj.setBlockAndMetadataWithNotify(this.xCoord, this.yCoord + 2, this.zCoord, Block.sapling.blockID, 0, 2);
+			worldObj.setBlock(this.xCoord, this.yCoord + 2, this.zCoord, Block.sapling.blockID, 0, 2);
 		}
 	}
 	

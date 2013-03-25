@@ -232,7 +232,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	
 	public boolean checkRedstone()
 	{
-		if (worldObj.isBlockIndirectlyProvidingPowerTo(xCoord, yCoord, zCoord, facing) != 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
+		if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) != 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
 		{
 			return true;
 		}
@@ -560,17 +560,15 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 				return direction == ForgeDirection.getOrientation(3);
 		}
 	}
-	
+
 	@Override
-	public boolean func_94042_c()
-	{
+	public boolean isInvNameLocalized() {
 		// TODO Auto-generated method stub
 		return false;
 	}
-	
+
 	@Override
-	public boolean func_94041_b(int i, ItemStack itemstack)
-	{
+	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
 		// TODO Auto-generated method stub
 		return false;
 	}

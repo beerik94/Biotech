@@ -40,11 +40,11 @@ public class bioCircuitItem extends Item
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void func_94581_a(IconRegister iconRegister)
+	public void registerIcons(IconRegister iconRegister)
 	{
 		for (int i = 0; i < subNames.length; i++)
 		{
-			this.icons[i] = iconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + subNames[i]);
+			this.icons[i] = iconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + subNames[i]);
 		}
 	}
 	

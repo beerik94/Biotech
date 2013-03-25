@@ -66,21 +66,21 @@ public class BiotechBlockMachine extends BlockAdvanced
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister par1IconRegister)
+	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.field_94336_cN = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
+		this.blockIcon = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
 		//this.iconFarmer = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineFarmer");
-		this.iconWoodcutter = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineWoodCutter");
+		this.iconWoodcutter = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineWoodCutter");
 		//this.iconFertilizer = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineFertilizer");
 		//this.iconMiner = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineMiner");
-		this.iconCowMilker = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineCowMilker");
-		this.iconBioRefinery = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRefinery");
-		this.iconEmptySide = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
-		this.iconMilkSide = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineMilkSide");
-		this.iconInputOn = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOnSide");
-		this.iconInputOff = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOffSide");
-		this.iconOutputOn = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOnSide");
-		this.iconOutputOff = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOffSide");
+		this.iconCowMilker = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineCowMilker");
+		this.iconBioRefinery = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineRefinery");
+		this.iconEmptySide = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
+		this.iconMilkSide = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineMilkSide");
+		this.iconInputOn = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOnSide");
+		this.iconInputOff = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOffSide");
+		this.iconOutputOn = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOnSide");
+		this.iconOutputOff = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOffSide");
 	}
 	
 	@Override

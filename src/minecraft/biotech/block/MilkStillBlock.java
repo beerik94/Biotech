@@ -19,9 +19,9 @@ public class MilkStillBlock extends BlockStationary implements ILiquid
 	}
 	
 	@Override
-	public void func_94332_a(IconRegister par1IconRegister)
+	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.field_94336_cN = par1IconRegister.func_94245_a(Biotech.TEXTURE_NAME_PREFIX + "MilkStill");
+		this.blockIcon = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MilkStill");
 	}
 	
 	@Override
