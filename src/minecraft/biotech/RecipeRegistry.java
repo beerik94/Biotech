@@ -17,10 +17,10 @@ public class RecipeRegistry
 		 * the recipe like the milk manager recipe
 		 */
 		ItemStack itemStone = new ItemStack(Block.stone, 1);
-		ItemStack FarmMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
+		//ItemStack FarmMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
 		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
-		ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
-		ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
+		//ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
+		//ItemStack MineMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 3);
 		ItemStack CowMilker = new ItemStack(Biotech.biotechBlockMachine, 1, 4);
 		ItemStack BioRefinery = new ItemStack(Biotech.biotechBlockMachine, 1, 5);
 		ItemStack UnProgrammed = new ItemStack(Biotech.bioCircuit, 1, 0);
@@ -33,10 +33,10 @@ public class RecipeRegistry
 		
 		//Items
 		GameRegistry.addRecipe(new ShapelessOreRecipe(UnProgrammed, new Object[] { "basicCircuit", Item.redstone, "copperWire"}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 1), new Object[] { UnProgrammed, Item.seeds}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 2), new Object[] { UnProgrammed, Item.carrot}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 3), new Object[] { UnProgrammed, Item.potato}));
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 4), new Object[] { UnProgrammed, Item.redstone, Item.compass}));
+		//GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 1), new Object[] { UnProgrammed, Item.seeds}));
+		//GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 2), new Object[] { UnProgrammed, Item.carrot}));
+		//GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 3), new Object[] { UnProgrammed, Item.potato}));
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 1), new Object[] { UnProgrammed, Item.redstone, Item.compass}));
 	}
 	
 }

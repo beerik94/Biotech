@@ -39,7 +39,8 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 {
 	protected ItemStack[]		inventory;
 	
-	// Watts being used per action
+	// Watts requested per tick and max watt that can be received
+	public static final double	WATTS_PER_TICK = 125;
 	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
 	public boolean				prevIsPowered, isPowered = false;	
@@ -220,9 +221,17 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public void updateEntity()
 	{
 		super.updateEntity();
-		this.chargeUp();
-		if (!worldObj.isRemote)
+		
+		if(this.inventory[0] != null)
 		{
+			/**
+			 * Attempts to charge using batteries.
+			 */
+			this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
+		}
+		
+		if (!worldObj.isRemote)
+		{			
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
@@ -240,18 +249,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 		{
 			return false;
 		}
-	}
-	
-	/**
-	 * Charges up the tileEntities energy storage
-	 */
-	public void chargeUp()
-	{
-		/**
-		 * Attempts to charge using batteries.
-		 */
-		this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], MAX_WATTS_RECEIVED, this.getVoltage());
-		
 	}
 	
 	@Override

@@ -53,24 +53,17 @@ public class Biotech
 	public static Biotech				instance;
 	
 	public static final String			MOD_ID				= "Biotech";
-	
 	public static final String			CHANNEL				= "Biotech";
-	
 	public static final String			NAME				= "Biotech";
-	
-	public static final String			LANGUAGE_PATH		= "/mods/biotech/language/";
-	
+	public static final String			LANGUAGE_PATH		= "/mods/biotech/language/";	
 	public static final String			FILE_PATH			= "/mods/biotech/textures/";
 	public static final String			GUI_PATH			= FILE_PATH + "gui/";
 	public static final String			BLOCK_FILE_PATH		= FILE_PATH + "block/";
 	public static final String			ITEM_FILE_PATH		= FILE_PATH + "items/";
-	
 	public static final String			TEXTURE_NAME_PREFIX	= "biotech:";
 	private static final int			BLOCK_ID_PREFIX		= 2450;
 	private static final int			ITEM_ID_PREFIX		= 24400;
-	
 	private static final String[]		LANGUAGES_SUPPORTED	= new String[] { "en_US" };
-	
 	public static final int				MAJOR_VERSION		= 0;
 	public static final int				MINOR_VERSION		= 1;
 	public static final int				REVISION_VERSION	= 0;
@@ -171,7 +164,7 @@ public class Biotech
 		 * Register the TileEntity's
 		 */
 		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
-		GameRegistry.registerTileEntity(FarmMachineTileEntity.class, "FarmMachineTileEntity");
+		//GameRegistry.registerTileEntity(FarmMachineTileEntity.class, "FarmMachineTileEntity");
 		GameRegistry.registerTileEntity(CuttingMachineTileEntity.class, "CuttingMachineTileEntity");
 		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");

@@ -19,14 +19,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class bioCircuitItem extends Item
 {
-	private final static String[]	subNames	= { "unprogrammed", "wheatseeds", "carrots", "potatoes", "rangeupgrade", /*"treesappling",*/ };
+	private final static String[]	subNames	= { "UnProgrammed", /*"wheatseeds", "carrots", "potatoes",*/ "RangeUpgrade", /*"treesappling",*/ };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	
 	private Icon					iconUnProgrammed;
-	private Icon					iconWheatSeeds;
-	private Icon					iconCarrots;
-	private Icon					iconPotatoes;
+//	private Icon					iconWheatSeeds;
+//	private Icon					iconCarrots;
+//	private Icon					iconPotatoes;
 	private Icon					iconRangeUpgrade;
 //	private Icon					iconTreeSappling;
 	
@@ -40,7 +40,7 @@ public class bioCircuitItem extends Item
 	}
 	
 	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister)
+	public void updateIcons(IconRegister iconRegister)
 	{
 		for (int i = 0; i < subNames.length; i++)
 		{

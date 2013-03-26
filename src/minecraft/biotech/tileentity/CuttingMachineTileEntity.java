@@ -22,8 +22,7 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class CuttingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver
 {
-	// Watts being used per action / idle action
-	public static final double	WATTS_PER_SEARCH	= 200;
+	// Watts being used per cut
 	public static final double	WATTS_PER_CUT		= 700;
 	
 	public CuttingMachineTileEntity()
@@ -39,12 +38,11 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		{
 			if (this.checkRedstone())
 			{
-				/* Per 40 Tick Processes */
+				/* Per 40 Tick Process */
 				
-				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_SEARCH)
+				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_CUT)
 				{
 					GetTree();
-					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_SEARCH / 4, 0);
 					RemoveLeaves();
 				}
 			}
