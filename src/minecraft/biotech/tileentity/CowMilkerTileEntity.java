@@ -58,7 +58,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	
 	// Amount of milliBuckets of internal storage
 	private ColorCode			color			= ColorCode.WHITE;
-
+	
 	public CowMilkerTileEntity()
 	{
 		super();
@@ -69,7 +69,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		super.updateEntity();
 		if (!worldObj.isRemote)
-		{			
+		{
 			if (this.checkRedstone())
 			{
 				this.drainTo(ForgeDirection.DOWN);
@@ -95,7 +95,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 						{
 							inventory[2].stackSize -= 1;
 						}
-						else if(inventory[2].stackSize == 1)
+						else if (inventory[2].stackSize == 1)
 						{
 							inventory[2] = null;
 						}

@@ -44,7 +44,7 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
-@Mod(modid = Biotech.MOD_ID, name = Biotech.NAME, version = Biotech.VERSION, dependencies = "after:BasicComponents;after:hydraulic")
+@Mod(modid = Biotech.MOD_ID, name = Biotech.NAME, version = Biotech.VERSION, dependencies = "after:BasicComponents;after:FluidMech")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
 public class Biotech
 {
@@ -55,7 +55,7 @@ public class Biotech
 	public static final String			MOD_ID				= "Biotech";
 	public static final String			CHANNEL				= "Biotech";
 	public static final String			NAME				= "Biotech";
-	public static final String			LANGUAGE_PATH		= "/mods/biotech/language/";	
+	public static final String			LANGUAGE_PATH		= "/mods/biotech/language/";
 	public static final String			FILE_PATH			= "/mods/biotech/textures/";
 	public static final String			GUI_PATH			= FILE_PATH + "gui/";
 	public static final String			BLOCK_FILE_PATH		= FILE_PATH + "block/";
@@ -78,11 +78,11 @@ public class Biotech
 	
 	// Itemstacks for different biocircuits
 	public static ItemStack				UnProgrammed;
-	public static ItemStack				WheatSeeds;
-	public static ItemStack				Carrots;
-	public static ItemStack				Potatoes;
+	// public static ItemStack WheatSeeds;
+	// public static ItemStack Carrots;
+	// public static ItemStack Potatoes;
 	public static ItemStack				RangeUpgrade;
-	//public static ItemStack				TreeSappling;
+	// public static ItemStack TreeSappling;
 	
 	// Metadata for BioCircuit
 	// 0 == unprogrammed
@@ -164,7 +164,8 @@ public class Biotech
 		 * Register the TileEntity's
 		 */
 		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
-		//GameRegistry.registerTileEntity(FarmMachineTileEntity.class, "FarmMachineTileEntity");
+		// GameRegistry.registerTileEntity(FarmMachineTileEntity.class,
+		// "FarmMachineTileEntity");
 		GameRegistry.registerTileEntity(CuttingMachineTileEntity.class, "CuttingMachineTileEntity");
 		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
