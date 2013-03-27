@@ -93,7 +93,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 							inventory[4].stackSize += 1;
 						}
 						inventory[3] = null;
-						milkStored += 30;
+						milkStored += this.MilkPerBucket;
 						bucketTime = 0;
 						this.bucketIn = false;
 					}

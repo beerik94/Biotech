@@ -74,9 +74,11 @@ public class CowMilkerGui extends GuiContainer
 		
 		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - milkScale, 176, 50 - milkScale, 8, milkScale);
 		
-		if (this.tileEntity.bucketIn)
+		if (this.tileEntity.bucketTime > 0 && this.tileEntity.bucketTime < this.tileEntity.bucketTimeMax)
 		{
-			this.drawTexturedModalRect(containerWidth + 119, containerHeight + 37, 176, 51, 18, this.tileEntity.bucketTimeMax);
+			int scale = (26 - this.tileEntity.bucketTime);
+			
+			this.drawTexturedModalRect(containerWidth + 119, containerHeight + 37, 176, 51, 18, -scale);
 		}
 	}
 	

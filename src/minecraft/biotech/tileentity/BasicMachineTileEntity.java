@@ -43,6 +43,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public static final double	WATTS_PER_TICK = 25;
 	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
+	public static final int		MilkPerBucket = 50;
 	public boolean				prevIsPowered, isPowered = false;	
 	private int					facing;
 	private int					playersUsing		= 0;

@@ -91,22 +91,22 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 					this.bucketIn = true;
 					if (bucketTime >= bucketTimeMax)
 					{
-						if (inventory[2].stackSize >= 1)
+						if (inventory[2].stackSize > 1)
 						{
 							inventory[2].stackSize -= 1;
 						}
-						else
+						else if(inventory[2].stackSize == 1)
 						{
 							inventory[2] = null;
 						}
 						ItemStack bMilk = new ItemStack(Item.bucketMilk);
 						inventory[3] = (bMilk);
-						milkStored -= 30;
+						milkStored -= this.MilkPerBucket;
 						bucketTime = 0;
 						this.bucketIn = false;
 					}
 				}
-				if (bucketIn && bucketTime < bucketTimeMax)
+				if (bucketIn)
 				{
 					bucketTime++;
 				}
@@ -175,6 +175,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		super.readFromNBT(tagCompound);
 		this.milkStored = tagCompound.getInteger("milkStored");
+		this.bucketTime = tagCompound.getInteger("bucketTime");
 	}
 	
 	@Override
@@ -182,6 +183,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		super.writeToNBT(tagCompound);
 		tagCompound.setInteger("milkStored", (int) this.milkStored);
+		tagCompound.setInteger("bucketTime", (int) this.bucketTime);
 	}
 	
 	@Override
@@ -198,6 +200,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 			if (this.worldObj.isRemote)
 			{
 				this.milkStored = dataStream.readInt();
+				this.bucketTime = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -209,7 +212,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.bucketTime);
 	}
 	
 	/**
