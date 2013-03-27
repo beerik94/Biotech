@@ -70,12 +70,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{			
-			/* Per Tick Processes */
-			if (this.ticks % 20 == 0)
-			{
-				this.checkRedstone();
-			}
-			
 			if (this.checkRedstone())
 			{
 				this.drainTo(ForgeDirection.DOWN);
@@ -112,7 +106,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 						this.bucketIn = false;
 					}
 				}
-				if (bucketTime < bucketTimeMax)
+				if (bucketIn && bucketTime < bucketTimeMax)
 				{
 					bucketTime++;
 				}

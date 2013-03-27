@@ -50,6 +50,9 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	private int					milkStored			= 0;
 	private int					bucketVol			= LiquidContainerRegistry.BUCKET_VOLUME;
 	public double				working				= 0;
+	public boolean				bucketIn		= false;
+	public int					bucketTimeMax	= 100;
+	public int					bucketTime		= 0;
 	
 	public BioRefineryTileEntity()
 	{
@@ -75,6 +78,30 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 				}
 				working = (((MAX_PROCESS_TIME - (MAX_PROCESS_TIME - PROCESS_TIME)) / MAX_PROCESS_TIME) * 100);
 				PROCESS_TIME++;
+				
+				if (milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4] == null || milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4].stackSize < 16 )
+				{
+					this.bucketIn = true;
+					if (bucketTime >= bucketTimeMax)
+					{
+						if(inventory[4] == null)
+						{
+							inventory[4] = (new ItemStack(Item.bucketEmpty, 1, 0));
+						}
+						else
+						{
+							inventory[4].stackSize += 1;
+						}
+						inventory[3] = null;
+						milkStored += 30;
+						bucketTime = 0;
+						this.bucketIn = false;
+					}
+				}
+				if (bucketIn && bucketTime < bucketTimeMax)
+				{
+					bucketTime++;
+				}
 			}
 		}
 		super.updateEntity();

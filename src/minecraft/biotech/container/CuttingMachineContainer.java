@@ -23,13 +23,16 @@ public class CuttingMachineContainer extends Container
 		
 		// Slot for Range Upgrade
 		// this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
+				
+		int InvOutID = 1;
 		
 		// Output Inventory
 		for (int var1 = 0; var1 < 3; ++var1)
 		{
 			for (int var2 = 0; var2 < 2; ++var2)
 			{
-				this.addSlotToContainer(new Slot(tileEntity, var2 + var1 * 3 + 1, 116 + var2 * 18, 20 + var1 * 18));
+				this.addSlotToContainer(new Slot(tileEntity, InvOutID, 116 + var2 * 18, 20 + var1 * 18));
+				InvOutID++;
 			}
 		}
 		

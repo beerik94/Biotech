@@ -81,8 +81,34 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 			for (int x = 2; x < i; x++)
 			{
 				DoCut(this.xCoord, this.yCoord + x, this.zCoord, true);
+				InvAdd(true);
 			}
 			Replant();
+		}
+	}
+	
+	/**
+	 * Adds stuff to inventory
+	 * @param add if true adds stuff / if false removes stuff
+	 */
+	public void InvAdd(boolean add)
+	{
+		for(int i = 1; i < 7; i++)
+		{
+			if(this.inventory[i] != null && this.inventory[i].stackSize == 64)
+			{
+				return;
+			}
+			else if(this.inventory[i] == null)
+			{
+				this.inventory[i] = (new ItemStack(Block.wood, 2, 0));
+				return;
+			}
+			else if(this.inventory[i].stackSize < 63)
+			{
+				this.inventory[i].stackSize += 2;
+				return;
+			}
 		}
 	}
 	

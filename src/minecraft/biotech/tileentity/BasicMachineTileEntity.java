@@ -40,7 +40,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	protected ItemStack[]		inventory;
 	
 	// Watts requested per tick and max watt that can be received
-	public static final double	WATTS_PER_TICK = 125;
+	public static final double	WATTS_PER_TICK = 25;
 	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
 	public boolean				prevIsPowered, isPowered = false;	
