@@ -42,22 +42,20 @@ import com.google.common.io.ByteArrayDataInput;
 
 public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IReadOut, IPsiCreator
 {
-	protected List<EntityCow>	CowList			= new ArrayList<EntityCow>();
+	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
 	// Watts being used per action
-	public static final double	WATTS_PER_TICK	= 1000;
+	public static final double	WATTS_PER_TICK			= 1000;
 	
 	// How much milk is stored?
-	private int					milkStored		= 0;
-	private int					milkMaxStored	= 7 * LiquidContainerRegistry.BUCKET_VOLUME;
-	
-	private boolean				isMilking		= false;
-	public boolean				bucketIn		= false;
-	public int					bucketTimeMax	= 100;
-	public int					bucketTime		= 0;
+	private int					milkStored				= 0;
+	private int					milkMaxStored			= 7 * LiquidContainerRegistry.BUCKET_VOLUME;
+	private boolean				isMilking				= false;
+	public static final int		PROCESS_TIME_REQUIRED	= 60;
+	public int					processTicks			= 0;
 	
 	// Amount of milliBuckets of internal storage
-	private ColorCode			color			= ColorCode.WHITE;
+	private ColorCode			color					= ColorCode.WHITE;
 	
 	public CowMilkerTileEntity()
 	{
@@ -81,34 +79,45 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 				}
 				
 				/* Milk Cows */
-				if (this.ticks % 100 == 0)
+				if (this.ticks % 100 == 0 && this.milkStored <= this.milkMaxStored)
 				{
 					milkCows();
 				}
 				
-				if (milkStored >= 30 && inventory[2] != null && inventory[3] == null)
+				if (milkStored >= this.MilkPerBucket && inventory[2] != null && inventory[3] == null)
 				{
-					this.bucketIn = true;
-					if (bucketTime >= bucketTimeMax)
+					if (this.processTicks == 0)
 					{
-						if (inventory[2].stackSize > 1)
-						{
-							inventory[2].stackSize -= 1;
-						}
-						else if (inventory[2].stackSize == 1)
-						{
-							inventory[2] = null;
-						}
-						ItemStack bMilk = new ItemStack(Item.bucketMilk);
-						inventory[3] = (bMilk);
-						milkStored -= this.MilkPerBucket;
-						bucketTime = 0;
-						this.bucketIn = false;
+						this.processTicks = this.PROCESS_TIME_REQUIRED;
 					}
-				}
-				if (bucketIn)
-				{
-					bucketTime++;
+					else if (this.processTicks > 0)
+					{
+						this.processTicks--;
+
+						/**
+						 * Process the item when the process timer is done.
+						 */
+						if (this.processTicks < 1)
+						{
+							if (inventory[2].stackSize > 1)
+							{
+								inventory[2].stackSize -= 1;
+							}
+							else if (inventory[2].stackSize == 1)
+							{
+								inventory[2] = null;
+							}
+							ItemStack bMilk = new ItemStack(Item.bucketMilk);
+							inventory[3] = (bMilk);
+							milkStored -= this.MilkPerBucket;
+							this.processTicks = 0;
+						}
+					}
+					else
+					{
+						this.processTicks = 0;
+					}
+					
 				}
 				if (milkStored >= milkMaxStored)
 				{
@@ -175,7 +184,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		super.readFromNBT(tagCompound);
 		this.milkStored = tagCompound.getInteger("milkStored");
-		this.bucketTime = tagCompound.getInteger("bucketTime");
+		this.processTicks = tagCompound.getInteger("processTicks");
 	}
 	
 	@Override
@@ -183,7 +192,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		super.writeToNBT(tagCompound);
 		tagCompound.setInteger("milkStored", (int) this.milkStored);
-		tagCompound.setInteger("bucketTime", (int) this.bucketTime);
+		tagCompound.setInteger("processTicks", (int) this.processTicks);
 	}
 	
 	@Override
@@ -200,7 +209,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 			if (this.worldObj.isRemote)
 			{
 				this.milkStored = dataStream.readInt();
-				this.bucketTime = dataStream.readInt();
+				this.processTicks = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -212,7 +221,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.bucketTime);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks);
 	}
 	
 	/**

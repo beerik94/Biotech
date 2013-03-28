@@ -76,13 +76,14 @@ public class BioRefineryGui extends GuiContainer
 		
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
 		
-		int scale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 100);
+		int milkscale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 100);
 		
-		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - scale, 176, 50 - scale, 8, scale);
+		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - milkscale, 176, 50 - milkscale, 8, milkscale);
 		
-		if (this.tileEntity.bucketIn)
+		if (this.tileEntity.processTicks > 0)
 		{
-			this.drawTexturedModalRect(containerWidth + 119, containerHeight + 37, 176, 51, 18, this.tileEntity.bucketTimeMax);
+			int scale = (int) (((double) this.tileEntity.processTicks / (double) this.tileEntity.PROCESS_TIME_REQUIRED) * 28);
+			this.drawTexturedModalRect(containerWidth + 122, containerHeight + 38, 176, 51, 12, 28 - scale);
 		}
 	}
 	

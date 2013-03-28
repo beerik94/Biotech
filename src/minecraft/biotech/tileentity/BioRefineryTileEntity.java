@@ -40,19 +40,18 @@ import universalelectricity.prefab.network.PacketManager;
 public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPsiReciever, IReadOut
 {
 	// Watts being used per action / idle action
-	public static final double	WATTS_PER_TICK		= 500;
-	public static final int		MAX_PROCESS_TIME	= 120;
-	public int					PROCESS_TIME		= 0;
+	public static final double	WATTS_PER_TICK			= 500;
+	public static final int		MAX_PROCESS_TIME		= 120;
+	public int					PROCESS_TIME			= 0;
 	
 	// Amount of milliBuckets of internal storage
-	private ColorCode			color				= ColorCode.WHITE;
-	private static final int	milkMaxStored		= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
-	private int					milkStored			= 0;
-	private int					bucketVol			= LiquidContainerRegistry.BUCKET_VOLUME;
-	public double				working				= 0;
-	public boolean				bucketIn			= false;
-	public int					bucketTimeMax		= 100;
-	public int					bucketTime			= 0;
+	private ColorCode			color					= ColorCode.WHITE;
+	private static final int	milkMaxStored			= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
+	private int					milkStored				= 0;
+	private int					bucketVol				= LiquidContainerRegistry.BUCKET_VOLUME;
+	public double				working					= 0;
+	public static final int		PROCESS_TIME_REQUIRED	= 60;
+	public int					processTicks			= 0;
 	
 	public BioRefineryTileEntity()
 	{
@@ -81,26 +80,36 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 				
 				if (milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4] == null || milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4].stackSize < 16)
 				{
-					this.bucketIn = true;
-					if (bucketTime >= bucketTimeMax)
+					if (this.processTicks == 0)
 					{
-						if (inventory[4] == null)
-						{
-							inventory[4] = (new ItemStack(Item.bucketEmpty, 1, 0));
-						}
-						else
-						{
-							inventory[4].stackSize += 1;
-						}
-						inventory[3] = null;
-						milkStored += this.MilkPerBucket;
-						bucketTime = 0;
-						this.bucketIn = false;
+						this.processTicks = this.PROCESS_TIME_REQUIRED;
 					}
-				}
-				if (bucketIn && bucketTime < bucketTimeMax)
-				{
-					bucketTime++;
+					else if (this.processTicks > 0)
+					{
+						this.processTicks--;
+						
+						/**
+						 * Process the item when the process timer is done.
+						 */
+						if (this.processTicks < 1)
+						{
+							if (inventory[4] == null)
+							{
+								inventory[4] = (new ItemStack(Item.bucketEmpty, 1, 0));
+							}
+							else
+							{
+								inventory[4].stackSize += 1;
+							}
+							inventory[3] = null;
+							milkStored += this.MilkPerBucket;
+							this.processTicks = 0;
+						}
+					}
+					else
+					{
+						this.processTicks = 0;
+					}
 				}
 			}
 		}
@@ -135,23 +144,63 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					if (this.inventory[1] == null)
 					{
 						this.inventory[1] = (Biotech.BioFuel);
-						this.inventory[1].stackSize += 1;
+						this.inventory[1].stackSize += 3;
 					}
 					else
 					{
 						this.inventory[1].stackSize += 4;
 					}
 					this.setMilkStored(bucketVol, false);
+					if(this.inventory[2].stackSize > 1)
+					{
+						this.inventory[2].stackSize -= 1;
+					}
+					else
+					{
+						this.inventory[2] = null;
+					}
 				}
 				else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null)
 				{
-					this.inventory[1].stackSize += 4;
+					if (this.inventory[1] == null)
+					{
+						this.inventory[1] = (Biotech.BioFuel);
+						this.inventory[1].stackSize += 3;
+					}
+					else
+					{
+						this.inventory[1].stackSize += 4;
+					}
 					this.setMilkStored(bucketVol, false);
+					if(this.inventory[2].stackSize > 1)
+					{
+						this.inventory[2].stackSize -= 1;
+					}
+					else
+					{
+						this.inventory[2] = null;
+					}
 				}
 				else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null)
 				{
-					this.inventory[1].stackSize += 10;
+					if (this.inventory[1] == null)
+					{
+						this.inventory[1] = (Biotech.BioFuel);
+						this.inventory[1].stackSize += 9;
+					}
+					else
+					{
+						this.inventory[1].stackSize += 10;
+					}
 					this.setMilkStored(bucketVol, false);
+					if(this.inventory[2].stackSize > 1)
+					{
+						this.inventory[2].stackSize -= 1;
+					}
+					else
+					{
+						this.inventory[2] = null;
+					}
 					
 				}
 			}
@@ -177,6 +226,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	{
 		super.readFromNBT(tagCompound);
 		this.milkStored = tagCompound.getInteger("milkStored");
+		this.processTicks = tagCompound.getInteger("processTicks");
 	}
 	
 	@Override
@@ -184,6 +234,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	{
 		super.writeToNBT(tagCompound);
 		tagCompound.setInteger("milkStored", this.milkStored);
+		tagCompound.setInteger("processTicks", this.processTicks);
 	}
 	
 	@Override
@@ -200,6 +251,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 			if (this.worldObj.isRemote)
 			{
 				this.milkStored = dataStream.readInt();
+				this.processTicks = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -211,7 +263,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks);
 	}
 	
 	public int getMilkStored()
