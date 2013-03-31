@@ -65,7 +65,6 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
 				}
 			}
-			System.out.println(this.getFacing());
 		}
 	}
 	

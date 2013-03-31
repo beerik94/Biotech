@@ -24,16 +24,6 @@ public abstract class Transactor implements ITransactor {
 		if (object instanceof ISpecialInventory)
 			return new TransactorSpecial((ISpecialInventory) object);
 
-		// Furnaces need to be special cased to prevent vanilla XP exploits.
-		else if (object instanceof TileEntityFurnace)
-			return new TransactorFurnace((ISidedInventory) object);
-
-		else if (object instanceof ISidedInventory)
-			return new TransactorSided((ISidedInventory) object);
-
-		else if (object instanceof IInventory)
-			return new TransactorSimple(Util.getInventory((IInventory) object));
-
 		return null;
 	}
 }

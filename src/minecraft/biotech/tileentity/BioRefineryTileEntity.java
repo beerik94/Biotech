@@ -52,6 +52,8 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public double				working					= 0;
 	public static final int		PROCESS_TIME_REQUIRED	= 60;
 	public int					processTicks			= 0;
+	//TODO CHANGE BEFORE RELEASE
+	public boolean				ProduceFuel				= true;
 	
 	public BioRefineryTileEntity()
 	{
@@ -123,89 +125,177 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	{
 		if (this.getMilkStored() >= bucketVol)
 		{
-			if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
+			if (Biotech.mekanismEnabled && ProduceFuel)
 			{
-				if (this.inventory[1] == null)
+				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
-					this.inventory[1] = (Biotech.BioFuel);
-					this.inventory[1].stackSize += 1;
+					if (this.inventory[1] == null)
+					{
+						this.inventory[1] = (Biotech.BioFuel);
+						this.inventory[1].stackSize += 1;
+					}
+					else
+					{
+						this.inventory[1].stackSize += 2;
+					}
+					this.setMilkStored(bucketVol, false);
 				}
-				else
+				
+				if (this.inventory[2] != null)
 				{
-					this.inventory[1].stackSize += 2;
+					if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.seeds && this.inventory[1] == null)
+					{
+						if (this.inventory[1] == null)
+						{
+							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1].stackSize += 3;
+						}
+						else
+						{
+							this.inventory[1].stackSize += 4;
+						}
+						this.setMilkStored(bucketVol, false);
+						if (this.inventory[2].stackSize > 1)
+						{
+							this.inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							this.inventory[2] = null;
+						}
+					}
+					else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null)
+					{
+						if (this.inventory[1] == null)
+						{
+							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1].stackSize += 3;
+						}
+						else
+						{
+							this.inventory[1].stackSize += 4;
+						}
+						this.setMilkStored(bucketVol, false);
+						if (this.inventory[2].stackSize > 1)
+						{
+							this.inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							this.inventory[2] = null;
+						}
+					}
+					else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null)
+					{
+						if (this.inventory[1] == null)
+						{
+							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1].stackSize += 9;
+						}
+						else
+						{
+							this.inventory[1].stackSize += 10;
+						}
+						this.setMilkStored(bucketVol, false);
+						if (this.inventory[2].stackSize > 1)
+						{
+							this.inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							this.inventory[2] = null;
+						}
+						
+					}
 				}
-				this.setMilkStored(bucketVol, false);
 			}
-			
-			if (this.inventory[2] != null)
+			/*
+			else if(!ProduceFuel)
 			{
-				if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.seeds && this.inventory[1] == null)
+				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
 					if (this.inventory[1] == null)
 					{
 						this.inventory[1] = (Biotech.BioFuel);
-						this.inventory[1].stackSize += 3;
+						this.inventory[1].stackSize += 1;
 					}
 					else
 					{
-						this.inventory[1].stackSize += 4;
+						this.inventory[1].stackSize += 2;
 					}
 					this.setMilkStored(bucketVol, false);
-					if(this.inventory[2].stackSize > 1)
-					{
-						this.inventory[2].stackSize -= 1;
-					}
-					else
-					{
-						this.inventory[2] = null;
-					}
 				}
-				else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null)
+				
+				if (this.inventory[2] != null)
 				{
-					if (this.inventory[1] == null)
+					if (this.inventory[2].getItem() == Item.seeds && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.seeds && this.inventory[1] == null)
 					{
-						this.inventory[1] = (Biotech.BioFuel);
-						this.inventory[1].stackSize += 3;
+						if (this.inventory[1] == null)
+						{
+							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1].stackSize += 3;
+						}
+						else
+						{
+							this.inventory[1].stackSize += 4;
+						}
+						this.setMilkStored(bucketVol, false);
+						if (this.inventory[2].stackSize > 1)
+						{
+							this.inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							this.inventory[2] = null;
+						}
 					}
-					else
+					else if (this.inventory[2].getItem() == Item.wheat && this.inventory[1].stackSize <= 60 || this.inventory[2].getItem() == Item.wheat && this.inventory[1] == null)
 					{
-						this.inventory[1].stackSize += 4;
+						if (this.inventory[1] == null)
+						{
+							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1].stackSize += 3;
+						}
+						else
+						{
+							this.inventory[1].stackSize += 4;
+						}
+						this.setMilkStored(bucketVol, false);
+						if (this.inventory[2].stackSize > 1)
+						{
+							this.inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							this.inventory[2] = null;
+						}
 					}
-					this.setMilkStored(bucketVol, false);
-					if(this.inventory[2].stackSize > 1)
+					else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null)
 					{
-						this.inventory[2].stackSize -= 1;
+						if (this.inventory[1] == null)
+						{
+							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1].stackSize += 9;
+						}
+						else
+						{
+							this.inventory[1].stackSize += 10;
+						}
+						this.setMilkStored(bucketVol, false);
+						if (this.inventory[2].stackSize > 1)
+						{
+							this.inventory[2].stackSize -= 1;
+						}
+						else
+						{
+							this.inventory[2] = null;
+						}
+						
 					}
-					else
-					{
-						this.inventory[2] = null;
-					}
-				}
-				else if (this.inventory[2].getItem() == Item.appleRed && this.inventory[1].stackSize <= 54 || this.inventory[2].getItem() == Item.appleRed && this.inventory[1] == null)
-				{
-					if (this.inventory[1] == null)
-					{
-						this.inventory[1] = (Biotech.BioFuel);
-						this.inventory[1].stackSize += 9;
-					}
-					else
-					{
-						this.inventory[1].stackSize += 10;
-					}
-					this.setMilkStored(bucketVol, false);
-					if(this.inventory[2].stackSize > 1)
-					{
-						this.inventory[2].stackSize -= 1;
-					}
-					else
-					{
-						this.inventory[2] = null;
-					}
-					
 				}
 			}
+			*/
 		}
-		
 	}
 	
 	/**

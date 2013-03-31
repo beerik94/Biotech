@@ -27,7 +27,6 @@ import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
-import biotech.tileentity.FarmMachineTileEntity;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -71,6 +70,9 @@ public class Biotech
 	
 	// Default config loader
 	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
+	
+	//TODO CHANGE BEFORE RELEASE
+	public static boolean			mekanismEnabled		= true;
 	
 	// Item templates
 	public static Item					biotechPotionItem;
@@ -153,7 +155,13 @@ public class Biotech
 		 */
 		milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk", new LiquidStack(milkStill, 1));
 		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Milk", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
-		
+		//TODO CHANGE BEFORE RELEASE
+		/*
+		if (Loader.isModLoaded("MekanismGenerators"))
+		{
+			this.mekanismEnabled = true;
+		}
+		*/
 		biotechLogger.info("Config loaded");
 	}
 	

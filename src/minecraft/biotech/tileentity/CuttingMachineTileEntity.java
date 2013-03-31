@@ -17,6 +17,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 
 import biotech.Biotech;
+import biotech.helpers.Util;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -43,7 +44,6 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_CUT)
 				{
 					GetTree();
-					RemoveLeaves();
 				}
 			}
 		}
@@ -84,6 +84,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 				InvAdd(true);
 			}
 			Replant();
+			RemoveLeaves();
 		}
 	}
 	
@@ -93,15 +94,17 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	 */
 	public void InvAdd(boolean add)
 	{
+		ItemStack woodStack = new ItemStack(Block.wood, 2, 0);
+		
 		for(int i = 1; i < 7; i++)
 		{
 			if(this.inventory[i] != null && this.inventory[i].stackSize == 64)
 			{
-				return;
+				Util.addToRandomInventory(woodStack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
 			}
 			else if(this.inventory[i] == null)
 			{
-				this.inventory[i] = (new ItemStack(Block.wood, 2, 0));
+				this.inventory[i] = (woodStack);
 				return;
 			}
 			else if(this.inventory[i].stackSize < 63)
@@ -127,7 +130,10 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void DoCut(int x, int y, int z, boolean wood)
 	{
 		worldObj.setBlock(x, y, z, 0, 0, 2);
-		this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_CUT / 4, 0);
+		if(wood)
+		{
+			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_CUT / 4, 0);
+		}
 	}
 	
 	/**
@@ -146,12 +152,12 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	 */
 	public void RemoveLeaves()
 	{
-		int xminrange = xCoord - 5;
-		int xmaxrange = xCoord + 5;
-		int yminrange = yCoord + 2;
-		int ymaxrange = yCoord + 20;
-		int zminrange = zCoord - 5;
-		int zmaxrange = zCoord + 5;
+		int xminrange = xCoord - 8;
+		int xmaxrange = xCoord + 8;
+		int yminrange = yCoord + 3;
+		int ymaxrange = yCoord + 25;
+		int zminrange = zCoord - 8;
+		int zmaxrange = zCoord + 8;
 		
 		for (int xx = xminrange; xx <= xmaxrange; xx++)
 		{
@@ -159,18 +165,17 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 			{
 				for (int zz = zminrange; zz <= zmaxrange; zz++)
 				{
-					if (worldObj.getBlockId(xx, yy, zz) == Block.leaves.blockID)
-					{
-						DoCut(xx, yy, zz, false);
-					}
+					DoCut(xx, yy, zz, false);
 				}
 			}
 		}
 	}
 	
+	//TODO This belongs to the future feature.
+	/*
 	/**
 	 * Calculates the range
-	 */
+	 *
 	public int GetRange()
 	{
 		if (inventory[1] != null)
@@ -182,7 +187,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		}
 		return 2;
 	}
-	
+	*/
 	@Override
 	public String getInvName()
 	{

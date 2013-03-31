@@ -81,45 +81,32 @@ public class FarmMachineContainer extends Container
 			ItemStack var4 = var3.getStack();
 			var2 = var4.copy();
 			
-			if (par1 == 2)
-			{
-				if (!this.mergeItemStack(var4, 3, 39, true))
-				{
-					return null;
-				}
-				
-				var3.onSlotChange(var4, var2);
-			}
-			else if (par1 != 1 && par1 != 0)
+			if (par1 > 4)
 			{
 				if (var4.getItem() instanceof IItemElectric)
 				{
-					if (!this.mergeItemStack(var4, 0, 1, false))
+					if (((IItemElectric) var4.getItem()).getProvideRequest(var2).getWatts() > 0)
 					{
-						return null;
+						if (!this.mergeItemStack(var4, 1, 2, false))
+						{
+							return null;
+						}
+					}
+					else
+					{
+						if (!this.mergeItemStack(var4, 0, 1, false))
+						{
+							return null;
+						}
 					}
 				}
-				else if (var4.itemID == net.minecraft.item.Item.hoeWood.itemID) // not
-																				// working
-				{
-					if (!this.mergeItemStack(var4, 1, 1, false))
-					{
-						return null;
-					}
-				}
-				else if (par1 >= 3 && par1 < 30)
-				{
-					if (!this.mergeItemStack(var4, 30, 39, false))
-					{
-						return null;
-					}
-				}
-				else if (par1 >= 30 && par1 < 39 && !this.mergeItemStack(var4, 3, 30, false))
+				
+				else if (!this.mergeItemStack(var4, 2, 4, false))
 				{
 					return null;
 				}
 			}
-			else if (!this.mergeItemStack(var4, 3, 39, false))
+			else if (!this.mergeItemStack(var4, 5, 38, false))
 			{
 				return null;
 			}

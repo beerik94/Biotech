@@ -175,7 +175,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 			{
 				this.setMilkStored(filled, false);
 			}
-			System.out.println("filled: " + filled);
 		}
 	}
 	
