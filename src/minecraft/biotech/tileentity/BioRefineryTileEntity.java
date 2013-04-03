@@ -4,38 +4,22 @@ import hydraulic.core.implement.ColorCode;
 import hydraulic.core.implement.IColorCoded;
 import hydraulic.core.implement.IPsiReciever;
 import hydraulic.core.implement.IReadOut;
-
-import java.util.EnumSet;
-
-import biotech.Biotech;
-
-import com.google.common.io.ByteArrayDataInput;
-
-import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
-import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidTank;
-import net.minecraftforge.oredict.OreDictionary;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.electricity.ElectricityNetwork;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
+import biotech.Biotech;
+
+import com.google.common.io.ByteArrayDataInput;
 
 public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPsiReciever, IReadOut
 {
@@ -52,8 +36,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public double				working					= 0;
 	public static final int		PROCESS_TIME_REQUIRED	= 60;
 	public int					processTicks			= 0;
-	//TODO CHANGE BEFORE RELEASE
-	public boolean				ProduceFuel				= true;
+	public boolean				ProduceFuel				= false;
 	
 	public BioRefineryTileEntity()
 	{
@@ -123,6 +106,8 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	 */
 	public void Refine()
 	{
+		ItemStack biocheese = new ItemStack(Biotech.bioCheese, 1, 0);
+		
 		if (this.getMilkStored() >= bucketVol)
 		{
 			if (Biotech.mekanismEnabled && ProduceFuel)
@@ -209,14 +194,13 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					}
 				}
 			}
-			/*
 			else if(!ProduceFuel)
 			{
 				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
 					if (this.inventory[1] == null)
 					{
-						this.inventory[1] = (Biotech.BioFuel);
+						this.inventory[1] = (biocheese);
 						this.inventory[1].stackSize += 1;
 					}
 					else
@@ -232,7 +216,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					{
 						if (this.inventory[1] == null)
 						{
-							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1] = (biocheese);
 							this.inventory[1].stackSize += 3;
 						}
 						else
@@ -253,7 +237,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					{
 						if (this.inventory[1] == null)
 						{
-							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1] = (biocheese);
 							this.inventory[1].stackSize += 3;
 						}
 						else
@@ -274,7 +258,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					{
 						if (this.inventory[1] == null)
 						{
-							this.inventory[1] = (Biotech.BioFuel);
+							this.inventory[1] = (biocheese);
 							this.inventory[1].stackSize += 9;
 						}
 						else
@@ -294,7 +278,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					}
 				}
 			}
-			*/
 		}
 	}
 	

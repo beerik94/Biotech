@@ -222,15 +222,16 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public void updateEntity()
 	{
 		super.updateEntity();
-		
-		if(this.inventory[0] != null)
+		if(checkRedstone())
 		{
-			/**
-			 * Attempts to charge using batteries.
-			 */
-			this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
+			if(this.inventory[0] != null)
+			{
+				/**
+				 * Attempts to charge using batteries.
+				 */
+				this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
+			}
 		}
-		
 		if (!worldObj.isRemote)
 		{			
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
@@ -255,7 +256,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	@Override
 	public ElectricityPack getRequest()
 	{
-		if (this.wattsReceived <= MAX_WATTS_RECEIVED)
+		if (this.wattsReceived <= MAX_WATTS_RECEIVED && checkRedstone())
 		{
 			return new ElectricityPack(MAX_WATTS_RECEIVED / this.getVoltage(), this.getVoltage());
 		}

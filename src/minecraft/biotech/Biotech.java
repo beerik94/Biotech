@@ -22,6 +22,7 @@ import biotech.block.MilkFlowingBlock;
 import biotech.block.MilkStillBlock;
 import biotech.common.CommonProxy;
 import biotech.item.bioCircuitItem;
+import biotech.item.bioCheeseItem;
 import biotech.item.biotechItemBlock;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
@@ -70,13 +71,12 @@ public class Biotech
 	
 	// Default config loader
 	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
-	
-	//TODO CHANGE BEFORE RELEASE
-	public static boolean			mekanismEnabled		= true;
+	public static boolean				mekanismEnabled		= false;
 	
 	// Item templates
 	public static Item					biotechPotionItem;
 	public static bioCircuitItem		bioCircuit;
+	public static bioCheeseItem			bioCheese;
 	
 	// Itemstacks for different biocircuits
 	public static ItemStack				UnProgrammed;
@@ -136,9 +136,14 @@ public class Biotech
 		Property prop;
 		
 		/**
-		 * Define the items and blocks.
+		 * Define the items.
 		 */
 		this.bioCircuit = new bioCircuitItem(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX).getInt());
+		this.bioCheese = new bioCheeseItem(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 1).getInt());
+		
+		/**
+		 * Define the blocks.
+		 */
 		this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("biotech.BiotechBlock", BLOCK_ID_PREFIX).getInt(), 0);
 		this.milkMoving = new MilkFlowingBlock(Config.getBlock("biotech.MilkFlowing", BLOCK_ID_PREFIX + 1).getInt());
 		this.milkStill = new MilkStillBlock(Config.getBlock("biotech.MilkStill", BLOCK_ID_PREFIX + 2).getInt());
@@ -155,13 +160,11 @@ public class Biotech
 		 */
 		milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk", new LiquidStack(milkStill, 1));
 		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Milk", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
-		//TODO CHANGE BEFORE RELEASE
-		/*
+		
 		if (Loader.isModLoaded("MekanismGenerators"))
 		{
 			this.mekanismEnabled = true;
 		}
-		*/
 		biotechLogger.info("Config loaded");
 	}
 	

@@ -12,11 +12,11 @@ import net.minecraft.util.Icon;
 import net.minecraft.world.World;
 import biotech.Biotech;
 
-public class bioItemCheese extends Item
+public class bioCheeseItem extends Item
 {
 	private ItemFood itemFood;
 
-	public bioItemCheese(int par1)
+	public bioCheeseItem(int par1)
 	{
 		super(par1);
 		this.setMaxStackSize(64);
