@@ -1,4 +1,4 @@
-package net.minecraftforge.client.model.obj;
+package biotech.helpers.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
