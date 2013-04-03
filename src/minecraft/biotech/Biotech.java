@@ -55,11 +55,14 @@ public class Biotech
 	public static final String			MOD_ID				= "Biotech";
 	public static final String			CHANNEL				= "Biotech";
 	public static final String			NAME				= "Biotech";
-	public static final String			LANGUAGE_PATH		= "/mods/biotech/language/";
-	public static final String			FILE_PATH			= "/mods/biotech/textures/";
-	public static final String			GUI_PATH			= FILE_PATH + "gui/";
-	public static final String			BLOCK_FILE_PATH		= FILE_PATH + "block/";
-	public static final String			ITEM_FILE_PATH		= FILE_PATH + "items/";
+	public static final String			FILE_PATH			= "/mods/biotech/";
+	public static final String			LANGUAGE_PATH		= FILE_PATH + "language/";
+	public static final String			TEXTURE_PATH			= FILE_PATH+ "textures/";
+	public static final String			MODEL_PATH			= FILE_PATH + "models/";
+	public static final String			GUI_PATH			= TEXTURE_PATH + "gui/";
+	public static final String			BLOCK_TEXTURE_PATH		= TEXTURE_PATH + "block/";
+	public static final String			ITEM_TEXTURE_PATH		= TEXTURE_PATH + "items/";
+	public static final String			MODEL_TEXTURE_PATH = TEXTURE_PATH + "model/";
 	public static final String			TEXTURE_NAME_PREFIX	= "biotech:";
 	private static final int			BLOCK_ID_PREFIX		= 2450;
 	private static final int			ITEM_ID_PREFIX		= 24400;
@@ -109,6 +112,12 @@ public class Biotech
 	// 3 == Miner
 	// 4 == Cow Milker
 	// 5 == BioRefinery
+	
+	// Models
+	public static final String ModelBioCheese = 
+	
+	// Model Textures
+	
 	
 	// Liquid Stack Milk
 	public static LiquidStack			milkLiquid;
