@@ -11,7 +11,8 @@ CHANGELOG
 /src/minecraft/mods/*
 !/src/minecraft/mods/biotech/
 !/src/minecraft/biotech/
-!/src/minecraft/hydraulics/api
+!/src/minecraft/hydraulic/
+!/src/minecraft/universalelectricity/
 !/mcmod.info
 !/LICENCE.txt
 !/README
