@@ -24,7 +24,9 @@ import com.google.common.io.ByteArrayDataInput;
 public class CuttingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver
 {
 	// Watts being used per cut
-	public static final double	WATTS_PER_CUT		= 700;
+	public static final double	WATTS_PER_CUT	= 700;
+	private int					treeBlocks		= 2;
+	private int					leavesCut		= 0;
 	
 	public CuttingMachineTileEntity()
 	{
@@ -40,10 +42,15 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Process */
-				
-				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_CUT)
+				if (this.ticks % 10 == 0 && this.wattsReceived >= WATTS_PER_CUT)
 				{
 					GetTree();
+				}
+				if(this.leavesCut == 1 && this.ticks % 10 == 0)
+				{
+					Replant();
+					RemoveLeaves();
+					this.leavesCut = 0;
 				}
 			}
 		}
@@ -71,43 +78,42 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		 * Block.wood.blockID) { YPos += 1; } else { DoCut(XPos, YPos - 1,
 		 * ZPos); return; } }
 		 */
-		int i = 2;
-		while (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) == Block.wood.blockID)
+		
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) == Block.wood.blockID)
 		{
-			i++;
+			DoCut(this.xCoord, this.yCoord + treeBlocks, this.zCoord, true);
+			InvAdd(true);
+			treeBlocks++;
 		}
-		if (worldObj.getBlockId(this.xCoord, this.yCoord + i, this.zCoord) != Block.wood.blockID && this.wattsReceived >= WATTS_PER_CUT)
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) != Block.wood.blockID && this.wattsReceived >= WATTS_PER_CUT)
 		{
-			for (int x = 2; x < i; x++)
-			{
-				DoCut(this.xCoord, this.yCoord + x, this.zCoord, true);
-				InvAdd(true);
-			}
-			Replant();
-			RemoveLeaves();
+			leavesCut++;
+			treeBlocks = 2;
 		}
 	}
 	
 	/**
 	 * Adds stuff to inventory
-	 * @param add if true adds stuff / if false removes stuff
+	 * 
+	 * @param add
+	 *            if true adds stuff / if false removes stuff
 	 */
 	public void InvAdd(boolean add)
 	{
 		ItemStack woodStack = new ItemStack(Block.wood, 2, 0);
 		
-		for(int i = 1; i < 7; i++)
+		for (int i = 1; i < 7; i++)
 		{
-			if(this.inventory[i] != null && this.inventory[i].stackSize == 64)
+			if (this.inventory[i] != null && this.inventory[i].stackSize == 64)
 			{
 				Util.addToRandomInventory(woodStack, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
 			}
-			else if(this.inventory[i] == null)
+			else if (this.inventory[i] == null)
 			{
 				this.inventory[i] = (woodStack);
 				return;
 			}
-			else if(this.inventory[i].stackSize < 63)
+			else if (this.inventory[i].stackSize < 63)
 			{
 				this.inventory[i].stackSize += 2;
 				return;
@@ -130,7 +136,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 	public void DoCut(int x, int y, int z, boolean wood)
 	{
 		worldObj.setBlock(x, y, z, 0, 0, 2);
-		if(wood)
+		if (wood)
 		{
 			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_CUT / 4, 0);
 		}
@@ -171,23 +177,23 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity implements 
 		}
 	}
 	
-	//TODO This belongs to the future feature.
+	// TODO This belongs to the future feature.
 	/*
-	/**
+	 * /**
 	 * Calculates the range
-	 *
-	public int GetRange()
-	{
-		if (inventory[1] != null)
-		{
-			if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
-			{
-				return (inventory[1].stackSize * 2 + 2);
-			}
-		}
-		return 2;
-	}
-	*/
+	 * 
+	 * public int GetRange()
+	 * {
+	 * if (inventory[1] != null)
+	 * {
+	 * if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
+	 * {
+	 * return (inventory[1].stackSize * 2 + 2);
+	 * }
+	 * }
+	 * return 2;
+	 * }
+	 */
 	@Override
 	public String getInvName()
 	{
