@@ -1,9 +1,9 @@
-package mods.biotech;
+package biotech;
 
+import cpw.mods.fml.common.registry.LanguageRegistry;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import cpw.mods.fml.common.registry.LanguageRegistry;
 
 public class BiotechCreativeTab extends CreativeTabs
 {

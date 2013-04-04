@@ -1,4 +1,4 @@
-package mods.biotech.slots;
+package biotech.slots;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;

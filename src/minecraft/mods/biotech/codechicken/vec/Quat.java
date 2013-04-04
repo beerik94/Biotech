@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.vec;
+package biotech.codechicken.vec;
 
 import java.util.Formatter;
 import java.util.Locale;

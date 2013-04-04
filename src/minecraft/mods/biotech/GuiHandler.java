@@ -1,20 +1,20 @@
-package mods.biotech;
+package biotech;
 
-import mods.biotech.client.BioRefineryGui;
-import mods.biotech.client.CowMilkerGui;
-import mods.biotech.client.CuttingMachineGui;
-import mods.biotech.client.FarmMachineGui;
-import mods.biotech.container.BioRefineryContainer;
-import mods.biotech.container.CowMilkerContainer;
-import mods.biotech.container.CuttingMachineContainer;
-import mods.biotech.container.FarmMachineContainer;
-import mods.biotech.tileentity.BioRefineryTileEntity;
-import mods.biotech.tileentity.CowMilkerTileEntity;
-import mods.biotech.tileentity.CuttingMachineTileEntity;
-import mods.biotech.tileentity.FarmMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import biotech.client.BioRefineryGui;
+import biotech.client.CowMilkerGui;
+import biotech.client.CuttingMachineGui;
+import biotech.client.FarmMachineGui;
+import biotech.container.BioRefineryContainer;
+import biotech.container.CowMilkerContainer;
+import biotech.container.CuttingMachineContainer;
+import biotech.container.FarmMachineContainer;
+import biotech.tileentity.BioRefineryTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
+import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.tileentity.FarmMachineTileEntity;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler

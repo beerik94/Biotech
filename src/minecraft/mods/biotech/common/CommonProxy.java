@@ -1,4 +1,4 @@
-package mods.biotech.common;
+package biotech.common;
 
 public class CommonProxy
 {

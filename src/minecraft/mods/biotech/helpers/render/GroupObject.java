@@ -1,4 +1,4 @@
-package mods.biotech.helpers.render;
+package biotech.helpers.render;
 
 import java.util.ArrayList;
 

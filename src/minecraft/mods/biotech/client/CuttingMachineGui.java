@@ -1,14 +1,12 @@
-package mods.biotech.client;
+package biotech.client;
 
-import mods.biotech.Biotech;
-import mods.biotech.container.CuttingMachineContainer;
-import mods.biotech.tileentity.CuttingMachineTileEntity;
+import org.lwjgl.opengl.GL11;
+import biotech.Biotech;
+import biotech.container.CuttingMachineContainer;
+import biotech.tileentity.CuttingMachineTileEntity;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
-
-import org.lwjgl.opengl.GL11;
-
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

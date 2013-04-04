@@ -1,8 +1,8 @@
-package mods.biotech.inventory;
+package biotech.inventory;
 
-import mods.biotech.helpers.ISpecialInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
+import biotech.helpers.ISpecialInventory;
 
 public class TransactorSpecial extends Transactor {
 

@@ -1,6 +1,6 @@
-package mods.biotech.codechicken.render;
+package biotech.codechicken.render;
 
-import mods.biotech.codechicken.vec.Vector3;
+import biotech.codechicken.vec.Vector3;
 
 public class Vertex5
 {

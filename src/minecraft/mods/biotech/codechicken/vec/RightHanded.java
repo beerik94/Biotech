@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.vec;
+package biotech.codechicken.vec;
 
 public class RightHanded extends CoordinateSystem
 {

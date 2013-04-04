@@ -1,8 +1,8 @@
-package mods.biotech.codechicken.colour;
-
-import mods.biotech.codechicken.alg.MathHelper;
+package biotech.codechicken.colour;
 
 import org.lwjgl.opengl.GL11;
+
+import biotech.codechicken.alg.MathHelper;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

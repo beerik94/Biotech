@@ -1,19 +1,26 @@
-package mods.biotech.codechicken.packet;
+package biotech.codechicken.packet;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import mods.biotech.codechicken.data.MCDataInput;
-import mods.biotech.codechicken.data.MCDataOutput;
-import mods.biotech.codechicken.packet.PacketCustom.ICustomPacketHandler.IClientPacketHandler;
-import mods.biotech.codechicken.packet.PacketCustom.ICustomPacketHandler.IServerPacketHandler;
-import mods.biotech.codechicken.vec.BlockCoord;
+import biotech.codechicken.data.MCDataInput;
+import biotech.codechicken.data.MCDataOutput;
+import biotech.codechicken.packet.PacketCustom.ICustomPacketHandler.IClientPacketHandler;
+import biotech.codechicken.packet.PacketCustom.ICustomPacketHandler.IServerPacketHandler;
+import biotech.codechicken.vec.BlockCoord;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import cpw.mods.fml.common.network.FMLNetworkHandler;
+import cpw.mods.fml.common.network.IPacketHandler;
+import cpw.mods.fml.common.network.ITinyPacketHandler;
+import cpw.mods.fml.common.network.NetworkModHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.Player;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.NetClientHandler;
 import net.minecraft.entity.player.EntityPlayer;
@@ -32,15 +39,6 @@ import net.minecraft.server.management.PlayerInstance;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.liquids.LiquidStack;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.common.network.FMLNetworkHandler;
-import cpw.mods.fml.common.network.IPacketHandler;
-import cpw.mods.fml.common.network.ITinyPacketHandler;
-import cpw.mods.fml.common.network.NetworkModHandler;
-import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.Player;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public final class PacketCustom implements MCDataInput, MCDataOutput
 {

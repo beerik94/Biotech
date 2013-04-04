@@ -1,19 +1,8 @@
-package mods.biotech;
+package biotech;
 
 import java.io.File;
 import java.util.logging.Logger;
 
-import mods.biotech.block.BiotechBlockMachine;
-import mods.biotech.block.MilkFlowingBlock;
-import mods.biotech.block.MilkStillBlock;
-import mods.biotech.common.CommonProxy;
-import mods.biotech.item.bioCheeseItem;
-import mods.biotech.item.bioCircuitItem;
-import mods.biotech.item.biotechItemBlock;
-import mods.biotech.tileentity.BasicMachineTileEntity;
-import mods.biotech.tileentity.BioRefineryTileEntity;
-import mods.biotech.tileentity.CowMilkerTileEntity;
-import mods.biotech.tileentity.CuttingMachineTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
@@ -28,6 +17,17 @@ import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
+import biotech.block.BiotechBlockMachine;
+import biotech.block.MilkFlowingBlock;
+import biotech.block.MilkStillBlock;
+import biotech.common.CommonProxy;
+import biotech.item.bioCircuitItem;
+import biotech.item.bioCheeseItem;
+import biotech.item.biotechItemBlock;
+import biotech.tileentity.BasicMachineTileEntity;
+import biotech.tileentity.BioRefineryTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
+import biotech.tileentity.CuttingMachineTileEntity;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -124,7 +124,7 @@ public class Biotech
 	public static LiquidStack			milkLiquid;
 	
 	// Says where the client and server 'proxy' code is loaded.
-	@SidedProxy(clientSide = "mods.biotech.client.ClientProxy", serverSide = "mods.biotech.common.CommonProxy")
+	@SidedProxy(clientSide = "biotech.client.ClientProxy", serverSide = "biotech.common.CommonProxy")
 	public static CommonProxy			proxy;
 	
 	// Gui Handler

@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.render;
+package biotech.codechicken.render;
 
 import net.minecraft.util.Icon;
 

@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.render;
+package biotech.codechicken.render;
 
 public class UVTranslation implements IUVTransformation
 {

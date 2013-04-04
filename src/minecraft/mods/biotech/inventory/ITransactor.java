@@ -1,4 +1,4 @@
-package mods.biotech.inventory;
+package biotech.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;

@@ -1,6 +1,5 @@
-package mods.biotech.client.renderer.item;
+package biotech.client.renderer.item;
 
-import mods.biotech.client.model.ModelCheese;
 import net.minecraft.client.renderer.RenderBlocks;
 import net.minecraft.client.renderer.RenderEngine;
 import net.minecraft.client.renderer.entity.Render;
@@ -11,6 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.storage.MapData;
 import net.minecraftforge.client.IItemRenderer;
+import biotech.client.model.ModelCheese;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.vec;
+package biotech.codechicken.vec;
 
 public abstract class CoordinateSystem
 {

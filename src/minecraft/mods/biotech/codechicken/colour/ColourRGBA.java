@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.colour;
+package biotech.codechicken.colour;
 
 public class ColourRGBA extends Colour
 {

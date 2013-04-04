@@ -1,11 +1,11 @@
-package mods.biotech.block;
+package biotech.block;
 
-import mods.biotech.Biotech;
 import net.minecraft.block.BlockStationary;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
+import biotech.Biotech;
 
 public class MilkStillBlock extends BlockStationary implements ILiquid
 {

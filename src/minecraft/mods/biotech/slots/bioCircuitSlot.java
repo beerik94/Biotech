@@ -1,9 +1,9 @@
-package mods.biotech.slots;
+package biotech.slots;
 
-import mods.biotech.Biotech;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import biotech.Biotech;
 
 public class bioCircuitSlot extends Slot
 {

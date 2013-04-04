@@ -1,13 +1,8 @@
-package mods.biotech.block;
+package biotech.block;
 
 import java.util.List;
 import java.util.Random;
 
-import mods.biotech.Biotech;
-import mods.biotech.tileentity.BasicMachineTileEntity;
-import mods.biotech.tileentity.BioRefineryTileEntity;
-import mods.biotech.tileentity.CowMilkerTileEntity;
-import mods.biotech.tileentity.CuttingMachineTileEntity;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
@@ -20,6 +15,12 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.prefab.block.BlockAdvanced;
+import biotech.Biotech;
+import biotech.tileentity.BasicMachineTileEntity;
+import biotech.tileentity.BioRefineryTileEntity;
+import biotech.tileentity.CowMilkerTileEntity;
+import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.tileentity.FarmMachineTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -90,7 +91,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 3:
+				case 0:
 					return this.iconFarmer;
 				case 2:
 					return this.iconInputOff;
@@ -103,7 +104,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 3:
+				case 0:
 					return this.iconWoodcutter;
 				case 2:
 					return this.iconInputOff;
@@ -116,7 +117,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 3:
+				case 0:
 					return this.iconFertilizer;
 				case 2:
 					return this.iconInputOff;
@@ -128,7 +129,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 3:
+				case 0:
 					return this.iconMiner;
 				case 2:
 					return this.iconInputOff;
@@ -140,7 +141,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 3:
+				case 0:
 					return this.iconCowMilker;
 				case 2:
 					return this.iconInputOff;
@@ -152,7 +153,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 3:
+				case 0:
 					return this.iconBioRefinery;
 				case 2:
 					return this.iconInputOff;

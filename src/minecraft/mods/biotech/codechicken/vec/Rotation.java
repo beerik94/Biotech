@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.vec;
+package biotech.codechicken.vec;
 
 import org.lwjgl.opengl.GL11;
 

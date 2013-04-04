@@ -1,4 +1,4 @@
-package mods.biotech.helpers.render;
+package biotech.helpers.render;
 
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Vec3;

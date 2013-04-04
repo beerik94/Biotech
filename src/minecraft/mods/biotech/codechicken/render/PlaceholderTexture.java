@@ -1,4 +1,4 @@
-package mods.biotech.codechicken.render;
+package biotech.codechicken.render;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

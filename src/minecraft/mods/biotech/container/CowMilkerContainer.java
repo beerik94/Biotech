@@ -1,9 +1,5 @@
-package mods.biotech.container;
+package biotech.container;
 
-import mods.biotech.slots.emptyBucketSlot;
-import mods.biotech.slots.milkBucketSlot;
-import mods.biotech.slots.rangeUpgradeSlot;
-import mods.biotech.tileentity.CowMilkerTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -11,6 +7,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.SlotSpecific;
+import biotech.slots.emptyBucketSlot;
+import biotech.slots.milkBucketSlot;
+import biotech.slots.rangeUpgradeSlot;
+import biotech.tileentity.CowMilkerTileEntity;
 
 public class CowMilkerContainer extends Container
 {

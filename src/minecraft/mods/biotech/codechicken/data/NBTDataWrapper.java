@@ -1,6 +1,5 @@
-package mods.biotech.codechicken.data;
+package biotech.codechicken.data;
 
-import mods.biotech.codechicken.vec.BlockCoord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagByte;
@@ -14,6 +13,7 @@ import net.minecraft.nbt.NBTTagLong;
 import net.minecraft.nbt.NBTTagShort;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraftforge.liquids.LiquidStack;
+import biotech.codechicken.vec.BlockCoord;
 
 public class NBTDataWrapper implements MCDataInput, MCDataOutput
 {

@@ -1,4 +1,4 @@
-package mods.biotech.helpers;
+package biotech.helpers;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
