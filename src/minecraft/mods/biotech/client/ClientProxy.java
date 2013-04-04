@@ -1,8 +1,6 @@
-package biotech.client;
+package mods.biotech.client;
 
-import net.minecraftforge.client.MinecraftForgeClient;
-import biotech.Biotech;
-import biotech.common.CommonProxy;
+import mods.biotech.common.CommonProxy;
 
 public class ClientProxy extends CommonProxy
 {

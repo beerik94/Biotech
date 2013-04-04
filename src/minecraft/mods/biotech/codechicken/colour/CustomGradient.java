@@ -1,12 +1,12 @@
-package biotech.codechicken.colour;
+package mods.biotech.codechicken.colour;
 
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import mods.biotech.codechicken.alg.MathHelper;
 import net.minecraft.client.Minecraft;
-import biotech.codechicken.alg.MathHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 
 public class CustomGradient

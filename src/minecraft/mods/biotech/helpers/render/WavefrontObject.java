@@ -1,4 +1,4 @@
-package biotech.helpers.render;
+package mods.biotech.helpers.render;
 
 import java.io.BufferedReader;
 import java.io.IOException;

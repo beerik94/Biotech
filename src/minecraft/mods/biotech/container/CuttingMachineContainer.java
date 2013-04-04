@@ -1,14 +1,13 @@
-package biotech.container;
+package mods.biotech.container;
 
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.prefab.SlotSpecific;
-import biotech.slots.rangeUpgradeSlot;
-import biotech.tileentity.CuttingMachineTileEntity;
+import mods.biotech.tileentity.CuttingMachineTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.prefab.SlotSpecific;
 
 public class CuttingMachineContainer extends Container
 {

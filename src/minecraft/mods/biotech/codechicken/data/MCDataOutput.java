@@ -1,9 +1,9 @@
-package biotech.codechicken.data;
+package mods.biotech.codechicken.data;
 
+import mods.biotech.codechicken.vec.BlockCoord;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.liquids.LiquidStack;
-import biotech.codechicken.vec.BlockCoord;
 
 public interface MCDataOutput
 {

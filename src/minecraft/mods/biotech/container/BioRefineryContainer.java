@@ -1,5 +1,10 @@
-package biotech.container;
+package mods.biotech.container;
 
+import mods.biotech.slots.bioFuelSlot;
+import mods.biotech.slots.emptyBucketSlot;
+import mods.biotech.slots.milkBucketSlot;
+import mods.biotech.slots.seedSlot;
+import mods.biotech.tileentity.BioRefineryTileEntity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
@@ -7,11 +12,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.SlotSpecific;
-import biotech.slots.bioFuelSlot;
-import biotech.slots.emptyBucketSlot;
-import biotech.slots.milkBucketSlot;
-import biotech.slots.seedSlot;
-import biotech.tileentity.BioRefineryTileEntity;
 
 public class BioRefineryContainer extends Container
 {

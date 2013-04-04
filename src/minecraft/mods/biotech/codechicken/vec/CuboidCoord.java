@@ -1,4 +1,4 @@
-package biotech.codechicken.vec;
+package mods.biotech.codechicken.vec;
 
 import net.minecraft.util.AxisAlignedBB;
 

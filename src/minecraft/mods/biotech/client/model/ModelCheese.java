@@ -1,13 +1,13 @@
-package biotech.client.model;
+package mods.biotech.client.model;
+
+import mods.biotech.Biotech;
+import mods.biotech.helpers.render.WavefrontObject;
+import mods.biotech.item.bioCheeseItem;
+import net.minecraft.client.model.ModelBase;
 
 import org.lwjgl.opengl.GL11;
 
 import cpw.mods.fml.client.FMLClientHandler;
-
-import net.minecraft.client.model.ModelBase;
-import biotech.Biotech;
-import biotech.helpers.render.WavefrontObject;
-import biotech.item.bioCheeseItem;
 
 public class ModelCheese extends ModelBase
 {

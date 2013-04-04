@@ -1,4 +1,4 @@
-package biotech.helpers;
+package mods.biotech.helpers;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;

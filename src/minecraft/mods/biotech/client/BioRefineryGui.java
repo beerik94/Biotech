@@ -1,15 +1,14 @@
-package biotech.client;
+package mods.biotech.client;
 
+import mods.biotech.Biotech;
+import mods.biotech.container.BioRefineryContainer;
+import mods.biotech.tileentity.BioRefineryTileEntity;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
-import biotech.Biotech;
-import biotech.container.BioRefineryContainer;
-import biotech.tileentity.BioRefineryTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

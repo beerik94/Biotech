@@ -1,4 +1,4 @@
-package biotech.item;
+package mods.biotech.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.ItemBlock;

@@ -1,4 +1,4 @@
-package biotech.helpers.render;
+package mods.biotech.helpers.render;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

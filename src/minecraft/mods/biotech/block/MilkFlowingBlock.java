@@ -1,11 +1,11 @@
-package biotech.block;
+package mods.biotech.block;
 
+import mods.biotech.Biotech;
 import net.minecraft.block.BlockFluid;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
-import biotech.Biotech;
 
 public class MilkFlowingBlock extends BlockFluid implements ILiquid
 {

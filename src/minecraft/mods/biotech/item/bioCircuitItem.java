@@ -1,19 +1,13 @@
-package biotech.item;
+package mods.biotech.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import universalelectricity.prefab.modifier.IModifier;
-
-import net.minecraft.block.Block;
+import mods.biotech.Biotech;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-import net.minecraft.world.World;
-import biotech.Biotech;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 

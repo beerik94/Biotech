@@ -1,4 +1,4 @@
-package biotech.codechicken.render;
+package mods.biotech.codechicken.render;
 
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
@@ -7,16 +7,16 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import biotech.codechicken.render.SpriteSheetManager.SpriteSheet;
-import biotech.codechicken.render.TextureUtils.IIconRegister;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import mods.biotech.codechicken.render.SpriteSheetManager.SpriteSheet;
+import mods.biotech.codechicken.render.TextureUtils.IIconRegister;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.client.renderer.texture.Texture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.texture.TextureStitched;
 import net.minecraft.client.texturepacks.ITexturePack;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class TextureSpecial extends TextureStitched implements IIconRegister

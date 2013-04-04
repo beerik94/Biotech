@@ -1,4 +1,4 @@
-package biotech.codechicken.render;
+package mods.biotech.codechicken.render;
 
 import static org.lwjgl.opengl.ARBShaderObjects.*;
 

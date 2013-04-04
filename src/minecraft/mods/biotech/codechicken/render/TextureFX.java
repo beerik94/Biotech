@@ -1,6 +1,6 @@
-package biotech.codechicken.render;
+package mods.biotech.codechicken.render;
 
-import biotech.codechicken.render.SpriteSheetManager.SpriteSheet;
+import mods.biotech.codechicken.render.SpriteSheetManager.SpriteSheet;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;

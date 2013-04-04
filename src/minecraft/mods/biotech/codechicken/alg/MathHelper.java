@@ -1,4 +1,4 @@
-package biotech.codechicken.alg;
+package mods.biotech.codechicken.alg;
 
 public class MathHelper
 {

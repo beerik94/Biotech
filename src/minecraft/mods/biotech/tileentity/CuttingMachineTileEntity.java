@@ -1,25 +1,10 @@
-package biotech.tileentity;
+package mods.biotech.tileentity;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import mods.biotech.helpers.Util;
 import net.minecraft.block.Block;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
-import universalelectricity.prefab.network.PacketManager;
-
-import biotech.Biotech;
-import biotech.helpers.Util;
-
-import com.google.common.io.ByteArrayDataInput;
 
 public class CuttingMachineTileEntity extends BasicMachineTileEntity implements IPacketReceiver
 {

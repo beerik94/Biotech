@@ -1,9 +1,10 @@
-package biotech.tileentity;
+package mods.biotech.tileentity;
 
 import hydraulic.core.implement.ColorCode;
 import hydraulic.core.implement.IColorCoded;
 import hydraulic.core.implement.IPsiReciever;
 import hydraulic.core.implement.IReadOut;
+import mods.biotech.Biotech;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -17,7 +18,6 @@ import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
-import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 

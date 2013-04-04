@@ -1,16 +1,11 @@
-package biotech.helpers;
+package mods.biotech.helpers;
 
 import java.util.LinkedList;
 
-import biotech.inventory.ITransactor;
-import biotech.inventory.Transactor;
-
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryLargeChest;
+import mods.biotech.inventory.ITransactor;
+import mods.biotech.inventory.Transactor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityChest;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeDirection;
 

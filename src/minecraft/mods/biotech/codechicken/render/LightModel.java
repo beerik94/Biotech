@@ -1,6 +1,6 @@
-package biotech.codechicken.render;
+package mods.biotech.codechicken.render;
 
-import biotech.codechicken.vec.Vector3;
+import mods.biotech.codechicken.vec.Vector3;
 
 public class LightModel
 {

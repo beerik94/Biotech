@@ -1,6 +1,6 @@
-package biotech.slots;
+package mods.biotech.slots;
 
-import biotech.Biotech;
+import mods.biotech.Biotech;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;

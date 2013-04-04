@@ -1,4 +1,4 @@
-package biotech.codechicken.render;
+package mods.biotech.codechicken.render;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,13 +13,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import mods.biotech.codechicken.vec.CoordinateSystem;
+import mods.biotech.codechicken.vec.ITransformation;
+import mods.biotech.codechicken.vec.Quat;
+import mods.biotech.codechicken.vec.RightHanded;
+import mods.biotech.codechicken.vec.Vector3;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.util.Icon;
-import biotech.codechicken.vec.CoordinateSystem;
-import biotech.codechicken.vec.ITransformation;
-import biotech.codechicken.vec.RightHanded;
-import biotech.codechicken.vec.Quat;
-import biotech.codechicken.vec.Vector3;
 
 public class CCModel
 {

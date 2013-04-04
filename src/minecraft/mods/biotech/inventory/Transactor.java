@@ -1,12 +1,8 @@
-package biotech.inventory;
+package mods.biotech.inventory;
 
-import net.minecraft.inventory.IInventory;
+import mods.biotech.helpers.ISpecialInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
-import biotech.helpers.ISpecialInventory;
-import biotech.helpers.Util;
 
 public abstract class Transactor implements ITransactor {
 

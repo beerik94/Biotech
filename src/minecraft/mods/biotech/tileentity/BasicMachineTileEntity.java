@@ -1,7 +1,6 @@
-package biotech.tileentity;
+package mods.biotech.tileentity;
 
-import java.util.EnumSet;
-
+import mods.biotech.Biotech;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -12,21 +11,14 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.block.IConductor;
 import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import universalelectricity.prefab.tile.TileEntityElectricityRunnable;
-import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
