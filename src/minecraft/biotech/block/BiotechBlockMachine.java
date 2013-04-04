@@ -91,7 +91,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 0:
+				case 3:
 					return this.iconFarmer;
 				case 2:
 					return this.iconInputOff;
@@ -104,7 +104,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 0:
+				case 3:
 					return this.iconWoodcutter;
 				case 2:
 					return this.iconInputOff;
@@ -117,7 +117,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 0:
+				case 3:
 					return this.iconFertilizer;
 				case 2:
 					return this.iconInputOff;
@@ -129,7 +129,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 0:
+				case 3:
 					return this.iconMiner;
 				case 2:
 					return this.iconInputOff;
@@ -141,7 +141,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 0:
+				case 3:
 					return this.iconCowMilker;
 				case 2:
 					return this.iconInputOff;
@@ -153,7 +153,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		{
 			switch (side)
 			{
-				case 0:
+				case 3:
 					return this.iconBioRefinery;
 				case 2:
 					return this.iconInputOff;
