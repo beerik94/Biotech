@@ -21,7 +21,6 @@ public class ModelCheese extends ModelBase
 	
 	public void render()
 	{
-		
 		modelCheeseOBJ.renderAll();
 	}
 	

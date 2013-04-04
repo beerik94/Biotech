@@ -24,16 +24,26 @@ public class bioCheeseItem extends Item
 		this.setUnlocalizedName("bioCheese");
 	}
 	
+	@Override
 	@SideOnly(Side.CLIENT)
 	public void updateIcons(IconRegister iconRegister)
 	{
-		this.iconIndex = iconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "bioCheese");
+		this.iconIndex = iconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "KaasHighPoly");
 	}
 	
 	@Override
 	public Icon getIconFromDamage(int damage)
 	{
 		return this.iconIndex;
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	/**
+	 * Returns True is the item is renderer in full 3D when hold.
+	 */
+	public boolean isFull3D() {
+		return true;
 	}
 	
 	public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
