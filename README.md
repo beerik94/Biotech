@@ -1,5 +1,7 @@
 ## Biotech
-The Biotech mod is a Minecraft mod focused on bringing advanced agriculture systems and contraptions into the game. The mod focuses on the automation of agriculture, and food production. In addition, the mod will also provide genetic manipulations in higher tiers. It requires Universal Electricity API/mod.
+The Biotech mod is a Minecraft mod focused on bringing advanced agriculture systems and contraptions into the game. 
+The mod focuses on the automation of agriculture, and food production. 
+In addition, the mod will also provide genetic manipulations in higher tiers.
 
 ### Developement
 
@@ -7,24 +9,24 @@ The Biotech mod is a Minecraft mod focused on bringing advanced agriculture syst
 
 ### Contributors
 
-Wiebbe
-Calclavia
-Darkguardsman
+   - Wiebbe
+   - Calclavia
+   - Darkguardsman
 
-Translations
+### Translations
 
 Please submit a pull request if you would be willing to translate this mod into another language.
 
-Contact
+### Contact
 
 Join *#universalelectricity* on EsperNet. Remember to follow the rules and respect others as with any other channel.
 
-License
+### License
 
 In short, you are allowed to:
 
-*Redistribute
-*Modify
+   - Redistribute
+   - Modify
 
 this mod given you give credits to the original author(s).
 
