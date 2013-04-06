@@ -45,7 +45,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	// Is the machine currently powered, and did it change?
 	public static final int		MilkPerBucket = 50;
 	public boolean				prevIsPowered, isPowered = false;	
-	private int					facing;
+	public int					facing;
 	private int					playersUsing		= 0;
 	
 	public BasicMachineTileEntity()
@@ -238,6 +238,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
+			System.out.println("Facing:" + this.facing);
 		}
 	}
 	

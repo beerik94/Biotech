@@ -209,6 +209,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 			{
 				this.milkStored = dataStream.readInt();
 				this.processTicks = dataStream.readInt();
+				this.facing = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -220,7 +221,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks, this.facing);
 	}
 	
 	/**

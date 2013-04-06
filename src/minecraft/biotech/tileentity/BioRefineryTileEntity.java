@@ -194,7 +194,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					}
 				}
 			}
-			else if(!ProduceFuel)
+			else if (!ProduceFuel)
 			{
 				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
@@ -325,6 +325,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 			{
 				this.milkStored = dataStream.readInt();
 				this.processTicks = dataStream.readInt();
+				this.facing = dataStream.readInt();
 			}
 		}
 		catch (Exception e)
@@ -336,7 +337,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks);
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks, this.facing);
 	}
 	
 	public int getMilkStored()

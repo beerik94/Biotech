@@ -208,9 +208,6 @@ public class BiotechBlockMachine extends BlockAdvanced
 				left = 3;
 				right = 2;
 				break;
-			
-			default:
-				break;
 		}
 		/*
 		if (metadata == 0)
@@ -381,7 +378,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		}
 		
 		world.setBlockMetadataWithNotify(x, y, z, meta, 3);
-		
+		world.markBlockForRenderUpdate(x, y, z);
 		return true;
 	}
 	

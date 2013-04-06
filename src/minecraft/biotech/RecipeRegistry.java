@@ -37,6 +37,6 @@ public class RecipeRegistry
 		//GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 2), new Object[] { UnProgrammed, Item.carrot}));
 		//GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 3), new Object[] { UnProgrammed, Item.potato}));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 1), new Object[] { UnProgrammed, Item.redstone, Item.compass}));
-	}
 	
+	}
 }

@@ -14,8 +14,6 @@ import biotech.Biotech;
 
 public class bioCheeseItem extends Item
 {
-	private ItemFood itemFood;
-
 	public bioCheeseItem(int par1)
 	{
 		super(par1);
@@ -45,39 +43,4 @@ public class bioCheeseItem extends Item
 	public boolean isFull3D() {
 		return true;
 	}
-	
-	public ItemStack onEaten(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-    {
-		--par1ItemStack.stackSize;
-        par3EntityPlayer.getFoodStats().addStats(itemFood);
-        par2World.playSoundAtEntity(par3EntityPlayer, "random.burp", 0.5F, par2World.rand.nextFloat() * 0.1F + 0.9F);
-        par3EntityPlayer.curePotionEffects(par1ItemStack);
-        return par1ItemStack;
-    }
-
-    /**
-     * How long it takes to use or consume an item
-     */
-    public int getMaxItemUseDuration(ItemStack par1ItemStack)
-    {
-        return 32;
-    }
-
-    /**
-     * returns the action that specifies what animation to play when the items is being used
-     */
-    public EnumAction getItemUseAction(ItemStack par1ItemStack)
-    {
-        return EnumAction.eat;
-    }
-
-    /**
-     * Called whenever this item is equipped and the right mouse button is pressed. Args: itemStack, world, entityPlayer
-     */
-    public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
-    {
-        par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
-        return par1ItemStack;
-    }
-	
 }
