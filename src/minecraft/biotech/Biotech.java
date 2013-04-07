@@ -75,7 +75,7 @@ public class Biotech
 	
 	// Default config loader
 	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
-	public static boolean				mekanismEnabled		= false;
+	public static boolean				mekanismEnabled		= true;
 	
 	// Item templates
 	public static Item					biotechPotionItem;

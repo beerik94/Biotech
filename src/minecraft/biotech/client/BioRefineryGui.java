@@ -23,7 +23,6 @@ public class BioRefineryGui extends GuiContainer
 	private GuiButton				CheeseFuelB;
 	private int						buttonX;
 	private int						buttonY;
-	private int						changeText = 1;
 	
 	public BioRefineryGui(InventoryPlayer playerInventory, BioRefineryTileEntity tileEntity)
 	{
@@ -36,11 +35,11 @@ public class BioRefineryGui extends GuiContainer
 	{
 		super.initGui();
 		
-		buttonX = (this.width - this.xSize) / 2 + 142;
-		buttonY = (this.height - this.ySize) / 2 + 41;
+		buttonX = (this.width - this.xSize) / 2 + 60;
+		buttonY = (this.height - this.ySize) / 2 + 62;
 		
 		buttonList.clear();
-		buttonList.add(CheeseFuelB = new GuiButton(0, buttonX, buttonY, 28, 12, this.tileEntity.ButtonText));
+		buttonList.add(CheeseFuelB = new GuiButton(0, buttonX, buttonY, 42, 16, this.tileEntity.buttonText));
 	}
 	
 	@Override
@@ -50,11 +49,42 @@ public class BioRefineryGui extends GuiContainer
 		{
 			return;
 		}
-		if (guibutton.id == 0)
+		if (guibutton.id == 0 && !this.tileEntity.fuelPressed)
 		{
-			this.changeText *= -1;
+			this.tileEntity.fuelPressed = true;
+			this.tileEntity.cheesePressed = false;
+		}
+		else if(guibutton.id == 0 && !this.tileEntity.cheesePressed)
+		{
+			this.tileEntity.cheesePressed = true;
+			this.tileEntity.fuelPressed = false;
 		}
 	}
+	
+	/**
+     * Called from the main game loop to update the screen.
+     */
+	@Override
+    public void updateScreen()
+    {
+        super.updateScreen();
+
+        if (!this.mc.thePlayer.isEntityAlive() || this.mc.thePlayer.isDead)
+        {
+            this.mc.thePlayer.closeScreen();
+        }
+        
+        if(this.tileEntity.fuelPressed)
+        {
+        	initGui();
+        	this.tileEntity.buttonText = "Cheese";
+        }
+        else if(this.tileEntity.cheesePressed)
+        {
+        	initGui();
+        	this.tileEntity.buttonText = "Fuel";
+        }
+    }
 	
 	/**
 	 * Draw the foreground layer for the GuiContainer (everything in front of
@@ -104,13 +134,13 @@ public class BioRefineryGui extends GuiContainer
 		
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
 		
-		int milkscale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 100);
+		int milkscale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 50);
 		
 		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - milkscale, 176, 50 - milkscale, 8, milkscale);
 		
 		if (this.tileEntity.processTicks > 0)
 		{
-			int scale = (int) (((double) this.tileEntity.processTicks / (double) this.tileEntity.PROCESS_TIME_REQUIRED) * 28);
+			int scale = (int) (((double) this.tileEntity.processTicks / (double) this.tileEntity.PROCESS_TIME_REQUIRED) * 30);
 			this.drawTexturedModalRect(containerWidth + 122, containerHeight + 38, 176, 51, 12, 28 - scale);
 		}
 	}

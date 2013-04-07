@@ -7,7 +7,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.SlotSpecific;
-import biotech.slots.bioFuelSlot;
 import biotech.slots.emptyBucketSlot;
 import biotech.slots.milkBucketSlot;
 import biotech.slots.seedSlot;
@@ -25,7 +24,7 @@ public class BioRefineryContainer extends Container
 		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 50, IItemElectric.class));
 		
 		// Biofuel output Slot
-		this.addSlotToContainer(new bioFuelSlot(tileEntity, 1, 146, 20));
+		this.addSlotToContainer(new Slot(tileEntity, 1, 146, 20));
 		
 		// Seeds Input Slot
 		this.addSlotToContainer(new seedSlot(tileEntity, 2, 5, 20));

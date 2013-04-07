@@ -36,8 +36,9 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public double				working					= 0;
 	public static final int		PROCESS_TIME_REQUIRED	= 60;
 	public int					processTicks			= 0;
-	public int					ProduceFuel				= 1;
-	public String				ButtonText				= "Fuel";
+	public boolean				fuelPressed				= false;
+	public boolean				cheesePressed			= true;
+	public String				buttonText				= "Fuel";
 	
 	public BioRefineryTileEntity()
 	{
@@ -49,14 +50,6 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	{
 		if (!worldObj.isRemote)
 		{
-			if(ProduceFuel == 1)
-			{
-				this.ButtonText = "Fuel";
-			}
-			else
-			{
-				this.ButtonText = "Cheese";
-			}
 			if (this.checkRedstone())
 			{
 				this.fillFrom(ForgeDirection.DOWN);
@@ -119,7 +112,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 		
 		if (this.getMilkStored() >= bucketVol)
 		{
-			if (Biotech.mekanismEnabled && ProduceFuel == 1)
+			if (Biotech.mekanismEnabled && !fuelPressed && cheesePressed)
 			{
 				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
@@ -203,7 +196,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 					}
 				}
 			}
-			else if (ProduceFuel == -1)
+			else if (fuelPressed && !cheesePressed)
 			{
 				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
