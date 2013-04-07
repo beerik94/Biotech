@@ -21,13 +21,14 @@ import biotech.block.BiotechBlockMachine;
 import biotech.block.MilkFlowingBlock;
 import biotech.block.MilkStillBlock;
 import biotech.common.CommonProxy;
-import biotech.item.bioCircuitItem;
 import biotech.item.bioCheeseItem;
+import biotech.item.bioCircuitItem;
 import biotech.item.biotechItemBlock;
 import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.tileentity.FertilizerTileEntity;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -188,6 +189,7 @@ public class Biotech
 		// GameRegistry.registerTileEntity(FarmMachineTileEntity.class,
 		// "FarmMachineTileEntity");
 		GameRegistry.registerTileEntity(CuttingMachineTileEntity.class, "CuttingMachineTileEntity");
+		GameRegistry.registerTileEntity(FertilizerTileEntity.class, "FertilizerTileEntity");
 		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
 		

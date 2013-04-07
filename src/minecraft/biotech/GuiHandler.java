@@ -7,14 +7,17 @@ import biotech.client.BioRefineryGui;
 import biotech.client.CowMilkerGui;
 import biotech.client.CuttingMachineGui;
 import biotech.client.FarmMachineGui;
+import biotech.client.FertilizerGui;
 import biotech.container.BioRefineryContainer;
 import biotech.container.CowMilkerContainer;
 import biotech.container.CuttingMachineContainer;
 import biotech.container.FarmMachineContainer;
+import biotech.container.FertilizerContainer;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
 import biotech.tileentity.FarmMachineTileEntity;
+import biotech.tileentity.FertilizerTileEntity;
 import cpw.mods.fml.common.network.IGuiHandler;
 
 public class GuiHandler implements IGuiHandler
@@ -37,8 +40,9 @@ public class GuiHandler implements IGuiHandler
 					return new BioRefineryContainer(player.inventory, (BioRefineryTileEntity) tileEntity);
 				case 3:
 					return new CuttingMachineContainer(player.inventory, (CuttingMachineTileEntity) tileEntity);
+				case 4:
+					return new FertilizerContainer(player.inventory, (FertilizerTileEntity) tileEntity);
 			}
-			
 		}
 		return null;
 	}
@@ -60,8 +64,9 @@ public class GuiHandler implements IGuiHandler
 					return new BioRefineryGui(player.inventory, (BioRefineryTileEntity) tileEntity);
 				case 3:
 					return new CuttingMachineGui(player.inventory, (CuttingMachineTileEntity) tileEntity);
+				case 4:
+					return new FertilizerGui(player.inventory, (FertilizerTileEntity) tileEntity);
 			}
-			
 		}
 		return null;
 	}

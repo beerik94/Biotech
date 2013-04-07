@@ -44,7 +44,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
 	public static final int		MilkPerBucket = 50;
-	public boolean				prevIsPowered, isPowered = false;	
+	public boolean				prevIsPowered, isPowered = false;
 	public int					facing;
 	private int					playersUsing		= 0;
 	
@@ -238,7 +238,6 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 			{
 				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-			System.out.println("Facing:" + this.facing);
 		}
 	}
 	

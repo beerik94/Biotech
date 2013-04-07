@@ -1,12 +1,12 @@
 package biotech.client;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
 
-import universalelectricity.core.electricity.ElectricityDisplay;
 import biotech.Biotech;
 import biotech.container.BioRefineryContainer;
 import biotech.tileentity.BioRefineryTileEntity;
@@ -20,12 +20,40 @@ public class BioRefineryGui extends GuiContainer
 	
 	private int						containerWidth;
 	private int						containerHeight;
+	private GuiButton				CheeseFuelB;
+	private int						buttonX;
+	private int						buttonY;
+	private int						changeText = 1;
 	
 	public BioRefineryGui(InventoryPlayer playerInventory, BioRefineryTileEntity tileEntity)
 	{
 		super(new BioRefineryContainer(playerInventory, tileEntity));
-		
 		this.tileEntity = tileEntity;
+	}
+	
+	@Override
+	public void initGui()
+	{
+		super.initGui();
+		
+		buttonX = (this.width - this.xSize) / 2 + 142;
+		buttonY = (this.height - this.ySize) / 2 + 41;
+		
+		buttonList.clear();
+		buttonList.add(CheeseFuelB = new GuiButton(0, buttonX, buttonY, 28, 12, this.tileEntity.ButtonText));
+	}
+	
+	@Override
+	protected void actionPerformed(GuiButton guibutton)
+	{
+		if(!guibutton.enabled)
+		{
+			return;
+		}
+		if (guibutton.id == 0)
+		{
+			this.changeText *= -1;
+		}
 	}
 	
 	/**
