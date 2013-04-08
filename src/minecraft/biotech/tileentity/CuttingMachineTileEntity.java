@@ -29,8 +29,8 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity
 	// Watts being used per cut
 	public static final double	WATTS_PER_CUT	= 700;
 	private int					treeBlocks		= 2;
-	protected String[]			saplingStack		= BlockSapling.WOOD_TYPES;
-	protected String[]			woodStack			= BlockLog.woodType;
+	protected String[]			saplingStack	= BlockSapling.WOOD_TYPES;
+	protected String[]			woodStack		= BlockLog.woodType;
 	
 	public CuttingMachineTileEntity()
 	{
@@ -46,7 +46,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity
 			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Process */
-				if (this.ticks % 10 == 0 && this.wattsReceived >= WATTS_PER_CUT)
+				if (this.ticks % 15 == 0 && this.wattsReceived >= WATTS_PER_CUT)
 				{
 					GetTree();
 				}
@@ -63,35 +63,35 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity
 	public void GetTree()
 	{
 		/*
-		 * int XPos = this.xCoord; 
-		 * int ZPos = this.zCoord; 
-		 * switch(this.getFacing()) 
-		 * { 
-		 * case 2: // North 
-		 * 		for (int i = 1; i < GetRange(); i++) 
-		 * 		{ 
-		 * 			ZPos = this.zCoord + i; 
-		 * 		} 
-		 * 		break; 
-		 * case 3: // South 
-		 * 		for (int i = 1; i < GetRange(); i++) 
-		 * 		{ 
-		 * 			ZPos = this.zCoord - i; 
-		 * 		} 
-		 * 		break; 
-		 * case 4: //West 
-		 * 		for (int i = 1; i < GetRange(); i++) 
-		 * 		{ 
-		 * 			XPos = this.xCoord + i; 
-		 * 		}
-		 * 		break; 
-		 * case 5: // East 
-		 * 		for (int i = 1; i < GetRange(); i++) 
-		 * 		{ 
-		 * 			XPos = this.xCoord - i; 
-		 * 		} 
-		 * 		break; 
-		 * } 
+		 * int XPos = this.xCoord;
+		 * int ZPos = this.zCoord;
+		 * switch(this.getFacing())
+		 * {
+		 * case 2: // North
+		 * for (int i = 1; i < GetRange(); i++)
+		 * {
+		 * ZPos = this.zCoord + i;
+		 * }
+		 * break;
+		 * case 3: // South
+		 * for (int i = 1; i < GetRange(); i++)
+		 * {
+		 * ZPos = this.zCoord - i;
+		 * }
+		 * break;
+		 * case 4: //West
+		 * for (int i = 1; i < GetRange(); i++)
+		 * {
+		 * XPos = this.xCoord + i;
+		 * }
+		 * break;
+		 * case 5: // East
+		 * for (int i = 1; i < GetRange(); i++)
+		 * {
+		 * XPos = this.xCoord - i;
+		 * }
+		 * break;
+		 * }
 		 * int bottomBlock =
 		 * worldObj.getBlockId(XPos, this.yCoord, ZPos); int YPos = this.yCoord
 		 * + 1; while (bottomBlock == Block.wood.blockID) { int otherBlock =
@@ -99,20 +99,18 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity
 		 * Block.wood.blockID) { YPos += 1; } else { DoCut(XPos, YPos - 1,
 		 * ZPos); return; } }
 		 */
-		for(int i = 0; i < saplingStack.length - 1; i++)
+		int meta = worldObj.getBlockMetadata(this.xCoord, this.yCoord + treeBlocks, this.zCoord);
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) == Block.wood.blockID && this.wattsReceived >= WATTS_PER_CUT)
 		{
-			if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) == Block.wood.blockID)
-			{
-				DoCut(this.xCoord, this.yCoord + treeBlocks, this.zCoord, true);
-				InvAdd(true, i);
-				treeBlocks++;
-			}
-			if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) != Block.wood.blockID && this.wattsReceived >= WATTS_PER_CUT)
-			{
-				Replant(i);
-				RemoveLeaves();
-				treeBlocks = 2;
-			}
+			DoCut(this.xCoord, this.yCoord + treeBlocks, this.zCoord, true);
+			InvAdd(true, meta);
+			treeBlocks++;
+		}
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) != Block.wood.blockID)
+		{
+			Replant(meta);
+			RemoveLeaves();
+			treeBlocks = 2;
 		}
 	}
 	
