@@ -20,6 +20,7 @@ import biotech.tileentity.BasicMachineTileEntity;
 import biotech.tileentity.BioRefineryTileEntity;
 import biotech.tileentity.CowMilkerTileEntity;
 import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.tileentity.FarmMachineTileEntity;
 import biotech.tileentity.FertilizerTileEntity;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -33,7 +34,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	// 4 == Cow Milker
 	// 5 == BioRefinery
 	
-	//public static final int	FARM_METADATA			= 0;
+	public static final int	FARM_METADATA			= 0;
 	public static final int	WOODCUTTER_METADATA		= 1;
 	public static final int	FERTILIZER_METADATA		= 2;
 	//public static final int	MINER_METADATA			= 3;
@@ -41,7 +42,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	public static final int	BIO_REFINERY_METADATA	= 5;
 	
 	// Front Sides
-	//private Icon			iconFarmer;
+	private Icon			iconFarmer;
 	private Icon			iconWoodcutter;
 	private Icon			iconFertilizer;
 	//private Icon			iconMiner;
@@ -69,7 +70,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	public void registerIcons(IconRegister par1IconRegister)
 	{
 		this.blockIcon = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
-		//this.iconFarmer = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineFarmer");
+		this.iconFarmer = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineFarmer");
 		this.iconWoodcutter = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineWoodCutter");
 		this.iconFertilizer = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineFertilizer");
 		//this.iconMiner = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineMiner");
@@ -86,7 +87,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	@Override
 	public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
 	{
-		/*
+		
 		if (meta == 0)
 		{
 			switch (side)
@@ -100,7 +101,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 			}
 		}
 		
-		else */if (meta == 1)
+		else if (meta == 1)
 		{
 			switch (side)
 			{
@@ -209,7 +210,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 				right = 2;
 				break;
 		}
-		/*
+		
 		if (metadata == 0)
 		{
 			if (side == front)
@@ -221,7 +222,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 				return this.iconFarmer;
 			}
 		}
-		else*/ if (metadata == 1)
+		else if (metadata == 1)
 		{
 			if (side == front)
 			{
@@ -394,8 +395,8 @@ public class BiotechBlockMachine extends BlockAdvanced
 			switch (metadata)
 			{
 				case 0:
-					//player.openGui(Biotech.instance, 0, world, x, y, z);
-					//return true;
+					player.openGui(Biotech.instance, 0, world, x, y, z);
+					return true;
 				case 1:
 					player.openGui(Biotech.instance, 3, world, x, y, z);
 					return true;
@@ -426,7 +427,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 		switch (metadata)
 		{
 			case 0:
-				//return new FarmMachineTileEntity();
+				return new FarmMachineTileEntity();
 			case 1:
 				return new CuttingMachineTileEntity();
 			case 2:

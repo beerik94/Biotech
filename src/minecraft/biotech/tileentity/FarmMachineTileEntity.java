@@ -1,32 +1,17 @@
 package biotech.tileentity;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
-
-import com.google.common.io.ByteArrayDataInput;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
-import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
-import universalelectricity.prefab.network.PacketManager;
-import biotech.Biotech;
 import biotech.helpers.Util;
 
 
-public class FarmMachineTileEntity extends BasicMachineTileEntity implements IInventory, ISidedInventory, IPacketReceiver
+public class FarmMachineTileEntity extends BasicMachineTileEntity
 {
 	
 	public static final double	WATTS_PER_ACTION	= 500;
@@ -68,13 +53,34 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 		}
 	}
 	
+	/**
+	 * Checks which forgeDirection the front is.
+	 * @return 
+	 */
+	public String getFront()
+	{
+		switch(this.getFacing())
+		{
+			case 2:
+				return "south";
+			case 3:
+				return "north";
+			case 4:
+				return "east";
+			case 5:
+				return "west";
+			default:
+				return "south";
+		}
+	}
+	
 	public int AreaSize()
 	{
 		if(this.inventory[2] != null)
 		{
-			return (3 * this.inventory[2].stackSize);
+			return (2 * this.inventory[2].stackSize);
 		}
-		return 3;
+		return 2;
 	}
 	
 	/**
@@ -82,10 +88,40 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 	 */
 	public void workArea()
 	{
-		int xmin = this.xCoord + 2;
-		int xmax = this.xCoord + 2 + AreaSize();
-		int zmin = this.zCoord + 2;
-		int zmax = this.zCoord + 2 + AreaSize();
+		int xmin = this.xCoord;
+		int xmax = this.xCoord;
+		int zmin = this.zCoord;
+		int zmax = this.zCoord;
+		
+		if(getFront() == "south")
+		{
+			zmin = this.zCoord + 1;
+			zmax = this.zCoord + 1 + AreaSize();
+			xmin = this.xCoord - AreaSize();
+			xmax = this.xCoord + AreaSize();
+		}
+		else if(getFront() == "north")
+		{
+			zmin = this.zCoord - 1;
+			zmax = this.zCoord - 1 - AreaSize();
+			xmin = this.xCoord - AreaSize();
+			xmax = this.xCoord + AreaSize();
+		}
+		else if(getFront() == "east")
+		{
+			xmin = this.xCoord + 1;
+			xmax = this.xCoord + 1 + AreaSize();
+			zmin = this.zCoord - AreaSize();
+			zmax = this.zCoord + AreaSize();
+		}
+		else if(getFront() == "west")
+		{
+			xmin = this.xCoord - 1;
+			xmax = this.xCoord - 1 - AreaSize();
+			zmin = this.zCoord - AreaSize();
+			zmax = this.zCoord + AreaSize();
+		}
+
 		for (int i = 0; i < resourceStacks.length; i++)
 		{
 			if (this.inventory[1].itemID == resourceStacks[i].itemID)
@@ -94,17 +130,17 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity implements IIn
 				{
 					for (int zz = zmin; zz < zmax; zz++)
 					{
-						if (worldObj.getBlockId(xx, this.yCoord, zz) != Block.tilledField.blockID)
+						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) != Block.tilledField.blockID)
 						{
 							tillLand(xx, this.yCoord, zz);
 						}
-						if (worldObj.getBlockId(xx, this.yCoord, zz) == Block.tilledField.blockID)
+						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID)
 						{
-							PlantSeed(xx, this.yCoord + 1, zz, cropStacks[i].blockID);
+							PlantSeed(xx, this.yCoord, zz, cropStacks[i].blockID);
 						}
-						else if (worldObj.getBlockId(xx, this.yCoord, zz) == Block.tilledField.blockID && worldObj.getBlockId(xx, this.yCoord + 1, zz) == cropStacks[i].blockID)
+						else if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID && worldObj.getBlockId(xx, this.yCoord, zz) == cropStacks[i].blockID)
 						{
-							HarvestPlant(xx, this.yCoord + 1, zz, harvestStacks[i]);
+							HarvestPlant(xx, this.yCoord, zz, harvestStacks[i]);
 						}
 					}
 				}
