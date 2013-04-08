@@ -1,18 +1,15 @@
 package biotech.item;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IconRegister;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-import net.minecraft.world.World;
+import net.minecraftforge.client.IItemRenderer;
 import biotech.Biotech;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioCheeseItem extends Item
+public class bioCheeseItem extends Item implements IItemRenderer
 {
 	public bioCheeseItem(int par1)
 	{
@@ -42,5 +39,26 @@ public class bioCheeseItem extends Item
 	 */
 	public boolean isFull3D() {
 		return true;
+	}
+
+	@Override
+	public boolean handleRenderType(ItemStack item, ItemRenderType type)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
+	{
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

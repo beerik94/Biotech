@@ -2,9 +2,9 @@ package biotech.common;
 
 public class CommonProxy
 {
-	
-	public void registerRenderers()
+	public void registerRenderInformation()
 	{
-		// Nothing here as this is the server side proxy
+		// TODO Auto-generated method stub
+		
 	}
 }
