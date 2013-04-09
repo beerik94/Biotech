@@ -115,7 +115,7 @@ public class Biotech
 	// 5 == BioRefinery
 	
 	// Models
-	public static final String			ModelBioCheese		= MODEL_PATH + "KaasHighPoly.obj";
+	public static final String			ModelBioCheese		= MODEL_PATH + "KaasHighPoly";
 	
 	// Model Textures
 	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "KaasHighPoly.png"; 
@@ -204,6 +204,11 @@ public class Biotech
 		 * Call the recipe registry
 		 */
 		RecipeRegistry.Recipes();
+		
+		/**
+		 * Load Proxy
+		 */
+		proxy.registerRenderInformation();
 		
 		/**
 		 * Handle language support
