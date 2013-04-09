@@ -115,11 +115,10 @@ public class Biotech
 	// 5 == BioRefinery
 	
 	// Models
-	public static final String			ModelBioCheese		= MODEL_PATH + "KaasHighPoly";
+	public static final String			ModelBioCheese		= "file:///mods/biotech/models/KaasHighPoly";
 	
 	// Model Textures
 	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "KaasHighPoly.png"; 
-	
 	
 	// Liquid Stack Milk
 	public static LiquidStack			milkLiquid;

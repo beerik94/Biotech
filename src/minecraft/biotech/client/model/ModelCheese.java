@@ -16,7 +16,7 @@ public class ModelCheese extends ModelBase
     public ModelCheese()
     {
         this.cheese = new NMTModelRenderer(this);
-        this.cheese.addModelOBJ(Biotech.MODEL_PATH + "KaasHighPoly");
+        this.cheese.addModelOBJ(Biotech.ModelBioCheese);
     }
     
     /**

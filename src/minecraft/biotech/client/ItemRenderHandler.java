@@ -1,6 +1,5 @@
 package biotech.client;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
@@ -9,19 +8,19 @@ import org.lwjgl.opengl.GL11;
 
 import biotech.Biotech;
 import biotech.client.model.ModelCheese;
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
 public class ItemRenderHandler implements IItemRenderer
 {
-	public ModelCheese cheese;
+	public ModelCheese	cheese;
 	
 	public ItemRenderHandler()
 	{
 		cheese = new ModelCheese();
 	}
-	
 	
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
@@ -50,7 +49,9 @@ public class ItemRenderHandler implements IItemRenderer
 			{
 				GL11.glPushMatrix();
 				
-				Minecraft.getMinecraft().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+				GL11.glBindTexture(GL11.GL_TEXTURE_2D,FMLClientHandler.instance().getClient().renderEngine.getTexture(Biotech.BioCheeseTexture));
+				
+				GL11.glTranslatef(0.5F, 0.5F, 0.5F);
 				
 				cheese.render((Entity)data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
 				
@@ -60,5 +61,4 @@ public class ItemRenderHandler implements IItemRenderer
 				break;
 		}
 	}
-	
 }
