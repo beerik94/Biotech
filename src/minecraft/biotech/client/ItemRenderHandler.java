@@ -25,40 +25,49 @@ public class ItemRenderHandler implements IItemRenderer
 	@Override
 	public boolean handleRenderType(ItemStack item, ItemRenderType type)
 	{
-		switch (type)
-		{
-			case EQUIPPED:
-				return true;
-			default:
-				return false;
-		}
+		return true;
 	}
 	
 	@Override
 	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper)
 	{
-		return false;
+		return true;
 	}
 	
 	@Override
 	public void renderItem(ItemRenderType type, ItemStack item, Object... data)
 	{
-		switch (type)
-		{
-			case EQUIPPED:
-			{
-				GL11.glPushMatrix();
-				
-				GL11.glBindTexture(GL11.GL_TEXTURE_2D,FMLClientHandler.instance().getClient().renderEngine.getTexture(Biotech.BioCheeseTexture));
-				
-				GL11.glTranslatef(0.5F, 0.5F, 0.5F);
-				
-				cheese.render((Entity)data[1], 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 0.0625F);
-				
-				GL11.glPopMatrix();
-			}
-			default:
-				break;
-		}
+		switch (type) {
+            case ENTITY: {
+                renderCheese(-0.5F, 0.0F, 0.5F, 1.0F);
+                return;
+            }
+            case EQUIPPED: {
+                renderCheese(0.0F, 0.0F, 1.0F, 1.0F);
+                return;
+            }
+            case INVENTORY: {
+                renderCheese(0.0F, -0.1F, 1.0F, 1.0F);
+                return;
+            }
+            default:
+                return;
+        }
+	}
+	
+	private void renderCheese(float x, float y, float z, float scale)
+	{
+		GL11.glPushMatrix();
+    	GL11.glDisable(GL11.GL_LIGHTING);
+		
+    	GL11.glScalef(scale, scale, scale);
+    	GL11.glTranslatef(x, y, z);
+
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+
+		cheese.render();
+		
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glPopMatrix();
 	}
 }
