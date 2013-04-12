@@ -18,9 +18,10 @@ public class UniversalElectricity
 	/**
 	 * The version of the Universal Electricity API.
 	 */
-	public static final int MAJOR_VERSION = 1;
-	public static final int MINOR_VERSION = 3;
-	public static final int REVISION_VERSION = 1;
+	public static final String MAJOR_VERSION = "@MAJOR@";
+	public static final String MINOR_VERSION = "@MINOR@";
+	public static final String REVISION_VERSION = "@REVIS@";
+	public static final String BUILD_VERSION = "@BUILD@";
 	public static final String VERSION = MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION;
 
 	/**

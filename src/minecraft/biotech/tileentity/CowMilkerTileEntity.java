@@ -1,46 +1,29 @@
 package biotech.tileentity;
 
-import hydraulic.core.implement.ColorCode;
-import hydraulic.core.implement.IColorCoded;
-import hydraulic.core.implement.IPsiCreator;
-import hydraulic.core.implement.IReadOut;
-import hydraulic.core.liquids.LiquidData;
-import hydraulic.core.liquids.LiquidHandler;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.entity.passive.EntityCow;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.common.ISidedInventory;
-import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.electricity.ElectricityNetwork;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.core.vector.Vector3;
 import universalelectricity.prefab.network.IPacketReceiver;
 import universalelectricity.prefab.network.PacketManager;
 import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IReadOut, IPsiCreator
+public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPacketReceiver
 {
 	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
@@ -53,9 +36,6 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	private boolean				isMilking				= false;
 	public static final int		PROCESS_TIME_REQUIRED	= 60;
 	public int					processTicks			= 0;
-	
-	// Amount of milliBuckets of internal storage
-	private ColorCode			color					= ColorCode.WHITE;
 	
 	public CowMilkerTileEntity()
 	{
@@ -70,7 +50,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 		{
 			if (this.checkRedstone())
 			{
-				this.drainTo(ForgeDirection.DOWN);
+				//this.drainTo(ForgeDirection.DOWN);
 				
 				/* SCAN FOR COWS */
 				if (this.ticks % 40 == 0)
@@ -164,13 +144,12 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	/**
 	 * Drains the contents of the internal tank to a block bellow it
 	 */
-	
 	public void drainTo(ForgeDirection dir)
 	{
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
 		if (ent instanceof ITankContainer)
 		{
-			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), LiquidHandler.getStack(color.getLiquidData(), this.milkStored), true);
+			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), Biotech.milkLiquid, true);
 			if (filled > 0)
 			{
 				this.setMilkStored(filled, false);
@@ -253,7 +232,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		return this.milkMaxStored;
 	}
-	
+	/*
 	@Override
 	public ColorCode getColor()
 	{
@@ -286,4 +265,5 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	{
 		return dir == ForgeDirection.DOWN.getOpposite() && this.color.isValidLiquid(stack);
 	}
+	*/
 }

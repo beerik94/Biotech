@@ -1,12 +1,14 @@
 package biotech.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
+import net.minecraftforge.client.model.AdvancedModelLoader;
+import net.minecraftforge.client.model.IModelCustom;
+import net.minecraftforge.client.model.obj.WavefrontObject;
+
+import org.lwjgl.opengl.GL11;
+
 import biotech.Biotech;
-import biotech.helpers.models.NMTModelRenderer;
-import biotech.helpers.obj.WavefrontObject;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -15,11 +17,13 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ModelCheese extends ModelBase
 {
     /** The Cheese*/
-    private WavefrontObject cheeseOBJ;
-
+    private IModelCustom cheeseOBJ;
+    public float cheeseScale = 0.3F;
+    
+    
     public ModelCheese()
     {
-    	cheeseOBJ = new WavefrontObject(Biotech.ModelBioCheese);
+    	cheeseOBJ = AdvancedModelLoader.loadModel(Biotech.ModelBioCheese);
     }
     
     public void render()
@@ -34,7 +38,9 @@ public class ModelCheese extends ModelBase
 		
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
 		
-		GL11.glTranslatef(0.5F, 0.5F, 0.5F);
+		GL11.glScalef(cheeseScale, cheeseScale, cheeseScale);
+		GL11.glTranslatef(0.0F, 0.0F, 0.0F);
+		//GL11.glRotatef(90F, 0, 0, 1F);
 		
 		this.render();
 		

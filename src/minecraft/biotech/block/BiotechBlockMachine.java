@@ -85,7 +85,8 @@ public class BiotechBlockMachine extends BlockAdvanced
 	}
 	
 	@Override
-	public Icon getBlockTextureFromSideAndMetadata(int side, int meta)
+	@SideOnly(Side.CLIENT)
+	public Icon getIcon(int side, int meta)
 	{
 		
 		if (meta == 0)

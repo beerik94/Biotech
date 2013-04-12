@@ -1,6 +1,5 @@
 package biotech.client;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
@@ -39,15 +38,15 @@ public class ItemRenderHandler implements IItemRenderer
 	{
 		switch (type) {
             case ENTITY: {
-                renderCheese(-0.5F, 0.0F, 0.5F, 1.0F);
+            	renderCheeseEntity(0.0F, 0.0F, 0.0F, cheese.cheeseScale);
                 return;
             }
             case EQUIPPED: {
-                renderCheese(0.0F, 0.0F, 1.0F, 1.0F);
+            	renderCheeseEquipped(3.0F, -2.0F, 3.5F, cheese.cheeseScale);
                 return;
             }
             case INVENTORY: {
-                renderCheese(0.0F, -0.1F, 1.0F, 1.0F);
+            	renderCheeseInventory(0.75F, -1.25F, 0.0F, 0.4F);
                 return;
             }
             default:
@@ -55,12 +54,53 @@ public class ItemRenderHandler implements IItemRenderer
         }
 	}
 	
-	private void renderCheese(float x, float y, float z, float scale)
+	private void renderCheeseEntity(float x, float y, float z, float scale)
 	{
 		GL11.glPushMatrix();
     	GL11.glDisable(GL11.GL_LIGHTING);
 		
     	GL11.glScalef(scale, scale, scale);
+//    	GL11.glRotatef(105.0F, 0.0F, 0.0F, 1.0F);
+//    	GL11.glRotatef(24.0F, 1.0F, 0.0F, 0.0F);
+//    	GL11.glRotatef(5.0F, 0.0F, 1.0F, 0.0F);
+    	GL11.glTranslatef(x, y, z);
+
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+
+		cheese.render();
+		
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glPopMatrix();
+	}
+	
+	private void renderCheeseEquipped(float x, float y, float z, float scale)
+	{
+		GL11.glPushMatrix();
+    	GL11.glDisable(GL11.GL_LIGHTING);
+		
+    	GL11.glScalef(scale, scale, scale);
+    	GL11.glRotatef(105.0F, 0.0F, 0.0F, 1.0F);
+    	GL11.glRotatef(24.0F, 1.0F, 0.0F, 0.0F);
+    	GL11.glRotatef(5.0F, 0.0F, 1.0F, 0.0F);
+    	GL11.glTranslatef(x, y, z);
+
+		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+
+		cheese.render();
+		
+		GL11.glEnable(GL11.GL_LIGHTING);
+		GL11.glPopMatrix();
+	}
+	
+	private void renderCheeseInventory(float x, float y, float z, float scale)
+	{
+		GL11.glPushMatrix();
+    	GL11.glDisable(GL11.GL_LIGHTING);
+		
+    	GL11.glScalef(scale, scale, scale);
+//    	GL11.glRotatef(105.0F, 0.0F, 0.0F, 1.0F);
+//    	GL11.glRotatef(24.0F, 1.0F, 0.0F, 0.0F);
+//    	GL11.glRotatef(5.0F, 0.0F, 1.0F, 0.0F);
     	GL11.glTranslatef(x, y, z);
 
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);

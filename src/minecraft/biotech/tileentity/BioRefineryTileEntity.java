@@ -1,9 +1,5 @@
 package biotech.tileentity;
 
-import hydraulic.core.implement.ColorCode;
-import hydraulic.core.implement.IColorCoded;
-import hydraulic.core.implement.IPsiReciever;
-import hydraulic.core.implement.IReadOut;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -21,7 +17,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver, IColorCoded, IPsiReciever, IReadOut
+public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver
 {
 	// Watts being used per action / idle action
 	public static final double	WATTS_PER_TICK			= 500;
@@ -29,7 +25,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public int					PROCESS_TIME			= 0;
 	
 	// Amount of milliBuckets of internal storage
-	private ColorCode			color					= ColorCode.WHITE;
+	//private ColorCode			color					= ColorCode.WHITE;
 	private static final int	milkMaxStored			= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private int					milkStored				= 0;
 	private int					bucketVol				= LiquidContainerRegistry.BUCKET_VOLUME;
@@ -372,6 +368,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 		return this.milkMaxStored;
 	}
 	
+	/*
 	@Override
 	public String getMeterReading(EntityPlayer user, ForgeDirection side)
 	{
@@ -401,4 +398,5 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	{
 		// TODO Auto-generated method stub
 	}
+	*/
 }
