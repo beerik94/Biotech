@@ -11,7 +11,7 @@ public class ClientProxy extends CommonProxy
 	public void registerRenderInformation()
 	{
 		//Register item handler
-		MinecraftForgeClient.registerItemRenderer(Biotech.bioCheese.itemID, (IItemRenderer)new itemRenderHandler());
+		MinecraftForgeClient.registerItemRenderer(Biotech.bioCheese.itemID, (IItemRenderer)new ItemRenderHandler());
 
 		System.out.println("[Biotech] Render registrations complete.");
 	}

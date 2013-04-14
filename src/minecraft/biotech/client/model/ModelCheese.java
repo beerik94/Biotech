@@ -14,14 +14,14 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class modelCheese extends ModelBase
+public class ModelCheese extends ModelBase
 {
     /** The Cheese*/
     private IModelCustom cheeseOBJ;
     public float cheeseScale = 0.3F;
     
     
-    public modelCheese()
+    public ModelCheese()
     {
     	cheeseOBJ = AdvancedModelLoader.loadModel(Biotech.ModelBioCheese);
     }
