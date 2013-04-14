@@ -5,10 +5,10 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import biotech.Biotech;
 
-public class bioCircuitSlot extends Slot
+public class slotBioCircuit extends Slot
 {
 	
-	public bioCircuitSlot(IInventory par1iInventory, int par2, int par3, int par4)
+	public slotBioCircuit(IInventory par1iInventory, int par2, int par3, int par4)
 	{
 		super(par1iInventory, par2, par3, par4);
 		

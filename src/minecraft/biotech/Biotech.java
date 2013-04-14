@@ -17,18 +17,21 @@ import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
-import biotech.block.BiotechBlockMachine;
-import biotech.block.MilkFlowingBlock;
-import biotech.block.MilkStillBlock;
+import universalelectricity.prefab.ore.OreGenerator;
+import biotech.block.blockBiotanium;
+import biotech.block.blockBiotechMachine;
+import biotech.block.blockMilkFlowing;
+import biotech.block.blockMilkStill;
 import biotech.common.CommonProxy;
-import biotech.item.bioCheeseItem;
-import biotech.item.bioCircuitItem;
-import biotech.item.biotechItemBlock;
-import biotech.tileentity.BasicMachineTileEntity;
-import biotech.tileentity.BioRefineryTileEntity;
-import biotech.tileentity.CowMilkerTileEntity;
-import biotech.tileentity.CuttingMachineTileEntity;
-import biotech.tileentity.FertilizerTileEntity;
+import biotech.item.itemBioCheese;
+import biotech.item.itemBioCircuit;
+import biotech.item.itemBiotaniumIngot;
+import biotech.item.itemBioBlock;
+import biotech.tileentity.tileEntityBasicMachine;
+import biotech.tileentity.tileEntityBioRefinery;
+import biotech.tileentity.tileEntityCowMilker;
+import biotech.tileentity.tileEntityCuttingMachine;
+import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -61,9 +64,7 @@ public class Biotech
 	public static final String			TEXTURE_PATH		= FILE_PATH + "textures/";
 	public static final String			MODEL_PATH			= FILE_PATH + "models/";
 	public static final String			GUI_PATH			= TEXTURE_PATH + "gui/";
-	public static final String			BLOCK_TEXTURE_PATH	= TEXTURE_PATH + "block/";
-	public static final String			ITEM_TEXTURE_PATH	= TEXTURE_PATH + "items/";
-	public static final String			MODEL_TEXTURE_PATH	= TEXTURE_PATH + "model/";
+	public static final String			MODEL_TEXTURE_PATH	= TEXTURE_PATH + "items/model/";
 	public static final String			TEXTURE_NAME_PREFIX	= "biotech:";
 	private static final int			BLOCK_ID_PREFIX		= 2450;
 	private static final int			ITEM_ID_PREFIX		= 24400;
@@ -77,10 +78,17 @@ public class Biotech
 	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
 	public static boolean				mekanismEnabled		= false;
 	
+	// Ore gen per chunk
+	public static int					BiotaniumPerChunk	= 2;
+	public static int					BiotaniumPerBranch	= 3;
+	public static int					BiotaniumMinLevel	= 60;
+	public static int					BiotaniumMaxLevel	= 30;
+	
 	// Item templates
 	public static Item					biotechPotionItem;
-	public static bioCircuitItem		bioCircuit;
-	public static bioCheeseItem			bioCheese;
+	public static itemBioCircuit		bioCircuit;
+	public static Item					bioCheese;
+	public static Item					BiotaniumIngot;
 	
 	// Itemstacks for different biocircuits
 	public static ItemStack				UnProgrammed;
@@ -105,6 +113,7 @@ public class Biotech
 	public static Block					biotechBlockMachine;
 	public static Block					milkMoving;
 	public static Block					milkStill;
+	public static Block					Biotanium;
 	
 	// Metadata for biotechBlockMachine
 	// 0 == Farm
@@ -118,7 +127,7 @@ public class Biotech
 	public static final String			ModelBioCheese		= MODEL_PATH + "Cheese.obj";
 	
 	// Model Textures
-	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "CheeseTexture.png"; 
+	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "CheeseTexture.png";
 	
 	// Liquid Stack Milk
 	public static LiquidStack			milkLiquid;
@@ -148,15 +157,25 @@ public class Biotech
 		/**
 		 * Define the items.
 		 */
-		this.bioCircuit = new bioCircuitItem(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX).getInt());
-		this.bioCheese = new bioCheeseItem(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 1).getInt());
+		this.bioCircuit = new itemBioCircuit(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX).getInt());
+		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 1).getInt());
+		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 2).getInt());
 		
 		/**
 		 * Define the blocks.
 		 */
-		this.biotechBlockMachine = new BiotechBlockMachine(Config.getBlock("biotech.BiotechBlock", BLOCK_ID_PREFIX).getInt(), 0);
-		this.milkMoving = new MilkFlowingBlock(Config.getBlock("biotech.MilkFlowing", BLOCK_ID_PREFIX + 1).getInt());
-		this.milkStill = new MilkStillBlock(Config.getBlock("biotech.MilkStill", BLOCK_ID_PREFIX + 2).getInt());
+		this.biotechBlockMachine = new blockBiotechMachine(Config.getBlock("biotech.BiotechBlock", BLOCK_ID_PREFIX).getInt(), 0);
+		this.milkMoving = new blockMilkFlowing(Config.getBlock("biotech.MilkFlowing", BLOCK_ID_PREFIX + 1).getInt());
+		this.milkStill = new blockMilkStill(Config.getBlock("biotech.MilkStill", BLOCK_ID_PREFIX + 2).getInt());
+		this.Biotanium = new blockBiotanium(Config.getBlock("biotech.Biotanium", BLOCK_ID_PREFIX + 3).getInt());
+		
+		/**
+		 * Ore gen per chunk
+		 */
+		this.BiotaniumPerChunk = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerChunk", BiotaniumPerChunk).getInt(BiotaniumPerChunk);
+		this.BiotaniumPerBranch = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerBranch", BiotaniumPerBranch).getInt(BiotaniumPerBranch);
+		this.BiotaniumMinLevel = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumMinLevel", BiotaniumMinLevel).getInt(BiotaniumMinLevel);
+		this.BiotaniumMaxLevel = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumMaxLevel", BiotaniumMaxLevel).getInt(BiotaniumMaxLevel);
 		
 		Config.save();
 		
@@ -184,20 +203,24 @@ public class Biotech
 		/**
 		 * Register the TileEntity's
 		 */
-		GameRegistry.registerTileEntity(BasicMachineTileEntity.class, "BasicMachineTileEntity");
+		GameRegistry.registerTileEntity(tileEntityBasicMachine.class, "BasicMachineTileEntity");
 		// GameRegistry.registerTileEntity(FarmMachineTileEntity.class,
 		// "FarmMachineTileEntity");
-		GameRegistry.registerTileEntity(CuttingMachineTileEntity.class, "CuttingMachineTileEntity");
-		GameRegistry.registerTileEntity(FertilizerTileEntity.class, "FertilizerTileEntity");
-		GameRegistry.registerTileEntity(CowMilkerTileEntity.class, "CowMilkerTileEntity");
-		GameRegistry.registerTileEntity(BioRefineryTileEntity.class, "BioRefineryTileEntity");
+		GameRegistry.registerTileEntity(tileEntityCuttingMachine.class, "CuttingMachineTileEntity");
+		GameRegistry.registerTileEntity(tileEntityFertilizer.class, "FertilizerTileEntity");
+		GameRegistry.registerTileEntity(tileEntityCowMilker.class, "CowMilkerTileEntity");
+		GameRegistry.registerTileEntity(tileEntityBioRefinery.class, "BioRefineryTileEntity");
 		
 		/**
 		 * Handle the blocks
 		 */
-		GameRegistry.registerBlock(Biotech.biotechBlockMachine, biotechItemBlock.class, "Basic Biotech Block");
+		GameRegistry.registerBlock(Biotech.biotechBlockMachine, itemBioBlock.class, "Basic Biotech Block");
 		GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
 		GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
+		GameRegistry.registerBlock(Biotech.Biotanium, "Biotanium");
+		
+		//Register the mod's ore handler
+		GameRegistry.registerWorldGenerator(new OreGenHandler());
 		
 		/**
 		 * Call the recipe registry

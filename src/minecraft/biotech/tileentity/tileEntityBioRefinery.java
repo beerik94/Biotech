@@ -17,7 +17,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPacketReceiver
+public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPacketReceiver
 {
 	// Watts being used per action / idle action
 	public static final double	WATTS_PER_TICK			= 500;
@@ -36,7 +36,7 @@ public class BioRefineryTileEntity extends BasicMachineTileEntity implements IPa
 	public boolean				cheesePressed			= true;
 	public String				buttonText				= "Fuel";
 	
-	public BioRefineryTileEntity()
+	public tileEntityBioRefinery()
 	{
 		super();
 	}

@@ -7,31 +7,34 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import universalelectricity.core.item.IItemElectric;
 import universalelectricity.prefab.SlotSpecific;
-import biotech.slots.emptyBucketSlot;
-import biotech.slots.milkBucketSlot;
-import biotech.slots.rangeUpgradeSlot;
-import biotech.tileentity.CowMilkerTileEntity;
+import biotech.slots.slotEmptyBucket;
+import biotech.slots.slotMilkBucket;
+import biotech.slots.slotSeeds;
+import biotech.tileentity.tileEntityBioRefinery;
 
-public class CowMilkerContainer extends Container
+public class containerBioRefinery extends Container
 {
-	private CowMilkerTileEntity	tileEntity;
+	private tileEntityBioRefinery	tileEntity;
 	
-	public CowMilkerContainer(InventoryPlayer par1InventoryPlayer, CowMilkerTileEntity te)
+	public containerBioRefinery(InventoryPlayer par1InventoryPlayer, tileEntityBioRefinery tileEntity)
 	{
-		this.tileEntity = te;
+		this.tileEntity = tileEntity;
 		
 		// Electric Input Slot
 		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 50, IItemElectric.class));
 		
-		// Slot for Range Upgrade
-		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 5, 20));
+		// Biofuel output Slot
+		this.addSlotToContainer(new Slot(tileEntity, 1, 146, 20));
 		
-		// Slot for empty bucket
-		this.addSlotToContainer(new emptyBucketSlot(tileEntity, 2, 120, 20));
+		// Seeds Input Slot
+		this.addSlotToContainer(new slotSeeds(tileEntity, 2, 5, 20));
 		
 		// Slot for filled bucket
-		this.addSlotToContainer(new milkBucketSlot(tileEntity, 3, 120, 55));
-		
+		this.addSlotToContainer(new slotMilkBucket(tileEntity, 3, 120, 20));
+				
+		// Slot for empty bucket
+		this.addSlotToContainer(new slotEmptyBucket(tileEntity, 4, 120, 55));
+
 		int var3;
 		
 		for (var3 = 0; var3 < 3; ++var3)
@@ -46,7 +49,6 @@ public class CowMilkerContainer extends Container
 		{
 			this.addSlotToContainer(new Slot(par1InventoryPlayer, var3, 8 + var3 * 18, 142));
 		}
-		
 		tileEntity.openChest();
 	}
 	

@@ -3,24 +3,26 @@ package biotech.client;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
+
 import org.lwjgl.opengl.GL11;
+
 import biotech.Biotech;
-import biotech.container.CowMilkerContainer;
-import biotech.tileentity.CowMilkerTileEntity;
+import biotech.container.containerFertilizer;
+import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CowMilkerGui extends GuiContainer
+public class guiFertilizer extends GuiContainer
 {
-	private CowMilkerTileEntity	tileEntity;
+	private tileEntityFertilizer	tileEntity;
 	
-	private int					containerWidth;
-	private int					containerHeight;
+	private int							containerWidth;
+	private int							containerHeight;
 	
-	public CowMilkerGui(InventoryPlayer playerInventory, CowMilkerTileEntity tileEntity)
+	public guiFertilizer(InventoryPlayer playerInventory, tileEntityFertilizer tileEntity)
 	{
-		super(new CowMilkerContainer(playerInventory, tileEntity));
+		super(new containerFertilizer(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}
@@ -50,8 +52,6 @@ public class CowMilkerGui extends GuiContainer
 		}
 		
 		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
-		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 28, 32, 0x00CD00);
-		
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
@@ -65,24 +65,14 @@ public class CowMilkerGui extends GuiContainer
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
 		this.mc.renderEngine.bindTexture(this.getTexture());
 		
-		this.containerWidth = ((this.width - this.xSize) / 2);
-		this.containerHeight = ((this.height - this.ySize) / 2);
+		containerWidth = (this.width - this.xSize) / 2;
+		containerHeight = (this.height - this.ySize) / 2;
 		
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
-		
-		int milkScale = (int) (((double) this.tileEntity.getMilkStored() / this.tileEntity.getMaxMilk()) * 50);
-		
-		this.drawTexturedModalRect(containerWidth + 108, containerHeight + 71 - milkScale, 176, 50 - milkScale, 8, milkScale);
-		
-		if (this.tileEntity.processTicks > 0)
-		{
-			int scale = (int) (((double) this.tileEntity.processTicks / (double) this.tileEntity.PROCESS_TIME_REQUIRED) * 30);
-			this.drawTexturedModalRect(containerWidth + 122, containerHeight + 38, 176, 51, 12, 28 - scale);
-		}
 	}
 	
 	public static String getTexture()
 	{
-		return Biotech.GUI_PATH + "GUI_CowMilker.png";
+		return Biotech.GUI_PATH + "GUI_Fertilizer.png";
 	}
 }

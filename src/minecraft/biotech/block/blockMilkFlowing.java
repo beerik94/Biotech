@@ -1,27 +1,27 @@
 package biotech.block;
 
-import net.minecraft.block.BlockStationary;
+import net.minecraft.block.BlockFluid;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.world.World;
 import net.minecraftforge.liquids.ILiquid;
 import biotech.Biotech;
 
-public class MilkStillBlock extends BlockStationary implements ILiquid
+public class blockMilkFlowing extends BlockFluid implements ILiquid
 {
 	
-	public MilkStillBlock(int id)
+	public blockMilkFlowing(int id)
 	{
 		super(id, Material.water);
 		setHardness(100F);
 		setLightOpacity(3);
-		setUnlocalizedName("MilkStill");
+		setUnlocalizedName("MilkMoving");
 	}
 	
 	@Override
 	public void registerIcons(IconRegister par1IconRegister)
 	{
-		this.blockIcon = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MilkStill");
+		this.blockIcon = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MilkFlow");
 	}
 	
 	@Override

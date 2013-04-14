@@ -11,13 +11,13 @@ import biotech.Biotech;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioCheeseItem extends Item
+public class itemBioCheese extends Item
 {
 	/** The amount this food item heals the player. */
     private final int healAmount;
     private final float saturationModifier;
 	
-	public bioCheeseItem(int par1)
+	public itemBioCheese(int par1)
 	{
 		super(par1);
 		this.setMaxStackSize(64);
@@ -25,19 +25,6 @@ public class bioCheeseItem extends Item
         this.saturationModifier = 0.3F;
 		this.setCreativeTab(Biotech.tabBiotech);
 		this.setUnlocalizedName("bioCheese");
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerIcons(IconRegister iconRegister)
-	{
-		this.itemIcon = iconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "KaasHighPoly");
-	}
-	
-	@Override
-	public Icon getIconFromDamage(int damage)
-	{
-		return this.itemIcon;
 	}
 	
 	@Override

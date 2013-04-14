@@ -4,6 +4,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraftforge.oredict.OreDictionary;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
@@ -16,7 +17,7 @@ public class RecipeRegistry
 		 * Handle the items that will be used in recipes. Just use the string in
 		 * the recipe like the milk manager recipe
 		 */
-		ItemStack itemStone = new ItemStack(Block.stone, 1);
+		ItemStack itemBiotanium = new ItemStack(Biotech.BiotaniumIngot, 1, 0);
 		//ItemStack FarmMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 0);
 		ItemStack WoodMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 1);
 		//ItemStack FertMachine = new ItemStack(Biotech.biotechBlockMachine, 1, 2);
@@ -26,10 +27,10 @@ public class RecipeRegistry
 		ItemStack UnProgrammed = new ItemStack(Biotech.bioCircuit, 1, 0);
 		
 		//Machines
-		//GameRegistry.addRecipe(new ShapedOreRecipe(FarmMachine, new Object[] { "#%#", "@!@", "###", '@', Item.hoeStone, '!', "motor", '#', itemStone, '%', "basicCircuit" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] { "#%#", "@!@", "###", '@', Item.axeStone, '!', "motor", '#', itemStone, '%', "basicCircuit" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] { "@$@", "@!@", "@@@", '@', Item.ingotIron, '!', "motor", '$', "basicCircuit" }));
-		GameRegistry.addRecipe(new ShapedOreRecipe(BioRefinery, new Object[] { "@$@", "%!%", "@@@", '@', Item.ingotIron, '!', "motor", '$', "basicCircuit", '%', Item.bucketEmpty }));
+		//GameRegistry.addRecipe(new ShapedOreRecipe(FarmMachine, new Object[] { "#%#", "@!@", "###", '@', Item.hoeStone, '!', "motor", '#', itemBiotanium, '%', "basicCircuit" }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(WoodMachine, new Object[] { "#%#", "@!@", "###", '@', Item.axeStone, '!', "motor", '#', itemBiotanium, '%', "basicCircuit" }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(CowMilker, new Object[] { "@$@", "@!@", "@@@", '@', itemBiotanium, '!', "motor", '$', "basicCircuit" }));
+		GameRegistry.addRecipe(new ShapedOreRecipe(BioRefinery, new Object[] { "@$@", "%!%", "@@@", '@', itemBiotanium, '!', "motor", '$', "basicCircuit", '%', Item.bucketEmpty }));
 		
 		//Items
 		GameRegistry.addRecipe(new ShapelessOreRecipe(UnProgrammed, new Object[] { "basicCircuit", Item.redstone, "copperWire"}));
@@ -38,5 +39,6 @@ public class RecipeRegistry
 		//GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 3), new Object[] { UnProgrammed, Item.potato}));
 		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Biotech.bioCircuit, 1, 1), new Object[] { UnProgrammed, Item.redstone, Item.compass}));
 	
+		FurnaceRecipes.smelting().addSmelting(Biotech.Biotanium.blockID, 0, new ItemStack(Biotech.BiotaniumIngot), 10F);
 	}
 }

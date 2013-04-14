@@ -15,11 +15,11 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.StringUtils;
 
-public class biotechPotionItem extends Potion
+public class itemBioPotion extends Potion
 {
 	
-	public static final biotechPotionItem[]	potionTypes		= new biotechPotionItem[32];
-	public static final biotechPotionItem	removeEffects	= (new biotechPotionItem(1, false, 8171462)).setPotionName("potion.removeEffects");
+	public static final itemBioPotion[]	potionTypes		= new itemBioPotion[32];
+	public static final itemBioPotion	removeEffects	= (new itemBioPotion(1, false, 8171462)).setPotionName("potion.removeEffects");
 	
 	/** The Id of a Potion object. */
 	public final int						id;
@@ -40,7 +40,7 @@ public class biotechPotionItem extends Potion
 	/** Is the color of the liquid for this potion. */
 	private final int						liquidColor;
 	
-	protected biotechPotionItem(int par1, boolean par2, int par3)
+	protected itemBioPotion(int par1, boolean par2, int par3)
 	{
 		super(par1, par2, par3);
 		this.id = par1;
@@ -149,7 +149,7 @@ public class biotechPotionItem extends Potion
 	/**
 	 * Set the potion name.
 	 */
-	public biotechPotionItem setPotionName(String par1Str)
+	public itemBioPotion setPotionName(String par1Str)
 	{
 		this.name = par1Str;
 		return this;
@@ -163,7 +163,7 @@ public class biotechPotionItem extends Potion
 		return this.name;
 	}
 	
-	protected biotechPotionItem setEffectiveness(double par1)
+	protected itemBioPotion setEffectiveness(double par1)
 	{
 		this.effectiveness = par1;
 		return this;

@@ -3,12 +3,12 @@ package biotech.tileentity;
 import universalelectricity.prefab.network.IPacketReceiver;
 import biotech.Biotech;
 
-public class FertilizerTileEntity extends BasicMachineTileEntity implements IPacketReceiver
+public class tileEntityFertilizer extends tileEntityBasicMachine implements IPacketReceiver
 {
 	// Watts being used per cut
 	public static final double	WATTS_PER_GROWTH	= 500;
 	
-	public FertilizerTileEntity()
+	public tileEntityFertilizer()
 	{
 		super();
 	}

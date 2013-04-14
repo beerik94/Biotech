@@ -6,19 +6,19 @@ import net.minecraftforge.client.IItemRenderer;
 import org.lwjgl.opengl.GL11;
 
 import biotech.Biotech;
-import biotech.client.model.ModelCheese;
+import biotech.client.model.modelCheese;
 import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ItemRenderHandler implements IItemRenderer
+public class itemRenderHandler implements IItemRenderer
 {
-	public ModelCheese	cheese;
+	public modelCheese	cheese;
 	
-	public ItemRenderHandler()
+	public itemRenderHandler()
 	{
-		cheese = new ModelCheese();
+		cheese = new modelCheese();
 	}
 	
 	@Override

@@ -8,15 +8,15 @@ import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 
 import biotech.Biotech;
-import biotech.container.BioRefineryContainer;
-import biotech.tileentity.BioRefineryTileEntity;
+import biotech.container.containerBioRefinery;
+import biotech.tileentity.tileEntityBioRefinery;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class BioRefineryGui extends GuiContainer
+public class guiBioRefinery extends GuiContainer
 {
-	private BioRefineryTileEntity	tileEntity;
+	private tileEntityBioRefinery	tileEntity;
 	
 	private int						containerWidth;
 	private int						containerHeight;
@@ -24,9 +24,9 @@ public class BioRefineryGui extends GuiContainer
 	private int						buttonX;
 	private int						buttonY;
 	
-	public BioRefineryGui(InventoryPlayer playerInventory, BioRefineryTileEntity tileEntity)
+	public guiBioRefinery(InventoryPlayer playerInventory, tileEntityBioRefinery tileEntity)
 	{
-		super(new BioRefineryContainer(playerInventory, tileEntity));
+		super(new containerBioRefinery(playerInventory, tileEntity));
 		this.tileEntity = tileEntity;
 	}
 	

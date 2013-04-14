@@ -16,16 +16,16 @@ import net.minecraft.world.World;
 import universalelectricity.core.UniversalElectricity;
 import universalelectricity.prefab.block.BlockAdvanced;
 import biotech.Biotech;
-import biotech.tileentity.BasicMachineTileEntity;
-import biotech.tileentity.BioRefineryTileEntity;
-import biotech.tileentity.CowMilkerTileEntity;
-import biotech.tileentity.CuttingMachineTileEntity;
-import biotech.tileentity.FarmMachineTileEntity;
-import biotech.tileentity.FertilizerTileEntity;
+import biotech.tileentity.tileEntityBasicMachine;
+import biotech.tileentity.tileEntityBioRefinery;
+import biotech.tileentity.tileEntityCowMilker;
+import biotech.tileentity.tileEntityCuttingMachine;
+import biotech.tileentity.tileEntityFarmingMachine;
+import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class BiotechBlockMachine extends BlockAdvanced
+public class blockBiotechMachine extends BlockAdvanced
 {
 	// 0 == Farm
 	// 1 == Woodcutter
@@ -57,7 +57,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	private Icon			iconOutputOn;
 	private Icon			iconOutputOff;
 	
-	public BiotechBlockMachine(int id, int meta)
+	public blockBiotechMachine(int id, int meta)
 	{
 		super(id, UniversalElectricity.machine);
 		this.setUnlocalizedName("BioBlock");
@@ -175,7 +175,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 		
-		BasicMachineTileEntity tileEntity = (BasicMachineTileEntity) world.getBlockTileEntity(x, y, z);
+		tileEntityBasicMachine tileEntity = (tileEntityBasicMachine) world.getBlockTileEntity(x, y, z);
 		
 		int front = 3;
 		int back = 2;
@@ -299,9 +299,9 @@ public class BiotechBlockMachine extends BlockAdvanced
 	{
 		TileEntity tile = world.getBlockTileEntity(x, y, z);
 		
-		if (tile instanceof BasicMachineTileEntity)
+		if (tile instanceof tileEntityBasicMachine)
 		{
-			BasicMachineTileEntity tileEntity = (BasicMachineTileEntity) tile;
+			tileEntityBasicMachine tileEntity = (tileEntityBasicMachine) tile;
 			
 			if (tileEntity.isPowered)
 			{
@@ -321,7 +321,7 @@ public class BiotechBlockMachine extends BlockAdvanced
 	@Override
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLiving entity, ItemStack itemStack)
 	{
-		BasicMachineTileEntity tileEntity = (BasicMachineTileEntity) world.getBlockTileEntity(x, y, z);
+		tileEntityBasicMachine tileEntity = (tileEntityBasicMachine) world.getBlockTileEntity(x, y, z);
         int side = MathHelper.floor_double((double)(entity.rotationYaw * 4.0F / 360.0F) + 0.5D) & 3;
         int change = 3;
         
@@ -353,12 +353,12 @@ public class BiotechBlockMachine extends BlockAdvanced
 		
 		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
 		
-		if (tileEntity == null || !(tileEntity instanceof BasicMachineTileEntity))
+		if (tileEntity == null || !(tileEntity instanceof tileEntityBasicMachine))
 		{
 			return false;
 		}
 		
-		BasicMachineTileEntity basicEntity = (BasicMachineTileEntity) tileEntity;
+		tileEntityBasicMachine basicEntity = (tileEntityBasicMachine) tileEntity;
 		
 		// Re-orient the block
 		switch (basicEntity.getFacing())
@@ -428,18 +428,18 @@ public class BiotechBlockMachine extends BlockAdvanced
 		switch (metadata)
 		{
 			case 0:
-				return new FarmMachineTileEntity();
+				return new tileEntityFarmingMachine();
 			case 1:
-				return new CuttingMachineTileEntity();
+				return new tileEntityCuttingMachine();
 			case 2:
-				return new FertilizerTileEntity();
+				return new tileEntityFertilizer();
 			case 3:
 			case 4:
-				return new CowMilkerTileEntity();
+				return new tileEntityCowMilker();
 			case 5:
-				return new BioRefineryTileEntity();
+				return new tileEntityBioRefinery();
 			default:
-				return new BasicMachineTileEntity();
+				return new tileEntityBasicMachine();
 		}
 	}
 }

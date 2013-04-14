@@ -11,7 +11,7 @@ import universalelectricity.prefab.network.IPacketReceiver;
 import biotech.helpers.Util;
 
 
-public class FarmMachineTileEntity extends BasicMachineTileEntity
+public class tileEntityFarmingMachine extends tileEntityBasicMachine
 {
 	
 	public static final double	WATTS_PER_ACTION	= 500;
@@ -29,7 +29,7 @@ public class FarmMachineTileEntity extends BasicMachineTileEntity
 	protected Block[]			cropStacks			= new Block[] { Block.crops, Block.carrot, Block.potato, };
 	protected ItemStack[]		harvestStacks		= new ItemStack[] { new ItemStack(Item.wheat, 1), new ItemStack(Item.carrot, 1), new ItemStack(Item.potato, 1), };
 	
-	public FarmMachineTileEntity()
+	public tileEntityFarmingMachine()
 	{
 		super();
 	}

@@ -5,18 +5,18 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
 import org.lwjgl.opengl.GL11;
 import biotech.Biotech;
-import biotech.container.FarmMachineContainer;
-import biotech.tileentity.FarmMachineTileEntity;
+import biotech.container.containerFarmingMachine;
+import biotech.tileentity.tileEntityFarmingMachine;
 
-public class FarmMachineGui extends GuiContainer
+public class guiFarmingMachine extends GuiContainer
 {
-	private FarmMachineTileEntity	tileEntity;
+	private tileEntityFarmingMachine	tileEntity;
 	private int						containerWidth;
 	private int						containerHeight;
 	
-	public FarmMachineGui(InventoryPlayer playerInventory, FarmMachineTileEntity machine)
+	public guiFarmingMachine(InventoryPlayer playerInventory, tileEntityFarmingMachine machine)
 	{
-		super(new FarmMachineContainer(playerInventory, machine));
+		super(new containerFarmingMachine(playerInventory, machine));
 		
 		this.tileEntity = machine;
 	}

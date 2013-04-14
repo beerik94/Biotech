@@ -2,13 +2,13 @@ package biotech.slots;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import biotech.Biotech;
 
-public class emptyBucketSlot extends Slot
+public class slotRangeUpgrade extends Slot
 {
 	
-	public emptyBucketSlot(IInventory par1iInventory, int par2, int par3, int par4)
+	public slotRangeUpgrade(IInventory par1iInventory, int par2, int par3, int par4)
 	{
 		super(par1iInventory, par2, par3, par4);
 		
@@ -17,6 +17,6 @@ public class emptyBucketSlot extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.itemID == Item.bucketEmpty.itemID;
+		return itemstack.getItemDamage() == 1;
 	}
 }

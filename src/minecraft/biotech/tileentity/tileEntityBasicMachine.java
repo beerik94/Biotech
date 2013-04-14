@@ -35,7 +35,7 @@ import com.google.common.io.ByteArrayDataInput;
 // Has a powered state
 // Has an inventory
 
-public class BasicMachineTileEntity extends TileEntityElectricityRunnable implements IInventory, ISidedInventory, IPacketReceiver
+public class tileEntityBasicMachine extends TileEntityElectricityRunnable implements IInventory, ISidedInventory, IPacketReceiver
 {
 	protected ItemStack[]		inventory;
 	
@@ -48,7 +48,7 @@ public class BasicMachineTileEntity extends TileEntityElectricityRunnable implem
 	public int					facing;
 	private int					playersUsing		= 0;
 	
-	public BasicMachineTileEntity()
+	public tileEntityBasicMachine()
 	{
 		super();
 		this.inventory = new ItemStack[24];

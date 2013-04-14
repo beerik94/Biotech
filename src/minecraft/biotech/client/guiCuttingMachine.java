@@ -2,8 +2,8 @@ package biotech.client;
 
 import org.lwjgl.opengl.GL11;
 import biotech.Biotech;
-import biotech.container.CuttingMachineContainer;
-import biotech.tileentity.CuttingMachineTileEntity;
+import biotech.container.containerCuttingMachine;
+import biotech.tileentity.tileEntityCuttingMachine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.StatCollector;
@@ -11,16 +11,16 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class CuttingMachineGui extends GuiContainer
+public class guiCuttingMachine extends GuiContainer
 {
-	private CuttingMachineTileEntity	tileEntity;
+	private tileEntityCuttingMachine	tileEntity;
 	
 	private int							containerWidth;
 	private int							containerHeight;
 	
-	public CuttingMachineGui(InventoryPlayer playerInventory, CuttingMachineTileEntity tileEntity)
+	public guiCuttingMachine(InventoryPlayer playerInventory, tileEntityCuttingMachine tileEntity)
 	{
-		super(new CuttingMachineContainer(playerInventory, tileEntity));
+		super(new containerCuttingMachine(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}

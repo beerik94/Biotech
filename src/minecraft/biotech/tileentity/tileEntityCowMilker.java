@@ -23,7 +23,7 @@ import biotech.Biotech;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPacketReceiver
+public class tileEntityCowMilker extends tileEntityBasicMachine implements IPacketReceiver
 {
 	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
@@ -37,7 +37,7 @@ public class CowMilkerTileEntity extends BasicMachineTileEntity implements IPack
 	public static final int		PROCESS_TIME_REQUIRED	= 60;
 	public int					processTicks			= 0;
 	
-	public CowMilkerTileEntity()
+	public tileEntityCowMilker()
 	{
 		super();
 	}

@@ -17,9 +17,9 @@ import biotech.Biotech;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioCircuitItem extends Item
+public class itemBioCircuit extends Item
 {
-	private final static String[]	subNames	= { "UnProgrammed", /*"wheatseeds", "carrots", "potatoes",*/ "RangeUpgrade", /*"treesappling",*/ };
+	private final static String[]	subNames	= { "UnProgrammed", /*"wheatseeds", "carrots", "potatoes",*/ "RangeUpgrade" /*"treesappling",*/ };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	
@@ -30,7 +30,7 @@ public class bioCircuitItem extends Item
 	private Icon					iconRangeUpgrade;
 //	private Icon					iconTreeSappling;
 	
-	public bioCircuitItem(int id)
+	public itemBioCircuit(int id)
 	{
 		super(id);
 		setCreativeTab(Biotech.tabBiotech);
@@ -39,8 +39,8 @@ public class bioCircuitItem extends Item
 		setMaxStackSize(4);
 	}
 	
-	@SideOnly(Side.CLIENT)
-	public void updateIcons(IconRegister iconRegister)
+	@Override
+	public void registerIcons(IconRegister iconRegister)
 	{
 		for (int i = 0; i < subNames.length; i++)
 		{

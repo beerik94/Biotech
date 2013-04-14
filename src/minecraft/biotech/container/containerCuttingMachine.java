@@ -1,20 +1,20 @@
 package biotech.container;
 
+import universalelectricity.core.item.IItemElectric;
+import universalelectricity.prefab.SlotSpecific;
+import biotech.slots.slotRangeUpgrade;
+import biotech.tileentity.tileEntityCuttingMachine;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import universalelectricity.core.item.IItemElectric;
-import universalelectricity.prefab.SlotSpecific;
-import biotech.slots.rangeUpgradeSlot;
-import biotech.tileentity.FertilizerTileEntity;
 
-public class FertilizerContainer extends Container
+public class containerCuttingMachine extends Container
 {
-	private FertilizerTileEntity	tileEntity;
+	private tileEntityCuttingMachine	tileEntity;
 	
-	public FertilizerContainer(InventoryPlayer par1InventoryPlayer, FertilizerTileEntity te)
+	public containerCuttingMachine(InventoryPlayer par1InventoryPlayer, tileEntityCuttingMachine te)
 	{
 		this.tileEntity = te;
 		
@@ -22,7 +22,19 @@ public class FertilizerContainer extends Container
 		this.addSlotToContainer(new SlotSpecific(tileEntity, 0, 5, 50, IItemElectric.class));
 		
 		// Slot for Range Upgrade
-		this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 5, 20));
+		// this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));
+		
+		int InvOutID = 1;
+		
+		// Output Inventory
+		for (int var1 = 0; var1 < 3; ++var1)
+		{
+			for (int var2 = 0; var2 < 2; ++var2)
+			{
+				this.addSlotToContainer(new Slot(tileEntity, InvOutID, 116 + var2 * 18, 20 + var1 * 18));
+				InvOutID++;
+			}
+		}
 		
 		int var3;
 		

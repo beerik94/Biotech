@@ -24,7 +24,7 @@ import biotech.helpers.Util;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class CuttingMachineTileEntity extends BasicMachineTileEntity
+public class tileEntityCuttingMachine extends tileEntityBasicMachine
 {
 	// Watts being used per cut
 	public static final double	WATTS_PER_CUT	= 700;
@@ -32,7 +32,7 @@ public class CuttingMachineTileEntity extends BasicMachineTileEntity
 	protected String[]			saplingStack	= BlockSapling.WOOD_TYPES;
 	protected String[]			woodStack		= BlockLog.woodType;
 	
-	public CuttingMachineTileEntity()
+	public tileEntityCuttingMachine()
 	{
 		super();
 	}
