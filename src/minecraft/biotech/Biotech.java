@@ -17,20 +17,20 @@ import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import universalelectricity.prefab.network.ConnectionHandler;
 import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.ore.OreGenerator;
 import biotech.block.blockBiotanium;
 import biotech.block.blockBiotechMachine;
 import biotech.block.blockMilkFlowing;
 import biotech.block.blockMilkStill;
 import biotech.common.CommonProxy;
+import biotech.item.itemBioBlock;
 import biotech.item.itemBioCheese;
 import biotech.item.itemBioCircuit;
 import biotech.item.itemBiotaniumIngot;
-import biotech.item.itemBioBlock;
 import biotech.tileentity.tileEntityBasicMachine;
 import biotech.tileentity.tileEntityBioRefinery;
 import biotech.tileentity.tileEntityCowMilker;
 import biotech.tileentity.tileEntityCuttingMachine;
+import biotech.tileentity.tileEntityFarmingMachine;
 import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.common.FMLLog;
 import cpw.mods.fml.common.Loader;
@@ -174,8 +174,6 @@ public class Biotech
 		 */
 		this.BiotaniumPerChunk = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerChunk", BiotaniumPerChunk).getInt(BiotaniumPerChunk);
 		this.BiotaniumPerBranch = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerBranch", BiotaniumPerBranch).getInt(BiotaniumPerBranch);
-		this.BiotaniumMinLevel = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumMinLevel", BiotaniumMinLevel).getInt(BiotaniumMinLevel);
-		this.BiotaniumMaxLevel = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumMaxLevel", BiotaniumMaxLevel).getInt(BiotaniumMaxLevel);
 		
 		Config.save();
 		
@@ -204,8 +202,7 @@ public class Biotech
 		 * Register the TileEntity's
 		 */
 		GameRegistry.registerTileEntity(tileEntityBasicMachine.class, "BasicMachineTileEntity");
-		// GameRegistry.registerTileEntity(FarmMachineTileEntity.class,
-		// "FarmMachineTileEntity");
+		GameRegistry.registerTileEntity(tileEntityFarmingMachine.class, "FarmingMachineTileEntity");
 		GameRegistry.registerTileEntity(tileEntityCuttingMachine.class, "CuttingMachineTileEntity");
 		GameRegistry.registerTileEntity(tileEntityFertilizer.class, "FertilizerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityCowMilker.class, "CowMilkerTileEntity");

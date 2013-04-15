@@ -2,21 +2,29 @@ package biotech.tileentity;
 
 import java.util.Random;
 
+import com.google.common.io.ByteArrayDataInput;
+
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.network.INetworkManager;
+import net.minecraft.network.packet.Packet;
+import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
 import universalelectricity.prefab.network.IPacketReceiver;
+import universalelectricity.prefab.network.PacketManager;
+import biotech.Biotech;
 import biotech.helpers.Util;
 
-
-public class tileEntityFarmingMachine extends tileEntityBasicMachine
+public class tileEntityFarmingMachine extends tileEntityBasicMachine implements IPacketReceiver
 {
+	// Watts being used per action
+	public static final double	WATTS_PER_ACTION	= 200;
 	
-	public static final double	WATTS_PER_ACTION	= 500;
-
-	Random random;
+	Random						random;
 	
 	private Block				tilledField			= Block.tilledField;
 	private Block				wheatseedsField		= Block.crops;
@@ -38,45 +46,24 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 	public void updateEntity()
 	{
 		super.updateEntity();
-		
-		if(!worldObj.isRemote)
+		if (!worldObj.isRemote)
 		{
-			if(this.checkRedstone())
+			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Processes */
-				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION && this.inventory[1] != null)
+				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION)
 				{
 					this.workArea();
 					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
 				}
+				System.out.println("Facing = " + this.getFacing());
 			}
-		}
-	}
-	
-	/**
-	 * Checks which forgeDirection the front is.
-	 * @return 
-	 */
-	public String getFront()
-	{
-		switch(this.getFacing())
-		{
-			case 2:
-				return "south";
-			case 3:
-				return "north";
-			case 4:
-				return "east";
-			case 5:
-				return "west";
-			default:
-				return "south";
 		}
 	}
 	
 	public int AreaSize()
 	{
-		if(this.inventory[2] != null)
+		if (this.inventory[2] != null)
 		{
 			return (2 * this.inventory[2].stackSize);
 		}
@@ -93,35 +80,35 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 		int zmin = this.zCoord;
 		int zmax = this.zCoord;
 		
-		if(getFront() == "south")
+		System.out.println("xmin = " + xmin);
+		System.out.println("xmax = " + xmax);
+		System.out.println("zmin = " + zmin);
+		System.out.println("zmax = " + zmax);
+		
+		switch (this.getFacing())
 		{
-			zmin = this.zCoord + 1;
-			zmax = this.zCoord + 1 + AreaSize();
-			xmin = this.xCoord - AreaSize();
-			xmax = this.xCoord + AreaSize();
+			case 2:
+				zmin = this.zCoord - 1;
+				zmax = this.zCoord - 1 - AreaSize();
+				xmin = this.xCoord - AreaSize();
+				xmax = this.xCoord + AreaSize();
+			case 3:
+				zmin = this.zCoord + 1;
+				zmax = this.zCoord + 1 + AreaSize();
+				xmin = this.xCoord - AreaSize();
+				xmax = this.xCoord + AreaSize();
+			case 4:
+				xmin = this.xCoord + 1;
+				xmax = this.xCoord + 1 + AreaSize();
+				zmin = this.zCoord - AreaSize();
+				zmax = this.zCoord + AreaSize();
+			case 5:
+				xmin = this.xCoord - 1;
+				xmax = this.xCoord - 1 - AreaSize();
+				zmin = this.zCoord - AreaSize();
+				zmax = this.zCoord + AreaSize();
 		}
-		else if(getFront() == "north")
-		{
-			zmin = this.zCoord - 1;
-			zmax = this.zCoord - 1 - AreaSize();
-			xmin = this.xCoord - AreaSize();
-			xmax = this.xCoord + AreaSize();
-		}
-		else if(getFront() == "east")
-		{
-			xmin = this.xCoord + 1;
-			xmax = this.xCoord + 1 + AreaSize();
-			zmin = this.zCoord - AreaSize();
-			zmax = this.zCoord + AreaSize();
-		}
-		else if(getFront() == "west")
-		{
-			xmin = this.xCoord - 1;
-			xmax = this.xCoord - 1 - AreaSize();
-			zmin = this.zCoord - AreaSize();
-			zmax = this.zCoord + AreaSize();
-		}
-
+		
 		for (int i = 0; i < resourceStacks.length; i++)
 		{
 			if (this.inventory[1].itemID == resourceStacks[i].itemID)
@@ -134,7 +121,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 						{
 							tillLand(xx, this.yCoord, zz);
 						}
-						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID)
+						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID && this.inventory[1] != null)
 						{
 							PlantSeed(xx, this.yCoord, zz, cropStacks[i].blockID);
 						}
@@ -178,6 +165,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 	public void PlantSeed(int x, int y, int z, int seed)
 	{
 		worldObj.setBlock(x, y, z, seed, 0, 3);
+		this.inventory[1].stackSize -= 1;
 	}
 	
 	/**
@@ -202,18 +190,18 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 			{
 				this.inventory[i] = (plant);
 			}
-			if(this.inventory[i] != null && this.inventory[i].stackSize <= 60)
+			if (this.inventory[i] != null && this.inventory[i].stackSize <= 60)
 			{
 				int plantRandom = random.nextInt(3);
 				this.inventory[i].stackSize += plantRandom;
 			}
 		}
-		if(this.inventory[1] != null && this.inventory[1].stackSize <= 60)
+		if (this.inventory[1] != null && this.inventory[1].stackSize <= 60)
 		{
 			int plantRandom = random.nextInt(3);
 			this.inventory[1].stackSize += plantRandom;
 		}
-		else if(this.inventory[1].stackSize > 64)
+		else if (this.inventory[1].stackSize > 64)
 		{
 			ItemStack added = Util.addToRandomInventory(plant, worldObj, xCoord, yCoord, zCoord, ForgeDirection.UNKNOWN);
 		}
@@ -222,11 +210,11 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 			float f = worldObj.rand.nextFloat() * 0.8F + 0.1F;
 			float f1 = worldObj.rand.nextFloat() * 0.8F + 0.1F;
 			float f2 = worldObj.rand.nextFloat() * 0.8F + 0.1F;
-
+			
 			EntityItem entityitem = new EntityItem(worldObj, xCoord + f, yCoord + f1 + 0.5F, zCoord + f2, plant);
 			
 			entityitem.delayBeforeCanPickup = 10;
-
+			
 			float f3 = 0.05F;
 			entityitem.motionX = (float) worldObj.rand.nextGaussian() * f3;
 			entityitem.motionY = (float) worldObj.rand.nextGaussian() * f3 + 1.0F;
@@ -241,4 +229,25 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 		return "Farmer";
 	}
 	
+	@Override
+	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
+	{
+		try
+		{
+			if (this.worldObj.isRemote)
+			{
+				this.facing = dataStream.readInt();
+			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public Packet getDescriptionPacket()
+	{
+		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
+	}
 }
