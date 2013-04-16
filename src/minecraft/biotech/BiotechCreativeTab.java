@@ -16,6 +16,6 @@ public class BiotechCreativeTab extends CreativeTabs
 	@Override
 	public ItemStack getIconItemStack()
 	{
-		return new ItemStack(Item.wheat);
+		return Biotech.BioTabIcon;
 	}
 }

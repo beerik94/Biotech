@@ -25,6 +25,7 @@ import biotech.common.CommonProxy;
 import biotech.item.itemBioBlock;
 import biotech.item.itemBioCheese;
 import biotech.item.itemBioCircuit;
+import biotech.item.itemBioTabIcon;
 import biotech.item.itemBiotaniumIngot;
 import biotech.tileentity.tileEntityBasicMachine;
 import biotech.tileentity.tileEntityBioRefinery;
@@ -81,14 +82,14 @@ public class Biotech
 	// Ore gen per chunk
 	public static int					BiotaniumPerChunk	= 2;
 	public static int					BiotaniumPerBranch	= 3;
-	public static int					BiotaniumMinLevel	= 60;
-	public static int					BiotaniumMaxLevel	= 30;
 	
 	// Item templates
 	public static Item					biotechPotionItem;
 	public static itemBioCircuit		bioCircuit;
 	public static Item					bioCheese;
 	public static Item					BiotaniumIngot;
+	public static Item					itemBioTab = new itemBioTabIcon(1);
+	public static ItemStack				BioTabIcon = new ItemStack(itemBioTab, 1);
 	
 	// Itemstacks for different biocircuits
 	public static ItemStack				UnProgrammed;

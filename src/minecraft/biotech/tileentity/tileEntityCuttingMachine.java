@@ -193,6 +193,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 			{
 				for (int zz = zminrange; zz <= zmaxrange; zz++)
 				{
+					if(worldObj.getBlockId(xx, yy, zz) == 18 || worldObj.getBlockId(xx, yy, zz) == Block.wood.blockID)
 					DoCut(xx, yy, zz, false);
 				}
 			}

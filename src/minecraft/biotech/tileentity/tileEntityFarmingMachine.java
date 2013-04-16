@@ -56,7 +56,6 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine implements 
 					this.workArea();
 					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
 				}
-				System.out.println("Facing = " + this.getFacing());
 			}
 		}
 	}
