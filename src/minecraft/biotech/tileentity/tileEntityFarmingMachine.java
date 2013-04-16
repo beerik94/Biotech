@@ -2,24 +2,14 @@ package biotech.tileentity;
 
 import java.util.Random;
 
-import com.google.common.io.ByteArrayDataInput;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.prefab.network.IPacketReceiver;
-import universalelectricity.prefab.network.PacketManager;
-import biotech.Biotech;
 import biotech.helpers.Util;
 
-public class tileEntityFarmingMachine extends tileEntityBasicMachine implements IPacketReceiver
+public class tileEntityFarmingMachine extends tileEntityBasicMachine
 {
 	// Watts being used per action
 	public static final double	WATTS_PER_ACTION	= 200;
@@ -53,7 +43,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine implements 
 				/* Per 40 Tick Processes */
 				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION)
 				{
-					this.workArea();
+					this.WorkArea();
 					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
 				}
 			}
@@ -72,45 +62,52 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine implements 
 	/**
 	 * Calculates the work area base on the AreaSize
 	 */
-	public void workArea()
+	public void WorkArea()
 	{
-		int xmin = this.xCoord;
-		int xmax = this.xCoord;
-		int zmin = this.zCoord;
-		int zmax = this.zCoord;
-		
-		System.out.println("xmin = " + xmin);
-		System.out.println("xmax = " + xmax);
-		System.out.println("zmin = " + zmin);
-		System.out.println("zmax = " + zmax);
+		int xmin = 0;
+		int xmax = 0;
+		int zmin = 0;
+		int zmax = 0;
 		
 		switch (this.getFacing())
 		{
 			case 2:
-				zmin = this.zCoord - 1;
-				zmax = this.zCoord - 1 - AreaSize();
-				xmin = this.xCoord - AreaSize();
-				xmax = this.xCoord + AreaSize();
+			{
+				xmin = xCoord - AreaSize();
+				xmax = xCoord + AreaSize();
+				zmin = zCoord - 1 - AreaSize();
+				zmax = zCoord - 1;
+				break;
+			}
 			case 3:
-				zmin = this.zCoord + 1;
-				zmax = this.zCoord + 1 + AreaSize();
-				xmin = this.xCoord - AreaSize();
-				xmax = this.xCoord + AreaSize();
+			{
+				xmin = xCoord - AreaSize();
+				xmax = xCoord + AreaSize();
+				zmin = zCoord + 1;
+				zmax = zCoord + 1 + AreaSize();
+				break;
+			}
 			case 4:
-				xmin = this.xCoord + 1;
-				xmax = this.xCoord + 1 + AreaSize();
-				zmin = this.zCoord - AreaSize();
-				zmax = this.zCoord + AreaSize();
+			{
+				xmin = xCoord - 1 - AreaSize();
+				xmax = xCoord - 1;
+				zmin = zCoord - AreaSize();
+				zmax = zCoord + AreaSize();
+				break;
+			}
 			case 5:
-				xmin = this.xCoord - 1;
-				xmax = this.xCoord - 1 - AreaSize();
-				zmin = this.zCoord - AreaSize();
-				zmax = this.zCoord + AreaSize();
+			{
+				xmin = xCoord + 1;
+				xmax = xCoord + 1 + AreaSize();
+				zmin = zCoord - AreaSize();
+				zmax = zCoord + AreaSize();
+				break;
+			}
 		}
 		
 		for (int i = 0; i < resourceStacks.length; i++)
 		{
-			if (this.inventory[1].itemID == resourceStacks[i].itemID)
+			if (this.inventory[1] != null && this.inventory[1].itemID == resourceStacks[i].itemID)
 			{
 				for (int xx = xmin; xx < xmax; xx++)
 				{
@@ -118,9 +115,9 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine implements 
 					{
 						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) != Block.tilledField.blockID)
 						{
-							tillLand(xx, this.yCoord, zz);
+							TillLand(xx, this.yCoord - 1, zz);
 						}
-						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID && this.inventory[1] != null)
+						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID)
 						{
 							PlantSeed(xx, this.yCoord, zz, cropStacks[i].blockID);
 						}
@@ -144,7 +141,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine implements 
 	 * @param z
 	 *            position
 	 */
-	public void tillLand(int x, int y, int z)
+	public void TillLand(int x, int y, int z)
 	{
 		worldObj.setBlock(x, y, z, Block.tilledField.blockID, 0, 2);
 	}
@@ -226,27 +223,5 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine implements 
 	public String getInvName()
 	{
 		return "Farmer";
-	}
-	
-	@Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
-				this.facing = dataStream.readInt();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.facing);
 	}
 }

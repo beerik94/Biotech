@@ -3,8 +3,6 @@ package biotech.item;
 import java.util.ArrayList;
 import java.util.List;
 
-import universalelectricity.prefab.modifier.IModifier;
-
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;

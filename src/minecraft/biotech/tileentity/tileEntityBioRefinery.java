@@ -11,9 +11,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
-import universalelectricity.prefab.network.IPacketReceiver;
-import universalelectricity.prefab.network.PacketManager;
 import biotech.Biotech;
+import biotech.PacketHandler;
+import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -335,7 +335,7 @@ public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPa
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks, this.facing);
+		return PacketHandler.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks, this.facing);
 	}
 	
 	public int getMilkStored()

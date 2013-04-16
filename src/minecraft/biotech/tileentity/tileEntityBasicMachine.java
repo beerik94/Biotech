@@ -1,51 +1,31 @@
 package biotech.tileentity;
 
-import java.util.EnumSet;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.network.INetworkManager;
-import net.minecraft.network.packet.Packet;
-import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.electricity.ElectricityNetwork;
 import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.block.IConductor;
 import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.item.IItemElectric;
 import universalelectricity.core.vector.Vector3;
-import universalelectricity.prefab.network.IPacketReceiver;
-import universalelectricity.prefab.network.PacketManager;
-import universalelectricity.prefab.tile.TileEntityElectricityRunnable;
-import biotech.Biotech;
-
-import com.google.common.io.ByteArrayDataInput;
+import biotech.PacketHandler;
 
 // Default machine TileEntity
 // Has a power connection at the back
 // Has a powered state
 // Has an inventory
 
-public class tileEntityBasicMachine extends TileEntityElectricityRunnable implements IInventory, ISidedInventory, IPacketReceiver
-{
-	protected ItemStack[]		inventory;
-	
+public class tileEntityBasicMachine extends tileEntityBasic implements IInventory, ISidedInventory
+{	
+	//The amount of watts received this tick. This variable should be deducted when used.
+	public double prevWatts, wattsReceived = 0;
 	// Watts requested per tick and max watt that can be received
 	public static final double	WATTS_PER_TICK = 25;
 	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
 	public static final int		MilkPerBucket = 100;
-	public boolean				prevIsPowered, isPowered = false;
-	public int					facing;
 	private int					playersUsing		= 0;
 	
 	public tileEntityBasicMachine()
@@ -140,7 +120,7 @@ public class tileEntityBasicMachine extends TileEntityElectricityRunnable implem
 	{
 		if (!this.worldObj.isRemote)
 		{
-			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 15);
+			PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 15);
 		}
 		this.playersUsing++;
 	}
@@ -152,70 +132,9 @@ public class tileEntityBasicMachine extends TileEntityElectricityRunnable implem
 	}
 	
 	@Override
-	public void readFromNBT(NBTTagCompound tagCompound)
-	{
-		super.readFromNBT(tagCompound);
-		// this.progressTime = tagCompound.getShort("Progress");
-		
-		this.facing = tagCompound.getShort("facing");
-		this.isPowered = tagCompound.getBoolean("isPowered");
-		
-		NBTTagList tagList = tagCompound.getTagList("Inventory");
-		
-		for (int i = 0; i < tagList.tagCount(); i++)
-		{
-			NBTTagCompound tag = (NBTTagCompound) tagList.tagAt(i);
-			byte slot = tag.getByte("Slot");
-			
-			if (slot >= 0 && slot < inventory.length)
-			{
-				inventory[slot] = ItemStack.loadItemStackFromNBT(tag);
-			}
-		}
-	}
-	
-	@Override
-	public void writeToNBT(NBTTagCompound tagCompound)
-	{
-		super.writeToNBT(tagCompound);
-		// tagCompound.setShort("Progress", (short)this.progressTime);
-		
-		tagCompound.setShort("facing", (short) this.facing);
-		tagCompound.setBoolean("isPowered", this.isPowered);
-		
-		NBTTagList itemList = new NBTTagList();
-		
-		for (int i = 0; i < inventory.length; i++)
-		{
-			ItemStack stack = inventory[i];
-			
-			if (stack != null)
-			{
-				NBTTagCompound tag = new NBTTagCompound();
-				tag.setByte("Slot", (byte) i);
-				stack.writeToNBT(tag);
-				itemList.appendTag(tag);
-			}
-		}
-		
-		tagCompound.setTag("Inventory", itemList);
-	}
-	
-	@Override
 	public String getInvName()
 	{
 		return "Basic Machine";
-	}
-	
-	public void setPowered(boolean powered)
-	{
-		this.isPowered = powered;
-		
-		if (prevIsPowered != powered)
-		{
-			prevIsPowered = isPowered;
-			PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj);
-		}
 	}
 	
 	@Override
@@ -236,24 +155,11 @@ public class tileEntityBasicMachine extends TileEntityElectricityRunnable implem
 		{			
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
-				PacketManager.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+				PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
 		}
 	}
 	
-	public boolean checkRedstone()
-	{
-		if (worldObj.getBlockPowerInput(xCoord, yCoord, zCoord) != 0 || worldObj.isBlockIndirectlyGettingPowered(xCoord, yCoord, zCoord))
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	@Override
 	public ElectricityPack getRequest()
 	{
 		if (this.wattsReceived <= MAX_WATTS_RECEIVED && checkRedstone())
@@ -506,57 +412,6 @@ public class tileEntityBasicMachine extends TileEntityElectricityRunnable implem
 					return;
 				}
 			}
-		}
-	}
-	
-	@Override
-	public void handlePacketData(INetworkManager network, int packetType, Packet250CustomPayload packet, EntityPlayer player, ByteArrayDataInput dataStream)
-	{
-		try
-		{
-			if (this.worldObj.isRemote)
-			{
-				this.isPowered = dataStream.readBoolean();
-				this.facing = dataStream.readInt();
-			}
-		}
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public Packet getDescriptionPacket()
-	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.isPowered, this.facing);
-	}
-	
-	public int getFacing()
-	{
-		return facing;
-	}
-	
-	public void setFacing(int facing)
-	{
-		this.facing = facing;
-	}
-	
-	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		switch (this.getFacing())
-		{
-			case 2:
-				return direction == ForgeDirection.getOrientation(3);
-			case 3:
-				return direction == ForgeDirection.getOrientation(2);
-			case 4:
-				return direction == ForgeDirection.getOrientation(5);
-			case 5:
-				return direction == ForgeDirection.getOrientation(4);
-			default:
-				return direction == ForgeDirection.getOrientation(3);
 		}
 	}
 

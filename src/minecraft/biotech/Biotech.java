@@ -15,8 +15,6 @@ import net.minecraftforge.liquids.LiquidContainerRegistry;
 import net.minecraftforge.liquids.LiquidDictionary;
 import net.minecraftforge.liquids.LiquidStack;
 import net.minecraftforge.oredict.OreDictionary;
-import universalelectricity.prefab.network.ConnectionHandler;
-import universalelectricity.prefab.network.PacketManager;
 import biotech.block.blockBiotanium;
 import biotech.block.blockBiotechMachine;
 import biotech.block.blockMilkFlowing;
@@ -50,7 +48,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
 
 @Mod(modid = Biotech.MOD_ID, name = Biotech.NAME, version = Biotech.VERSION, dependencies = "after:BasicComponents;after:Fluid_Mechanics")
-@NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, connectionHandler = ConnectionHandler.class, packetHandler = PacketManager.class)
+@NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
 public class Biotech
 {
 	// The instance of your mod that Forge uses.

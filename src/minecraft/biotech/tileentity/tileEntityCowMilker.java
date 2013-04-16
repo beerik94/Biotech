@@ -16,10 +16,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import universalelectricity.prefab.network.IPacketReceiver;
-import universalelectricity.prefab.network.PacketManager;
 import biotech.Biotech;
+import biotech.PacketHandler;
+import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
@@ -200,7 +199,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	@Override
 	public Packet getDescriptionPacket()
 	{
-		return PacketManager.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks, this.facing);
+		return PacketHandler.getPacket(Biotech.CHANNEL, this, this.milkStored, this.processTicks, this.facing);
 	}
 	
 	/**
