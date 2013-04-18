@@ -92,7 +92,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) != Block.wood.blockID)
 		{
 			Replant(meta);
-			RemoveLeaves();
+			RemoveLeaves(meta);
 			treeBlocks = 2;
 		}
 	}
@@ -161,7 +161,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 	/**
 	 * Removes leaves that are left behind.
 	 */
-	public void RemoveLeaves()
+	public void RemoveLeaves(int meta)
 	{
 		int xminrange = xCoord - 8;
 		int xmaxrange = xCoord + 8;
@@ -176,8 +176,15 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 			{
 				for (int zz = zminrange; zz <= zmaxrange; zz++)
 				{
-					if(worldObj.getBlockId(xx, yy, zz) == 18 || worldObj.getBlockId(xx, yy, zz) == Block.wood.blockID)
-					DoCut(xx, yy, zz, false);
+					if(worldObj.getBlockId(xx, yy, zz) == 18)
+					{
+						DoCut(xx, yy, zz, false);
+					}
+					else if(worldObj.getBlockId(xx, yy, zz) == Block.wood.blockID)
+					{
+						DoCut(xx, yy, zz, false);
+						InvAdd(true, meta);
+					}
 				}
 			}
 		}
@@ -200,6 +207,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 	 * return 2;
 	 * }
 	 */
+	
 	@Override
 	public String getInvName()
 	{
