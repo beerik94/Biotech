@@ -75,7 +75,9 @@ public class Biotech
 	
 	// Default config loader
 	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
-	public static boolean				mekanismEnabled		= false;
+	public static boolean				mekanismLoaded		= false;
+	public static boolean				IC2Loaded			= false;
+	public static boolean				BuildCraftLoaded	= false;
 	
 	// Ore gen per chunk
 	public static int					BiotaniumPerChunk	= 2;
@@ -86,41 +88,27 @@ public class Biotech
 	public static itemBioCircuit		bioCircuit;
 	public static Item					bioCheese;
 	public static Item					BiotaniumIngot;
-	public static Item					itemBioTab = new itemBioTabIcon(1);
-	public static ItemStack				BioTabIcon = new ItemStack(itemBioTab, 1);
+	public static Item					itemBioTab			= new itemBioTabIcon(1);
+	public static ItemStack				BioTabIcon			= new ItemStack(itemBioTab, 1);
 	
-	// Itemstacks for different biocircuits
+	// Itemstacks Bio Circuits
 	public static ItemStack				UnProgrammed;
-	// public static ItemStack WheatSeeds;
-	// public static ItemStack Carrots;
-	// public static ItemStack Potatoes;
 	public static ItemStack				RangeUpgrade;
-	// public static ItemStack TreeSappling;
-	
-	// Metadata for BioCircuit
-	// 0 == unprogrammed
-	// 1 == wheatseeds
-	// 2 == carrots
-	// 3 == potatoes
-	// 4 == rangeupgrade
-	// 5 == treesappling
 	
 	// Mekanism bioFuel
-	public static ItemStack				BioFuel				= new ItemStack(OreDictionary.getOreID("itemBioFuel"), 1, 0);
+	public static ItemStack				BioFuel;
+	
+	// Config Ratio Values
+	public static double				TO_IC2;
+	public static double				TO_BC;
+	public static double				FROM_IC2;
+	public static double				FROM_BC;
 	
 	// Block templates
 	public static Block					biotechBlockMachine;
 	public static Block					milkMoving;
 	public static Block					milkStill;
 	public static Block					Biotanium;
-	
-	// Metadata for biotechBlockMachine
-	// 0 == Farm
-	// 1 == Woodcutter
-	// 2 == Fertilizer
-	// 3 == Miner
-	// 4 == Cow Milker
-	// 5 == BioRefinery
 	
 	// Models
 	public static final String			ModelBioCheese		= MODEL_PATH + "Cheese.obj";
@@ -187,10 +175,18 @@ public class Biotech
 		milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk", new LiquidStack(milkStill, 1));
 		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Milk", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
 		
+		if (Loader.isModLoaded("IC2"))
+			IC2Loaded = true;
+		if (Loader.isModLoaded("BuildCraft|Energy"))
+			BuildCraftLoaded = true;
 		if (Loader.isModLoaded("MekanismGenerators"))
+			mekanismLoaded = true;
+		
+		if (mekanismLoaded)
 		{
-			this.mekanismEnabled = true;
+			ItemStack BioFuel = new ItemStack(OreDictionary.getOreID("itemBioFuel"), 1, 0);
 		}
+		
 		biotechLogger.info("Config loaded");
 	}
 	
@@ -215,7 +211,7 @@ public class Biotech
 		GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
 		GameRegistry.registerBlock(Biotech.Biotanium, "Biotanium");
 		
-		//Register the mod's ore handler
+		// Register the mod's ore handler
 		GameRegistry.registerWorldGenerator(new OreGenHandler());
 		
 		/**

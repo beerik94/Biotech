@@ -187,7 +187,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 			{
 				this.milkStored = dataStream.readInt();
 				this.processTicks = dataStream.readInt();
-				this.facing = dataStream.readInt();
+				this.facing = dataStream.readShort();
 			}
 		}
 		catch (Exception e)

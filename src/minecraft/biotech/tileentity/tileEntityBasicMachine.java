@@ -1,5 +1,6 @@
 package biotech.tileentity;
 
+import mekanism.api.BlockVector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -8,7 +9,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
 import biotech.PacketHandler;
-import biotech.helpers.vector.Vector3;
 
 // Default machine TileEntity
 // Has a power connection at the back
@@ -16,14 +16,15 @@ import biotech.helpers.vector.Vector3;
 // Has an inventory
 
 public class tileEntityBasicMachine extends tileEntityBasic implements IInventory, ISidedInventory
-{	
-	//The amount of watts received this tick. This variable should be deducted when used.
-	public double prevWatts, wattsReceived = 0;
+{
+	// The amount of watts received this tick. This variable should be deducted
+	// when used.
+	public double				prevWatts, wattsReceived = 0;
 	// Watts requested per tick and max watt that can be received
-	public static final double	WATTS_PER_TICK = 25;
+	public static final double	WATTS_PER_TICK		= 25;
 	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
-	public static final int		MilkPerBucket = 100;
+	public static final int		MilkPerBucket		= 100;
 	private int					playersUsing		= 0;
 	
 	public tileEntityBasicMachine()
@@ -118,7 +119,7 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 	{
 		if (!this.worldObj.isRemote)
 		{
-			PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 15);
+			PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new BlockVector(this.xCoord, this.yCoord, this.zCoord), 15);
 		}
 		this.playersUsing++;
 	}
@@ -139,23 +140,15 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 	public void updateEntity()
 	{
 		super.updateEntity();
-		if(checkRedstone())
+		if (checkRedstone())
 		{
-			/*
-			if(this.inventory[0] != null)
-			{
-				/**
-				 * Attempts to charge using batteries.
-				 *
-				this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
-			}
-			*/
+			
 		}
 		if (!worldObj.isRemote)
-		{			
+		{
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
-				PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
+				PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new BlockVector(this.xCoord, this.yCoord, this.zCoord), 12);
 			}
 		}
 	}
@@ -402,15 +395,17 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 			}
 		}
 	}
-
+	
 	@Override
-	public boolean isInvNameLocalized() {
+	public boolean isInvNameLocalized()
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}
-
+	
 	@Override
-	public boolean isStackValidForSlot(int i, ItemStack itemstack) {
+	public boolean isStackValidForSlot(int i, ItemStack itemstack)
+	{
 		// TODO Auto-generated method stub
 		return false;
 	}

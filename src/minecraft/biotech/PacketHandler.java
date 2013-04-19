@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
+import mekanism.api.BlockVector;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,7 +14,6 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 import biotech.helpers.IPacketReceiver;
-import biotech.helpers.vector.Vector3;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -143,14 +143,14 @@ public class PacketHandler implements IPacketHandler, IPacketReceiver
 	}
 
 	/**
-	 * Sends packets to clients around a specific coordinate. A wrapper using Vector3. See
+	 * Sends packets to clients around a specific coordinate. A wrapper using BlockVector. See
 	 * {@PacketDispatcher} for detailed information.
 	 */
-	public static void sendPacketToClients(Packet packet, World worldObj, Vector3 position, double range)
+	public static void sendPacketToClients(Packet packet, World worldObj, BlockVector position, double range)
 	{
 		try
 		{
-			PacketDispatcher.sendPacketToAllAround(position.x, position.y, position.z, range, worldObj.provider.dimensionId, packet);
+			PacketDispatcher.sendPacketToAllAround(position.xCoord, position.yCoord, position.zCoord, range, worldObj.provider.dimensionId, packet);
 		}
 		catch (Exception e)
 		{

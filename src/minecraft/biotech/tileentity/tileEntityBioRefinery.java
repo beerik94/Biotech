@@ -108,7 +108,7 @@ public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPa
 		
 		if (this.getMilkStored() >= bucketVol)
 		{
-			if (Biotech.mekanismEnabled && !fuelPressed && cheesePressed)
+			if (Biotech.mekanismLoaded && !fuelPressed && cheesePressed)
 			{
 				if (this.inventory[1] != null && this.inventory[1].stackSize <= 62 || this.inventory[1] == null)
 				{
@@ -323,7 +323,7 @@ public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPa
 			{
 				this.milkStored = dataStream.readInt();
 				this.processTicks = dataStream.readInt();
-				this.facing = dataStream.readInt();
+				this.facing = dataStream.readShort();
 			}
 		}
 		catch (Exception e)
