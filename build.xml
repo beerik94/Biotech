@@ -48,7 +48,7 @@
 			<fileset dir="${dir.development}resources"/>
 		</copy>
 
-		<jar destfile="output/${file.core}">
+		<jar destfile="output/${file.biotech}">
 			<fileset dir="coreContents"/>
 		</jar>
 
