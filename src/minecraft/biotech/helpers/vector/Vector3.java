@@ -1,4 +1,4 @@
-package universalelectricity.core.vector;
+package biotech.helpers.vector;
 
 import java.util.List;
 

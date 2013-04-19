@@ -36,11 +36,7 @@ public class guiCowMilker extends GuiContainer
 		
 		String displayText = "";
 		
-		if (this.tileEntity.isDisabled())
-		{
-			displayText = "Disabled!";
-		}
-		else if (this.tileEntity.checkRedstone())
+		if (this.tileEntity.checkRedstone())
 		{
 			displayText = "Working";
 		}

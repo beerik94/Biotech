@@ -1,5 +1,6 @@
 package biotech.tileentity;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -7,21 +8,43 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IVoltage;
-import universalelectricity.prefab.tile.TileEntityDisableable;
 import biotech.Biotech;
 import biotech.PacketHandler;
 import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityBasic extends TileEntityDisableable implements IPacketReceiver, IConnector, IVoltage
+public class tileEntityBasic extends TileEntity implements IPacketReceiver
 {
+	protected long ticks = 0;
 	protected ItemStack[]	inventory;
 	public boolean			prevIsPowered, isPowered = false;
 	public int				facing;
+	
+	@Override
+	public void updateEntity()
+	{
+		if (this.ticks == 0)
+		{
+			this.initiate();
+		}
+
+		if (this.ticks >= Long.MAX_VALUE)
+		{
+			this.ticks = 1;
+		}
+
+		this.ticks++;
+	}
+
+	/**
+	 * Called on the TileEntity's first tick.
+	 */
+	public void initiate()
+	{
+	}
 	
 	public int getFacing()
 	{
@@ -34,9 +57,25 @@ public class tileEntityBasic extends TileEntityDisableable implements IPacketRec
 	}
 	
 	@Override
-	public double getVoltage()
+	public int getBlockMetadata()
 	{
-		return 120;
+		if (this.blockMetadata == -1)
+		{
+			this.blockMetadata = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+		}
+
+		return this.blockMetadata;
+	}
+
+	@Override
+	public Block getBlockType()
+	{
+		if (this.blockType == null)
+		{
+			this.blockType = Block.blocksList[this.worldObj.getBlockId(this.xCoord, this.yCoord, this.zCoord)];
+		}
+
+		return this.blockType;
 	}
 	
 	@Override
@@ -87,24 +126,6 @@ public class tileEntityBasic extends TileEntityDisableable implements IPacketRec
 		}
 		
 		tagCompound.setTag("Inventory", itemList);
-	}
-	
-	@Override
-	public boolean canConnect(ForgeDirection direction)
-	{
-		switch (this.getFacing())
-		{
-			case 2:
-				return direction == ForgeDirection.getOrientation(3);
-			case 3:
-				return direction == ForgeDirection.getOrientation(2);
-			case 4:
-				return direction == ForgeDirection.getOrientation(5);
-			case 5:
-				return direction == ForgeDirection.getOrientation(4);
-			default:
-				return direction == ForgeDirection.getOrientation(3);
-		}
 	}
 	
 	@Override

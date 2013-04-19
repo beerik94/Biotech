@@ -3,7 +3,8 @@ package biotech.block;
 import java.util.List;
 import java.util.Random;
 
-import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
+import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLiving;
@@ -14,8 +15,6 @@ import net.minecraft.util.Icon;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import universalelectricity.core.UniversalElectricity;
-import universalelectricity.prefab.block.BlockAdvanced;
 import biotech.Biotech;
 import biotech.tileentity.tileEntityBasicMachine;
 import biotech.tileentity.tileEntityBioRefinery;
@@ -26,7 +25,7 @@ import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class blockBiotechMachine extends BlockAdvanced
+public class blockBiotechMachine extends BlockContainer
 {
 	// 0 == Farm
 	// 1 == Woodcutter
@@ -60,7 +59,7 @@ public class blockBiotechMachine extends BlockAdvanced
 	
 	public blockBiotechMachine(int id, int meta)
 	{
-		super(id, UniversalElectricity.machine);
+		super(id, Material.iron);
 		this.setUnlocalizedName("BioBlock");
 		this.setCreativeTab(Biotech.tabBiotech);
 		this.setStepSound(soundMetalFootstep);
@@ -348,46 +347,7 @@ public class blockBiotechMachine extends BlockAdvanced
 	}
 	
 	@Override
-	public boolean onUseWrench(World world, int x, int y, int z, EntityPlayer par5EntityPlayer, int side, float hitX, float hitY, float hitZ)
-	{
-		int meta = world.getBlockMetadata(x, y, z);
-		
-		TileEntity tileEntity = world.getBlockTileEntity(x, y, z);
-		
-		if (tileEntity == null || !(tileEntity instanceof tileEntityBasicMachine))
-		{
-			return false;
-		}
-		
-		tileEntityBasicMachine basicEntity = (tileEntityBasicMachine) tileEntity;
-		
-		// Re-orient the block
-		switch (basicEntity.getFacing())
-		{
-			case 2:
-				basicEntity.setFacing((short) 5);
-				break;
-			
-			case 5:
-				basicEntity.setFacing((short) 3);
-				break;
-			
-			case 3:
-				basicEntity.setFacing((short) 4);
-				break;
-			
-			case 4:
-				basicEntity.setFacing((short) 2);
-				break;
-		}
-		
-		world.setBlockMetadataWithNotify(x, y, z, meta, 3);
-		world.markBlockForRenderUpdate(x, y, z);
-		return true;
-	}
-	
-	@Override
-	public boolean onMachineActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int side, float hitX, float hitY, float hitZ)
 	{
 		int metadata = world.getBlockMetadata(x, y, z);
 		
@@ -442,5 +402,11 @@ public class blockBiotechMachine extends BlockAdvanced
 			default:
 				return new tileEntityBasicMachine();
 		}
+	}
+
+	@Override
+	public TileEntity createNewTileEntity(World world)
+	{
+		return null;
 	}
 }

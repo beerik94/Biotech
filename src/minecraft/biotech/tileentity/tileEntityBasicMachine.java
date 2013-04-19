@@ -7,10 +7,8 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import universalelectricity.core.electricity.ElectricityPack;
-import universalelectricity.core.item.ElectricItemHelper;
-import universalelectricity.core.vector.Vector3;
 import biotech.PacketHandler;
+import biotech.helpers.vector.Vector3;
 
 // Default machine TileEntity
 // Has a power connection at the back
@@ -143,13 +141,15 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 		super.updateEntity();
 		if(checkRedstone())
 		{
+			/*
 			if(this.inventory[0] != null)
 			{
 				/**
 				 * Attempts to charge using batteries.
-				 */
+				 *
 				this.wattsReceived += ElectricItemHelper.dechargeItem(this.inventory[0], WATTS_PER_TICK, this.getVoltage());
 			}
+			*/
 		}
 		if (!worldObj.isRemote)
 		{			
@@ -157,18 +157,6 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 			{
 				PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Vector3(this), 12);
 			}
-		}
-	}
-	
-	public ElectricityPack getRequest()
-	{
-		if (this.wattsReceived <= MAX_WATTS_RECEIVED && checkRedstone())
-		{
-			return new ElectricityPack(MAX_WATTS_RECEIVED / this.getVoltage(), this.getVoltage());
-		}
-		else
-		{
-			return new ElectricityPack();
 		}
 	}
 	

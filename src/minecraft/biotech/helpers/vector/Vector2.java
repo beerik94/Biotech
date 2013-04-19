@@ -1,12 +1,6 @@
-package universalelectricity.core.vector;
+package biotech.helpers.vector;
 
 import net.minecraft.util.MathHelper;
-
-/**
- * Vector2 Class is used for defining objects in a 2D space.
- * 
- * @author Calclavia
- */
 
 public class Vector2 implements Cloneable
 {
