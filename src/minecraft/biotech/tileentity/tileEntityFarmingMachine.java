@@ -12,7 +12,7 @@ import biotech.helpers.Util;
 public class tileEntityFarmingMachine extends tileEntityBasicMachine
 {
 	// Watts being used per action
-	public static final double	WATTS_PER_ACTION	= 200;
+	public static final double	ENERGY_PER_ACTION	= 75;
 	
 	Random						random;
 	
@@ -41,10 +41,10 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Processes */
-				if (this.ticks % 40 == 0 && this.wattsReceived >= WATTS_PER_ACTION)
+				if (this.ticks % 40 == 0 && this.electricityStored >= ENERGY_PER_ACTION)
 				{
 					this.WorkArea();
-					this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_ACTION / 4, 0);
+					this.electricityStored -= ENERGY_PER_ACTION;
 				}
 			}
 		}

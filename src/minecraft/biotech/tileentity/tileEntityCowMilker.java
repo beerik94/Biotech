@@ -27,7 +27,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
 	// Watts being used per action
-	public static final double	WATTS_PER_TICK			= 1000;
+	public static final double	ENERGY_PER_MILK			= 150;
 	
 	// How much milk is stored?
 	private int					milkStored				= 0;
@@ -49,7 +49,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 		{
 			if (this.checkRedstone())
 			{
-				//this.drainTo(ForgeDirection.DOWN);
+				// this.drainTo(ForgeDirection.DOWN);
 				
 				/* SCAN FOR COWS */
 				if (this.ticks % 40 == 0)
@@ -72,7 +72,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 					else if (this.processTicks > 0)
 					{
 						this.processTicks--;
-
+						
 						/**
 						 * Process the item when the process timer is done.
 						 */
@@ -122,7 +122,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 		{
 			int vol = (10 * CowList.size());
 			this.setMilkStored(vol, true);
-			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_TICK / 4, 0);
+			this.electricityStored -= ENERGY_PER_MILK;
 		}
 	}
 	
@@ -232,37 +232,38 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 		return this.milkMaxStored;
 	}
 	/*
-	@Override
-	public ColorCode getColor()
-	{
-		return ColorCode.WHITE;
-	}
-	
-	@Override
-	public void setColor(Object obj)
-	{
-	}
-	
-	@Override
-	public String getMeterReading(EntityPlayer user, ForgeDirection side)
-	{
-		return "Milk: " + this.milkStored + " Units";
-	}
-	
-	@Override
-	public int getPressureOut(LiquidStack stack, ForgeDirection dir)
-	{
-		if (stack != null && this.color.isValidLiquid(stack))
-		{
-			return LiquidHandler.get(stack).getPressure();
-		}
-		return 0;
-	}
-	
-	@Override
-	public boolean getCanPressureTo(LiquidStack stack, ForgeDirection dir)
-	{
-		return dir == ForgeDirection.DOWN.getOpposite() && this.color.isValidLiquid(stack);
-	}
-	*/
+	 * @Override
+	 * public ColorCode getColor()
+	 * {
+	 * return ColorCode.WHITE;
+	 * }
+	 * 
+	 * @Override
+	 * public void setColor(Object obj)
+	 * {
+	 * }
+	 * 
+	 * @Override
+	 * public String getMeterReading(EntityPlayer user, ForgeDirection side)
+	 * {
+	 * return "Milk: " + this.milkStored + " Units";
+	 * }
+	 * 
+	 * @Override
+	 * public int getPressureOut(LiquidStack stack, ForgeDirection dir)
+	 * {
+	 * if (stack != null && this.color.isValidLiquid(stack))
+	 * {
+	 * return LiquidHandler.get(stack).getPressure();
+	 * }
+	 * return 0;
+	 * }
+	 * 
+	 * @Override
+	 * public boolean getCanPressureTo(LiquidStack stack, ForgeDirection dir)
+	 * {
+	 * return dir == ForgeDirection.DOWN.getOpposite() &&
+	 * this.color.isValidLiquid(stack);
+	 * }
+	 */
 }

@@ -17,12 +17,6 @@ import biotech.PacketHandler;
 
 public class tileEntityBasicMachine extends tileEntityBasic implements IInventory, ISidedInventory
 {
-	// The amount of watts received this tick. This variable should be deducted
-	// when used.
-	public double				prevWatts, wattsReceived = 0;
-	// Watts requested per tick and max watt that can be received
-	public static final double	WATTS_PER_TICK		= 25;
-	public static final double	MAX_WATTS_RECEIVED	= 5000;
 	// Is the machine currently powered, and did it change?
 	public static final int		MilkPerBucket		= 100;
 	private int					playersUsing		= 0;

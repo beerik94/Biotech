@@ -1,11 +1,14 @@
 package biotech.tileentity;
 
+import net.minecraft.block.Block;
 import biotech.Biotech;
 
 public class tileEntityFertilizer extends tileEntityBasicMachine
 {
 	// Watts being used per cut
-	public static final double	WATTS_PER_GROWTH	= 500;
+	public static final double	ENERGY_PER_ACTION	= 500;
+	
+	public Block[]				GrowablePlants		= new Block[] {};
 	
 	public tileEntityFertilizer()
 	{
@@ -21,7 +24,7 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Process */
-				if (this.ticks % 10 == 0 && this.wattsReceived >= WATTS_PER_GROWTH)
+				if (this.ticks % 10 == 0 && this.electricityStored >= ENERGY_PER_ACTION)
 				{
 					CheckPlants();
 				}
@@ -47,7 +50,13 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 			{
 				for (int zz = zminrange; zz <= zmaxrange; zz++)
 				{
-					
+					for (int i = 0; i < GrowablePlants.length; i++)
+					{
+						if (worldObj.getBlockId(xx, yy, zz) == GrowablePlants[i].blockID)
+						{
+							
+						}
+					}
 				}
 			}
 		}

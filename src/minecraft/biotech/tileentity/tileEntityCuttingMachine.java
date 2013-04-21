@@ -10,7 +10,7 @@ import biotech.helpers.Util;
 public class tileEntityCuttingMachine extends tileEntityBasicMachine
 {
 	// Watts being used per cut
-	public static final double	WATTS_PER_CUT	= 700;
+	public static final double	ENERGY_PER_CUT	= 100;
 	private int					treeBlocks		= 2;
 	protected String[]			saplingStack	= BlockSapling.WOOD_TYPES;
 	protected String[]			woodStack		= BlockLog.woodType;
@@ -29,7 +29,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 			if (this.checkRedstone())
 			{
 				/* Per 40 Tick Process */
-				if (this.ticks % 15 == 0 && this.wattsReceived >= WATTS_PER_CUT)
+				if (this.ticks % 15 == 0 && this.electricityStored >= ENERGY_PER_CUT)
 				{
 					GetTree();
 				}
@@ -83,7 +83,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 		 * ZPos); return; } }
 		 */
 		int meta = worldObj.getBlockMetadata(this.xCoord, this.yCoord + treeBlocks, this.zCoord);
-		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) == Block.wood.blockID && this.wattsReceived >= WATTS_PER_CUT)
+		if (worldObj.getBlockId(this.xCoord, this.yCoord + treeBlocks, this.zCoord) == Block.wood.blockID)
 		{
 			DoCut(this.xCoord, this.yCoord + treeBlocks, this.zCoord, true);
 			InvAdd(true, meta);
@@ -143,7 +143,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 		worldObj.setBlock(x, y, z, 0, 0, 2);
 		if (wood)
 		{
-			this.wattsReceived = Math.max(this.wattsReceived - WATTS_PER_CUT / 4, 0);
+			this.electricityStored -= ENERGY_PER_CUT;
 		}
 	}
 	
