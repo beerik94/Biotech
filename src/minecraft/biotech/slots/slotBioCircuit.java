@@ -17,6 +17,13 @@ public class slotBioCircuit extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.itemID == Biotech.bioCircuit.itemID;
+		if(itemstack.itemID == Biotech.bioCircuit.itemID)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

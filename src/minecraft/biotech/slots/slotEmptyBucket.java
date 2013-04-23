@@ -17,6 +17,13 @@ public class slotEmptyBucket extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.itemID == Item.bucketEmpty.itemID;
+		if(itemstack.itemID == Item.bucketEmpty.itemID)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

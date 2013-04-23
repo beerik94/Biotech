@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import biotech.slots.slotElectricItem;
 import biotech.tileentity.tileEntityCuttingMachine;
 
 public class containerCuttingMachine extends Container
@@ -13,6 +14,9 @@ public class containerCuttingMachine extends Container
 	public containerCuttingMachine(InventoryPlayer par1InventoryPlayer, tileEntityCuttingMachine te)
 	{
 		this.tileEntity = te;
+		
+		// Slot for Electricity
+		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
 		
 		// Slot for Range Upgrade
 		// this.addSlotToContainer(new rangeUpgradeSlot(tileEntity, 1, 7, 16));

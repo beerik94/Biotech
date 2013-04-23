@@ -1,6 +1,6 @@
 package biotech.tileentity;
 
-import mekanism.api.BlockVector;
+import mekanism.api.Object3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -113,7 +113,7 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 	{
 		if (!this.worldObj.isRemote)
 		{
-			PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new BlockVector(this.xCoord, this.yCoord, this.zCoord), 15);
+			PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Object3D(this.xCoord, this.yCoord, this.zCoord), 15);
 		}
 		this.playersUsing++;
 	}
@@ -142,7 +142,7 @@ public class tileEntityBasicMachine extends tileEntityBasic implements IInventor
 		{
 			if (this.ticks % 3 == 0 && this.playersUsing > 0)
 			{
-				PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new BlockVector(this.xCoord, this.yCoord, this.zCoord), 12);
+				PacketHandler.sendPacketToClients(getDescriptionPacket(), this.worldObj, new Object3D(this.xCoord, this.yCoord, this.zCoord), 12);
 			}
 		}
 	}

@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+import biotech.slots.slotElectricItem;
 import biotech.slots.slotRangeUpgrade;
 import biotech.tileentity.tileEntityFertilizer;
 
@@ -15,6 +15,9 @@ public class containerFertilizer extends Container
 	public containerFertilizer(InventoryPlayer par1InventoryPlayer, tileEntityFertilizer te)
 	{
 		this.tileEntity = te;
+		
+		// Slot for Electricity
+		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
 		
 		// Slot for Range Upgrade
 		this.addSlotToContainer(new slotRangeUpgrade(tileEntity, 1, 5, 20));

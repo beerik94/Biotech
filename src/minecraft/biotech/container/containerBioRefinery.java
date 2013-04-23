@@ -5,6 +5,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import biotech.slots.slotElectricItem;
 import biotech.slots.slotEmptyBucket;
 import biotech.slots.slotMilkBucket;
 import biotech.slots.slotSeeds;
@@ -17,6 +18,9 @@ public class containerBioRefinery extends Container
 	public containerBioRefinery(InventoryPlayer par1InventoryPlayer, tileEntityBioRefinery tileEntity)
 	{
 		this.tileEntity = tileEntity;
+		
+		// Electricity Slot
+		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
 		
 		// Biofuel output Slot
 		this.addSlotToContainer(new Slot(tileEntity, 1, 146, 20));

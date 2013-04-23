@@ -4,7 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemStack;
+import biotech.slots.slotElectricItem;
 import biotech.slots.slotRangeUpgrade;
 import biotech.tileentity.tileEntityFarmingMachine;
 
@@ -16,6 +16,9 @@ public class containerFarmingMachine extends Container
 	{
 		this.tileEntity = te;
 
+		// Slot for Electricity
+		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
+		
 		// Slot for seeds
 		this.addSlotToContainer(new Slot(tileEntity, 1, 153, 20));
 		

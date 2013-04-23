@@ -4,6 +4,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
+import biotech.slots.slotElectricItem;
 import biotech.slots.slotEmptyBucket;
 import biotech.slots.slotMilkBucket;
 import biotech.slots.slotRangeUpgrade;
@@ -16,6 +17,9 @@ public class containerCowMilker extends Container
 	public containerCowMilker(InventoryPlayer par1InventoryPlayer, tileEntityCowMilker te)
 	{
 		this.tileEntity = te;
+		
+		// Slot for Electricity
+		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
 		
 		// Slot for Range Upgrade
 		this.addSlotToContainer(new slotRangeUpgrade(tileEntity, 1, 5, 20));

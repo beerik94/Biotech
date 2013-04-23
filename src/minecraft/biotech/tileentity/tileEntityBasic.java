@@ -4,6 +4,7 @@ import ic2.api.IWrenchable;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
+import mekanism.api.EnergizedItemManager;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IStrictEnergyStorage;
 import net.minecraft.block.Block;
@@ -93,6 +94,7 @@ public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWre
 		{
 			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getRequest());
 			setJoules(getJoules() + electricityPack.getWatts());
+			setEnergy(electricityStored + EnergizedItemManager.discharge(this.inventory[0], getMaxEnergy()-getEnergy()));
 		}
 	}
 	

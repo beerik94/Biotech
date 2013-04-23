@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-import mekanism.api.BlockVector;
+import mekanism.api.Object3D;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
@@ -146,7 +146,7 @@ public class PacketHandler implements IPacketHandler, IPacketReceiver
 	 * Sends packets to clients around a specific coordinate. A wrapper using BlockVector. See
 	 * {@PacketDispatcher} for detailed information.
 	 */
-	public static void sendPacketToClients(Packet packet, World worldObj, BlockVector position, double range)
+	public static void sendPacketToClients(Packet packet, World worldObj, Object3D position, double range)
 	{
 		try
 		{

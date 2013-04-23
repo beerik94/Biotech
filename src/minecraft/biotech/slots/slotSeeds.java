@@ -17,6 +17,13 @@ public class slotSeeds extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.itemID == Item.seeds.itemID;
+		if(itemstack.itemID == Item.seeds.itemID)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }

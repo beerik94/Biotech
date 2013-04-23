@@ -6,6 +6,9 @@ import java.util.Collections;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.Event;
+import cpw.mods.fml.common.FMLCommonHandler;
 
 /**
  * The actual protocol gas goes through when it is transferred via Pressurized Tubes.
@@ -70,7 +73,10 @@ public class GasTransferProtocol
 			}
 		}
 		
-		iteratedTubes.add(tile);
+		if(!iteratedTubes.contains(tile))
+		{
+			iteratedTubes.add(tile);
+		}
 		
 		TileEntity[] tubes = GasTransmission.getConnectedTubes(tile);
 		
@@ -87,6 +93,22 @@ public class GasTransferProtocol
 	}
 	
 	/**
+	 * Updates the client-side tubes for rendering.
+	 */
+	public void clientUpdate()
+	{
+		loopThrough(pointer);
+		
+		for(TileEntity tileEntity : iteratedTubes)
+		{
+			if(tileEntity instanceof IPressurizedTube)
+			{
+				((IPressurizedTube)tileEntity).onTransfer(transferType);
+			}
+		}
+	}
+	
+	/**
 	 * Runs the protocol and distributes the gas.
 	 * @return rejected gas
 	 */
@@ -95,6 +117,8 @@ public class GasTransferProtocol
 		loopThrough(pointer);
 		
 		Collections.shuffle(availableAcceptors);
+		
+		int prevSending = gasToSend;
 		
 		if(!availableAcceptors.isEmpty())
 		{
@@ -116,6 +140,21 @@ public class GasTransferProtocol
 			}
 		}
 		
+		if(prevSending > gasToSend && FMLCommonHandler.instance().getEffectiveSide().isServer())
+		{
+			MinecraftForge.EVENT_BUS.post(new GasTransferEvent(this));
+		}
+		
 		return gasToSend;
+	}
+	
+	public static class GasTransferEvent extends Event
+	{
+		public final GasTransferProtocol transferProtocol;
+		
+		public GasTransferEvent(GasTransferProtocol protocol)
+		{
+			transferProtocol = protocol;
+		}
 	}
 }

@@ -1,5 +1,7 @@
 package biotech.slots;
 
+import universalelectricity.core.item.IItemElectric;
+import mekanism.api.IEnergizedItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -17,6 +19,13 @@ public class slotMilkBucket extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		return itemstack.itemID == Item.bucketMilk.itemID;
+		if(itemstack.itemID == Item.bucketMilk.itemID)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
