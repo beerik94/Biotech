@@ -22,6 +22,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 	private Block				pumpkinStemField	= Block.pumpkinStem;
 	private Block				carrotField			= Block.carrot;
 	private Block				potatoField			= Block.potato;
+	private boolean				checkSize			= true;
 	
 	protected Item[]			resourceStacks		= new Item[] { Item.seeds, Item.carrot, Item.potato, };
 	protected Block[]			cropStacks			= new Block[] { Block.crops, Block.carrot, Block.potato, };
@@ -54,9 +55,14 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 	{
 		if (this.inventory[2] != null)
 		{
-			return (2 * this.inventory[2].stackSize);
+			return (2 * CheckUpgrade());
 		}
 		return 2;
+	}
+	
+	public int CheckUpgrade()
+	{
+		return this.inventory[2].stackSize;
 	}
 	
 	/**
@@ -69,39 +75,46 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 		int zmin = 0;
 		int zmax = 0;
 		
-		switch (this.getFacing())
+		if(checkSize)
 		{
-			case 2:
+			switch (this.getFacing())
 			{
-				xmin = xCoord - AreaSize();
-				xmax = xCoord + AreaSize();
-				zmin = zCoord - 1 - AreaSize();
-				zmax = zCoord - 1;
-				break;
-			}
-			case 3:
-			{
-				xmin = xCoord - AreaSize();
-				xmax = xCoord + AreaSize();
-				zmin = zCoord + 1;
-				zmax = zCoord + 1 + AreaSize();
-				break;
-			}
-			case 4:
-			{
-				xmin = xCoord - 1 - AreaSize();
-				xmax = xCoord - 1;
-				zmin = zCoord - AreaSize();
-				zmax = zCoord + AreaSize();
-				break;
-			}
-			case 5:
-			{
-				xmin = xCoord + 1;
-				xmax = xCoord + 1 + AreaSize();
-				zmin = zCoord - AreaSize();
-				zmax = zCoord + AreaSize();
-				break;
+				case 2:
+				{
+					xmin = xCoord - AreaSize();
+					xmax = xCoord + AreaSize();
+					zmin = zCoord - 1 - AreaSize();
+					zmax = zCoord - 1;
+					checkSize = false;
+					break;
+				}
+				case 3:
+				{
+					xmin = xCoord - AreaSize();
+					xmax = xCoord + AreaSize();
+					zmin = zCoord + 1;
+					zmax = zCoord + 1 + AreaSize();
+					checkSize = false;
+					break;
+				}
+				case 4:
+				{
+					xmin = xCoord - 1 - AreaSize();
+					xmax = xCoord - 1;
+					zmin = zCoord - AreaSize();
+					zmax = zCoord + AreaSize();
+					checkSize = false;
+					break;
+				}
+				case 5:
+				{
+					xmin = xCoord + 1;
+					xmax = xCoord + 1 + AreaSize();
+					zmin = zCoord - AreaSize();
+					zmax = zCoord + AreaSize();
+					checkSize = false;
+					break;
+				}
 			}
 		}
 		
@@ -117,7 +130,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 						{
 							TillLand(xx, this.yCoord - 1, zz);
 						}
-						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID)
+						if (worldObj.getBlockId(xx, this.yCoord - 1, zz) == Block.tilledField.blockID && worldObj.getBlockId(xx, this.yCoord, zz) != cropStacks[i].blockID)
 						{
 							PlantSeed(xx, this.yCoord, zz, cropStacks[i].blockID);
 						}
