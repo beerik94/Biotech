@@ -77,10 +77,7 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 	{
 		if (inventory[1] != null)
 		{
-			if (inventory[1].isItemEqual(Biotech.RangeUpgrade))
-			{
-				return (inventory[1].stackSize * 5 + 5);
-			}
+			return (inventory[1].stackSize * 5 + 5);
 		}
 		return 5;
 	}

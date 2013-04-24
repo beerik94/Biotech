@@ -88,7 +88,7 @@ public class Biotech
 	public static itemBioCircuit		bioCircuit;
 	public static Item					bioCheese;
 	public static Item					BiotaniumIngot;
-	public static Item					itemBioTab			= new itemBioTabIcon(1);
+	public static Item					itemBioTab			= new itemBioTabIcon(ITEM_ID_PREFIX);
 	public static ItemStack				BioTabIcon			= new ItemStack(itemBioTab, 1);
 	
 	// Mekanism bioFuel
@@ -140,9 +140,9 @@ public class Biotech
 		/**
 		 * Define the items.
 		 */
-		this.bioCircuit = new itemBioCircuit(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX).getInt());
-		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 1).getInt());
-		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 2).getInt());
+		this.bioCircuit = new itemBioCircuit(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX + 1).getInt());
+		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 2).getInt());
+		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 3).getInt());
 		
 		/**
 		 * Define the blocks.
