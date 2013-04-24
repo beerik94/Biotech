@@ -92,9 +92,12 @@ public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWre
 		
 		if (!worldObj.isRemote)
 		{
-			ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getRequest());
-			setJoules(getJoules() + electricityPack.getWatts());
-			setEnergy(electricityStored + EnergizedItemManager.discharge(this.inventory[0], getMaxEnergy()-getEnergy()));
+			if(getEnergy() < getMaxEnergy())
+			{
+				ElectricityPack electricityPack = ElectricityNetworkHelper.consumeFromMultipleSides(this, getRequest());
+				setJoules(getJoules() + electricityPack.getWatts());
+				setEnergy(electricityStored + EnergizedItemManager.discharge(this.inventory[0], getMaxEnergy()-getEnergy()));
+			}
 		}
 	}
 	
@@ -332,7 +335,7 @@ public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWre
 	 */
 	public ElectricityPack getRequest()
 	{
-		if (this.electricityStored <= this.getMaxEnergy())
+		if (this.getEnergy() < this.getMaxEnergy())
 		{
 			return new ElectricityPack(this.getMaxEnergy() / this.getVoltage(), this.getVoltage());
 		}

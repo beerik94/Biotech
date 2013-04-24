@@ -18,7 +18,7 @@ public class slotRangeUpgrade extends Slot
 	@Override
 	public boolean isItemValid(ItemStack itemstack)
 	{
-		if(itemstack == Biotech.RangeUpgrade)
+		if(itemstack == new ItemStack(Biotech.bioCircuit, 1, 1))
 		{
 			return true;
 		}

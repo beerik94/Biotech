@@ -91,10 +91,6 @@ public class Biotech
 	public static Item					itemBioTab			= new itemBioTabIcon(1);
 	public static ItemStack				BioTabIcon			= new ItemStack(itemBioTab, 1);
 	
-	// Itemstacks Bio Circuits
-	public static ItemStack				UnProgrammed;
-	public static ItemStack				RangeUpgrade;
-	
 	// Mekanism bioFuel
 	public static ItemStack				BioFuel;
 	

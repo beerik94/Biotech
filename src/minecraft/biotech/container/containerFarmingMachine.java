@@ -6,6 +6,7 @@ import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import biotech.slots.slotElectricItem;
 import biotech.slots.slotRangeUpgrade;
+import biotech.slots.slotSeeds;
 import biotech.tileentity.tileEntityFarmingMachine;
 
 public class containerFarmingMachine extends Container
@@ -20,9 +21,9 @@ public class containerFarmingMachine extends Container
 		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
 		
 		// Slot for seeds
-		this.addSlotToContainer(new Slot(tileEntity, 1, 153, 20));
+		this.addSlotToContainer(new slotSeeds(tileEntity, 1, 153, 20));
 		
-		// Slot BioCircuit
+		// Slot RangeUpgrade
 		this.addSlotToContainer(new slotRangeUpgrade(tileEntity, 2, 5, 20));
 		
 		int InvOutID = 3;

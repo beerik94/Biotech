@@ -23,6 +23,7 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 	private Block				carrotField			= Block.carrot;
 	private Block				potatoField			= Block.potato;
 	private boolean				checkSize			= true;
+	private int					upgradeStored		= 0;
 	
 	protected Item[]			resourceStacks		= new Item[] { Item.seeds, Item.carrot, Item.potato, };
 	protected Block[]			cropStacks			= new Block[] { Block.crops, Block.carrot, Block.potato, };
@@ -47,6 +48,11 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 					this.WorkArea();
 					this.electricityStored -= ENERGY_PER_ACTION;
 				}
+				if(upgradeStored != CheckUpgrade())
+				{
+					checkSize = true;
+					upgradeStored = CheckUpgrade();
+				}
 			}
 		}
 	}
@@ -62,7 +68,14 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 	
 	public int CheckUpgrade()
 	{
-		return this.inventory[2].stackSize;
+		if(this.inventory[2] != null)
+		{
+			return this.inventory[2].stackSize;
+		}
+		else
+		{
+			return 0;
+		}
 	}
 	
 	/**
@@ -75,44 +88,48 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 		int zmin = 0;
 		int zmax = 0;
 		
-		if(checkSize)
+		if (checkSize)
 		{
 			switch (this.getFacing())
 			{
 				case 2:
 				{
 					xmin = xCoord - AreaSize();
-					xmax = xCoord + AreaSize();
-					zmin = zCoord - 1 - AreaSize();
+					xmax = xCoord + 1 + AreaSize();
+					zmin = zCoord - 2 - AreaSize();
 					zmax = zCoord - 1;
 					checkSize = false;
+					upgradeStored = CheckUpgrade();
 					break;
 				}
 				case 3:
 				{
 					xmin = xCoord - AreaSize();
-					xmax = xCoord + AreaSize();
+					xmax = xCoord + 1 + AreaSize();
 					zmin = zCoord + 1;
-					zmax = zCoord + 1 + AreaSize();
+					zmax = zCoord + 2 + AreaSize();
 					checkSize = false;
+					upgradeStored = CheckUpgrade();
 					break;
 				}
 				case 4:
 				{
-					xmin = xCoord - 1 - AreaSize();
+					xmin = xCoord - 2 - AreaSize();
 					xmax = xCoord - 1;
 					zmin = zCoord - AreaSize();
-					zmax = zCoord + AreaSize();
+					zmax = zCoord + 1 + AreaSize();
 					checkSize = false;
+					upgradeStored = CheckUpgrade();
 					break;
 				}
 				case 5:
 				{
 					xmin = xCoord + 1;
-					xmax = xCoord + 1 + AreaSize();
+					xmax = xCoord + 2 + AreaSize();
 					zmin = zCoord - AreaSize();
-					zmax = zCoord + AreaSize();
+					zmax = zCoord + 1 + AreaSize();
 					checkSize = false;
+					upgradeStored = CheckUpgrade();
 					break;
 				}
 			}
