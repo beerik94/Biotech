@@ -1,9 +1,9 @@
 package biotech.tileentity;
 
-import ic2.api.IWrenchable;
 import ic2.api.energy.event.EnergyTileLoadEvent;
 import ic2.api.energy.event.EnergyTileUnloadEvent;
 import ic2.api.energy.tile.IEnergyTile;
+import ic2.api.tile.IWrenchable;
 import mekanism.api.EnergizedItemManager;
 import mekanism.api.IStrictEnergyAcceptor;
 import mekanism.api.IStrictEnergyStorage;

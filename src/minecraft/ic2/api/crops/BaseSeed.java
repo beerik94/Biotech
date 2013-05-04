@@ -1,4 +1,4 @@
-package ic2.api;
+package ic2.api.crops;
 
 /**
  * Base agriculture seed. Used to determine the state of a plant once it is planted from an item.
