@@ -1,12 +1,12 @@
 {
   "modid": "Biotech",
   "name": "Biotech",
-  "description": "A Universal Electricity Agriculture mod",
+  "description": "An Agriculture mod",
   "logoFile": "/atomiccraft.png",
-  "url": "https://github.com/Wiebbe/Biotech/",
+  "url": "https://github.com/liquidgithub/Biotech/",
   "updateUrl": "",
-  "authors": ["kaendfinger", "gigaherz", "wiebbe", "liquid", "darkguardsman"],
-  "credits": "Made by gigaherz, taken over by wiebbe, liquid and darkguardsman",
+  "authors": ["wiebbe", "liquid", "darkguardsman"],
+  "credits": "Made by LiQuiD",
   "parent": "",
   "screenshots": [],
   "dependencies": []

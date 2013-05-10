@@ -48,6 +48,7 @@ public class guiFertilizer extends GuiContainer
 		}
 		
 		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
+		this.fontRenderer.drawString("AreaSize: " + this.tileEntity.GetRange() + "x" + this.tileEntity.GetRange() + "x" + this.tileEntity.GetRange(), 28, 32, 0x00CD00);
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	

@@ -1,7 +1,8 @@
 package biotech.tileentity;
 
 import net.minecraft.block.Block;
-import biotech.Biotech;
+import net.minecraft.block.BlockCrops;
+import net.minecraft.block.BlockSapling;
 
 public class tileEntityFertilizer extends tileEntityBasicMachine
 {
@@ -23,10 +24,10 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 		{
 			if (this.checkRedstone())
 			{
-				/* Per 40 Tick Process */
+				/* Per 10 Tick Process */
 				if (this.ticks % 10 == 0 && this.electricityStored >= ENERGY_PER_ACTION)
 				{
-					CheckPlants();
+					GrowPlants();
 				}
 			}
 		}
@@ -35,7 +36,7 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 	/**
 	 * Checks for not fully grown plants
 	 */
-	public void CheckPlants()
+	public void GrowPlants()
 	{
 		int xminrange = xCoord - GetRange();
 		int xmaxrange = xCoord + GetRange();
@@ -50,24 +51,25 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 			{
 				for (int zz = zminrange; zz <= zmaxrange; zz++)
 				{
-					for (int i = 0; i < GrowablePlants.length; i++)
+					int bID = worldObj.getBlockId(xx, yy, zz);
+					if (bID == Block.sapling.blockID)
 					{
-						if (worldObj.getBlockId(xx, yy, zz) == GrowablePlants[i].blockID)
+						if ((double) worldObj.rand.nextFloat() < 0.45D)
 						{
-							
+							((BlockSapling) Block.sapling).markOrGrowMarked(worldObj, xx, yy, zz, worldObj.rand);
 						}
 					}
+					else if (bID > 0 && Block.blocksList[bID] instanceof BlockCrops)
+					{
+						if (worldObj.getBlockMetadata(xx, yy, zz) != 7)
+						{
+							((BlockCrops) Block.blocksList[bID]).fertilize(worldObj, xx, yy, zz);
+						}
+					}
+					this.electricityStored -= ENERGY_PER_ACTION;
 				}
 			}
 		}
-	}
-	
-	/**
-	 * Plus the plants growth stage
-	 */
-	public void GrowPlants()
-	{
-		
 	}
 	
 	/**
