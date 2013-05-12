@@ -45,6 +45,10 @@ public class ItemRenderHandler implements IItemRenderer
             	renderCheeseEquipped(3.0F, -2.0F, 3.5F, cheese.cheeseScale);
                 return;
             }
+            case EQUIPPED_FIRST_PERSON: {
+            	renderCheeseEquipped(3.0F, -2.0F, 3.5F, cheese.cheeseScale);
+            	return;
+            }
             case INVENTORY: {
             	renderCheeseInventory(0.75F, -1.25F, 0.0F, 0.4F);
                 return;
@@ -60,9 +64,6 @@ public class ItemRenderHandler implements IItemRenderer
     	GL11.glDisable(GL11.GL_LIGHTING);
 		
     	GL11.glScalef(scale, scale, scale);
-//    	GL11.glRotatef(105.0F, 0.0F, 0.0F, 1.0F);
-//    	GL11.glRotatef(24.0F, 1.0F, 0.0F, 0.0F);
-//    	GL11.glRotatef(5.0F, 0.0F, 1.0F, 0.0F);
     	GL11.glTranslatef(x, y, z);
 
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
@@ -98,9 +99,6 @@ public class ItemRenderHandler implements IItemRenderer
     	GL11.glDisable(GL11.GL_LIGHTING);
 		
     	GL11.glScalef(scale, scale, scale);
-//    	GL11.glRotatef(105.0F, 0.0F, 0.0F, 1.0F);
-//    	GL11.glRotatef(24.0F, 1.0F, 0.0F, 0.0F);
-//    	GL11.glRotatef(5.0F, 0.0F, 1.0F, 0.0F);
     	GL11.glTranslatef(x, y, z);
 
 		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
