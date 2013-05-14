@@ -20,9 +20,14 @@ import biotech.block.blockBiotechMachine;
 import biotech.block.blockMilkFlowing;
 import biotech.block.blockMilkStill;
 import biotech.common.CommonProxy;
+import biotech.handlers.GuiHandler;
+import biotech.handlers.OreGenHandler;
+import biotech.handlers.PacketHandler;
+import biotech.handlers.RecipeHandler;
 import biotech.item.itemBioBlock;
 import biotech.item.itemBioCheese;
 import biotech.item.itemBioCircuit;
+import biotech.item.itemBioDNA;
 import biotech.item.itemBioTabIcon;
 import biotech.item.itemBiotaniumIngot;
 import biotech.tileentity.tileEntityBasicMachine;
@@ -88,6 +93,7 @@ public class Biotech
 	public static itemBioCircuit		bioCircuit;
 	public static Item					bioCheese;
 	public static Item					BiotaniumIngot;
+	public static Item					bioDNA;
 	public static Item					itemBioTab			= new itemBioTabIcon(ITEM_ID_PREFIX);
 	public static ItemStack				BioTabIcon			= new ItemStack(itemBioTab, 1);
 	
@@ -143,6 +149,7 @@ public class Biotech
 		this.bioCircuit = new itemBioCircuit(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX + 1).getInt());
 		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 2).getInt());
 		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 3).getInt());
+		this.bioDNA = new itemBioDNA(Config.getItem("biotech.bioDNA", ITEM_ID_PREFIX + 4).getInt());
 		
 		/**
 		 * Define the blocks.
@@ -213,7 +220,7 @@ public class Biotech
 		/**
 		 * Call the recipe registry
 		 */
-		RecipeRegistry.Recipes();
+		RecipeHandler.Recipes();
 		
 		/**
 		 * Load Proxy

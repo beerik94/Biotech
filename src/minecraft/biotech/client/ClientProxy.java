@@ -4,6 +4,7 @@ import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.MinecraftForgeClient;
 import biotech.Biotech;
 import biotech.common.CommonProxy;
+import biotech.handlers.ItemRenderHandler;
 
 public class ClientProxy extends CommonProxy
 {

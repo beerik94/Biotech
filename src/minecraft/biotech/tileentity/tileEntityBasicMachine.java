@@ -8,7 +8,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.ISidedInventory;
-import biotech.PacketHandler;
+import biotech.handlers.PacketHandler;
 
 // Default machine TileEntity
 // Has a power connection at the back

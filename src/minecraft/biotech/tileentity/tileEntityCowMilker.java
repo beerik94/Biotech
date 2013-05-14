@@ -17,7 +17,7 @@ import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
 import biotech.Biotech;
-import biotech.PacketHandler;
+import biotech.handlers.PacketHandler;
 import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;

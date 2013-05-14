@@ -1,4 +1,4 @@
-package biotech;
+package biotech.handlers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;

@@ -1,4 +1,4 @@
-package biotech.client;
+package biotech.handlers;
 
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;

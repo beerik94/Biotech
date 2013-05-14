@@ -25,7 +25,7 @@ import universalelectricity.core.block.IVoltage;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.ElectricityPack;
 import biotech.Biotech;
-import biotech.PacketHandler;
+import biotech.handlers.PacketHandler;
 import biotech.helpers.IPacketReceiver;
 import biotech.helpers.LinkedPowerProvider;
 import buildcraft.api.power.IPowerProvider;

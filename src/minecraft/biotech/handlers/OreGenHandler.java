@@ -1,6 +1,8 @@
-package biotech;
+package biotech.handlers;
 
 import java.util.Random;
+
+import biotech.Biotech;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;

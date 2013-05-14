@@ -1,33 +1,30 @@
 package biotech.item;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.block.Block;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+import biotech.Biotech;
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
-import net.minecraft.world.World;
-import biotech.Biotech;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
-public class itemBioCircuit extends Item
+public class itemBioDNA extends Item
 {
-	private final static String[]	subNames	= { "UnProgrammed", "RangeUpgrade" };
+	
+	private final static String[]	subNames	= { "Bat", "Chicken", "Cow", "Mooshroom", "Ocelot", "Pig", "Sheep", "Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "GiantZombie", "Golem",  };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	
-	public itemBioCircuit(int id)
+	public itemBioDNA(int id)
 	{
 		super(id);
 		setCreativeTab(Biotech.tabBiotech);
 		setHasSubtypes(true);
-		setUnlocalizedName("bioCircuit");
-		setMaxStackSize(4);
+		setUnlocalizedName("DNA");
+		setMaxStackSize(1);
 	}
 	
 	@Override
@@ -56,7 +53,7 @@ public class itemBioCircuit extends Item
 	{
 		int meta = i.getItemDamage();
 		
-		return this.getUnlocalizedName() + "." + meta;
+		return this.getUnlocalizedName() + "." + subNames[meta].toString();
 	}
 	
 	@SideOnly(Side.CLIENT)

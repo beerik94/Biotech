@@ -1,4 +1,4 @@
-package biotech;
+package biotech.handlers;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
