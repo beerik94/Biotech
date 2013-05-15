@@ -21,21 +21,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.stats.AchievementList;
 import net.minecraft.world.World;
 
-public class bioPig extends EntityAnimal
+public class bioPig extends bioEntityAnimal
 {
 	/** AI task for player control. */
 	private final EntityAIControlledByPlayer	aiControlledByPlayer;
 	
-	public int									PigHealth	= 10;
-	public float								PigWidth	= 0.9F;
-	public float								PigHeight	= 0.9F;
-	public int									PigDrops	= 3;
-	
-	public bioPig(World par1World)
+	public bioPig(World par1World, int Health, float Width, float Height, int Drops)
 	{
-		super(par1World);
+		super(par1World, Health, Width, Height, Drops);
 		this.texture = "/mob/pig.png";
-		this.setSize(PigWidth, PigHeight);
+		this.setSize(Width, Height);
 		this.getNavigator().setAvoidsWater(true);
 		float f = 0.25F;
 		this.tasks.addTask(0, new EntityAISwimming(this));
@@ -53,7 +48,7 @@ public class bioPig extends EntityAnimal
 	@Override
 	public int getMaxHealth()
 	{
-		return PigHealth;
+		return Health;
 	}
 	
 	protected void updateAITasks()
@@ -168,7 +163,7 @@ public class bioPig extends EntityAnimal
 	 */
 	protected void dropFewItems(boolean par1, int par2)
 	{
-		int j = this.rand.nextInt(PigDrops) + 1 + this.rand.nextInt(1 + par2);
+		int j = this.rand.nextInt(Drops) + 1 + this.rand.nextInt(1 + par2);
 		
 		for (int k = 0; k < j; ++k)
 		{
@@ -244,7 +239,7 @@ public class bioPig extends EntityAnimal
 	 */
 	public bioPig spawnBabyAnimal(EntityAgeable par1EntityAgeable)
 	{
-		return new bioPig(this.worldObj);
+		return new bioPig(this.worldObj, Health, Width, Height, Drops);
 	}
 	
 	/**

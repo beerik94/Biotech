@@ -14,7 +14,7 @@ import net.minecraft.util.Icon;
 public class itemBioDNA extends Item
 {
 	
-	private final static String[]	subNames	= { "Bat", "Chicken", "Cow", "Mooshroom", "Ocelot", "Pig", "Sheep", "Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "GiantZombie", "Golem",  };
+	private final static String[]	subNames	= { "Blank", "Bat", "Chicken", "Cow", "Mooshroom", "Ocelot", "Pig", "Sheep", "Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "GiantZombie", "Golem",  };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	
@@ -53,7 +53,7 @@ public class itemBioDNA extends Item
 	{
 		int meta = i.getItemDamage();
 		
-		return this.getUnlocalizedName() + "." + subNames[meta].toString();
+		return this.getUnlocalizedName() + "." + meta;
 	}
 	
 	@SideOnly(Side.CLIENT)
