@@ -14,7 +14,7 @@ import net.minecraft.util.Icon;
 public class itemBioDNA extends Item
 {
 	
-	private final static String[]	subNames	= { "Blank", "Bat", "Chicken", "Cow", "Mooshroom", "Ocelot", "Pig", "Sheep", "Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "GiantZombie", "Golem",  };
+	private final static String[]	subNames	= { "Blank", "Bat", "Chicken", "Cow", "Mooshroom", "Ocelot", "Pig", "Sheep", "Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "Skeleton", "Spider" };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	

@@ -7,7 +7,6 @@ import net.minecraft.util.Icon;
 
 public class itemBioTabIcon extends Item
 {
-
 	public itemBioTabIcon(int id)
 	{
 		super(id);

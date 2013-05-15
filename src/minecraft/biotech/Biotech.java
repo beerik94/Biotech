@@ -9,6 +9,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
@@ -24,6 +25,7 @@ import biotech.handlers.GuiHandler;
 import biotech.handlers.OreGenHandler;
 import biotech.handlers.PacketHandler;
 import biotech.handlers.RecipeHandler;
+import biotech.handlers.bioEventHandler;
 import biotech.item.itemBioBlock;
 import biotech.item.itemBioCheese;
 import biotech.item.itemBioCircuit;
@@ -71,7 +73,7 @@ public class Biotech
 	public static final String			MODEL_TEXTURE_PATH	= TEXTURE_PATH + "items/model/";
 	public static final String			TEXTURE_NAME_PREFIX	= "biotech:";
 	private static final int			BLOCK_ID_PREFIX		= 2450;
-	private static final int			ITEM_ID_PREFIX		= 24400;
+	private static final int			ITEM_ID_PREFIX		= (24400 - 256);
 	private static final String[]		LANGUAGES_SUPPORTED	= new String[] { "en_US" };
 	public static final int				MAJOR_VERSION		= 0;
 	public static final int				MINOR_VERSION		= 2;
@@ -94,8 +96,8 @@ public class Biotech
 	public static Item					bioCheese;
 	public static Item					BiotaniumIngot;
 	public static Item					bioDNA;
-	public static Item					itemBioTab			= new itemBioTabIcon(ITEM_ID_PREFIX);
-	public static ItemStack				BioTabIcon			= new ItemStack(itemBioTab, 1);
+	public static Item					itemBioTab;
+	public static ItemStack				BioTabIcon;
 	
 	// Mekanism bioFuel
 	public static ItemStack				BioFuel;
@@ -166,6 +168,15 @@ public class Biotech
 		this.BiotaniumPerBranch = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerBranch", BiotaniumPerBranch).getInt(BiotaniumPerBranch);
 		
 		Config.save();
+		
+		events = new bioEventHandler();
+		MinecraftForge.EVENT_BUS.register(events);
+		
+		/**
+		 * Registering Biotech Creative Tab Icon
+		 */
+		this.itemBioTab = new itemBioTabIcon(ITEM_ID_PREFIX); 
+		this.BioTabIcon = new ItemStack(itemBioTab, 1);
 		
 		if (milkMoving.blockID + 1 != milkStill.blockID)
 		{
@@ -318,4 +329,6 @@ public class Biotech
 		}
 		return unofficialLanguages;
 	}
+	
+	public static bioEventHandler events;
 }
