@@ -1,4 +1,4 @@
-package biotech.entity;
+package biotech.entity.passive;
 
 import net.minecraft.entity.EntityAgeable;
 import net.minecraft.entity.ai.EntityAIControlledByPlayer;
