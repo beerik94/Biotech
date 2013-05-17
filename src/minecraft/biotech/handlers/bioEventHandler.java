@@ -17,6 +17,7 @@ import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntitySkeleton;
 import net.minecraft.entity.monster.EntitySpider;
+import net.minecraft.entity.monster.EntityZombie;
 import biotech.entity.passive.bioBat;
 import biotech.entity.passive.bioChicken;
 import biotech.entity.passive.bioCow;
@@ -33,6 +34,7 @@ import biotech.entity.monster.bioEnderman;
 import biotech.entity.monster.bioGhast;
 import biotech.entity.monster.bioSkeleton;
 import biotech.entity.monster.bioSpider;
+import biotech.entity.monster.bioZombie;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.ForgeSubscribe;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
@@ -154,6 +156,13 @@ public class bioEventHandler
 	    	else if(event.entityLiving.getClass() == EntitySpider.class || event.entityLiving.getClass() == bioSpider.class)
 	    	{
 	    		ItemStack dropStack = new ItemStack(Biotech.bioDNA, 1, 16);
+	    		EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
+	    		entityitem.delayBeforeCanPickup = 10;
+	    		event.drops.add(entityitem);
+	    	}
+	    	else if(event.entityLiving.getClass() == EntityZombie.class || event.entityLiving.getClass() == bioZombie.class)
+	    	{
+	    		ItemStack dropStack = new ItemStack(Biotech.bioDNA, 1, 17);
 	    		EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
 	    		entityitem.delayBeforeCanPickup = 10;
 	    		event.drops.add(entityitem);
