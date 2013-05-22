@@ -231,7 +231,14 @@ public class Biotech
 		/**
 		 * Call the recipe registry
 		 */
-		RecipeHandler.Recipes();
+		//if(!mekanismLoaded)
+		//{
+			RecipeHandler.BiotechRecipes();
+		//}
+		//else
+		//{
+		//	RecipeHandler.MekanismRecipes();
+		//}
 		
 		/**
 		 * Load Proxy
@@ -268,10 +275,8 @@ public class Biotech
 				}
 			}
 		}
-		int unofficialLanguages = 0;
-		unofficialLanguages = langLoad();
 		
-		System.out.println(NAME + ": Loaded " + languages + " Official and " + unofficialLanguages + " unofficial languages");
+		System.out.println(NAME + ": Loaded " + languages + " Official");
 		
 		NetworkRegistry.instance().registerGuiHandler(this, guiHandler);
 	}
@@ -280,54 +285,6 @@ public class Biotech
 	public void postInit(FMLPostInitializationEvent event)
 	{
 		biotechLogger.info("Biotech fully loaded");
-	}
-	
-	public static File[] ListLanguages()
-	{
-		String folderDir = "";
-		if (MinecraftServer.getServer().isDedicatedServer())
-		{
-			folderDir = "mods/" + "BiotechLanguages";
-		}
-		else if (!MinecraftServer.getServer().isDedicatedServer())
-		{
-			folderDir = Minecraft.getMinecraftDir() + File.separator + "mods" + File.separator + "BiotechLanguages";
-		}
-		
-		File folder = new File(folderDir);
-		
-		if (!folder.exists())
-			folder.mkdirs();
-		
-		String files;
-		File[] listOfFiles = folder.listFiles();
-		
-		return listOfFiles;
-	}
-	
-	public static int langLoad()
-	{
-		int unofficialLanguages = 0;
-		try
-		{
-			for (File langFile : ListLanguages())
-			{
-				if (langFile.exists())
-				{
-					String name = langFile.getName();
-					if (name.endsWith(".lang"))
-					{
-						String lang = name.substring(0, name.length() - 4);
-						LanguageRegistry.instance().loadLocalization(langFile.toString(), lang, false);
-						unofficialLanguages++;
-					}
-				}
-			}
-		}
-		catch (Exception e)
-		{
-		}
-		return unofficialLanguages;
 	}
 	
 	public static bioEventHandler events;

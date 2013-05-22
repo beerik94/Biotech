@@ -6,6 +6,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Icon;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -360,7 +361,7 @@ public abstract class CropCard
 	{
 		return Crops.instance.getIdFor(this);
 	}
-	
+
 	@SideOnly(Side.CLIENT)
 	protected Icon textures[];
 }
