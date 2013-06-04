@@ -19,9 +19,9 @@ public class bioBat extends bioEntityAmbientCreature
      */
     private ChunkCoordinates currentFlightTarget;
 
-    public bioBat(World par1World, int Health, float Width, float Height, int Drops)
+    public bioBat(World par1World, int Health, float Width, float Height, int Drops, int Experience)
     {
-    	super(par1World, Health, Width, Height, Drops);
+    	super(par1World, Health, Width, Height, Drops, Experience);
         this.texture = "/mob/bat.png";
         this.setSize(Width, Height);
         this.setIsBatHanging(true);
@@ -87,7 +87,7 @@ public class bioBat extends bioEntityAmbientCreature
 
     public int getMaxHealth()
     {
-        return Health;
+        return health;
     }
 
     public boolean getIsBatHanging()

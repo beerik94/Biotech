@@ -118,7 +118,7 @@ public class Biotech
 	public static final String			ModelBioCheese		= MODEL_PATH + "Cheese.obj";
 	
 	// Model Textures
-	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "CheeseTexture.png";
+	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "cheeseTexture.png";
 	
 	// Liquid Stack Milk
 	public static LiquidStack			milkLiquid;

@@ -12,13 +12,13 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioSpider extends EntityMob
+public class bioSpider extends bioEntityMob
 {
-    public bioSpider(World par1World)
+    public bioSpider(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+        super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/spider.png";
-        this.setSize(1.4F, 0.9F);
+        this.setSize(Width, Height);
         this.moveSpeed = 0.8F;
     }
 
@@ -39,11 +39,6 @@ public class bioSpider extends EntityMob
         {
             this.setBesideClimbableBlock(this.isCollidedHorizontally);
         }
-    }
-
-    public int getMaxHealth()
-    {
-        return 16;
     }
 
     /**

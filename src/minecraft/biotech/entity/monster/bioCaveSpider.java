@@ -11,16 +11,11 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class bioCaveSpider extends bioSpider
 {
-    public bioCaveSpider(World par1World)
+    public bioCaveSpider(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+        super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/cavespider.png";
         this.setSize(0.7F, 0.5F);
-    }
-
-    public int getMaxHealth()
-    {
-        return 12;
     }
 
     @SideOnly(Side.CLIENT)

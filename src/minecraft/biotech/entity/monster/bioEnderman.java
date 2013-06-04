@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.EnderTeleportEvent;
 
-public class bioEnderman extends EntityMob
+public class bioEnderman extends bioEntityMob
 {
     public static boolean[] carriableBlocks = new boolean[256];
 
@@ -27,18 +27,12 @@ public class bioEnderman extends EntityMob
     private int field_70826_g = 0;
     private boolean field_104003_g;
 
-    public bioEnderman(World par1World)
+    public bioEnderman(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+        super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/enderman.png";
         this.moveSpeed = 0.2F;
-        this.setSize(0.6F, 2.9F);
         this.stepHeight = 1.0F;
-    }
-
-    public int getMaxHealth()
-    {
-        return 40;
     }
 
     protected void entityInit()

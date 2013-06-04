@@ -29,16 +29,16 @@ import net.minecraft.world.World;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioZombie extends EntityMob
+public class bioZombie extends bioEntityMob
 {
     /**
      * Ticker used to determine the time remaining for this zombie to convert into a villager when cured.
      */
     private int conversionTime = 0;
 
-    public bioZombie(World par1World)
+    public bioZombie(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+    	super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/zombie.png";
         this.moveSpeed = 0.23F;
         this.getNavigator().setBreakDoors(true);
@@ -86,11 +86,6 @@ public class bioZombie extends EntityMob
     public String getTexture()
     {
         return this.isVillager() ? "/mob/zombie_villager.png" : "/mob/zombie.png";
-    }
-
-    public int getMaxHealth()
-    {
-        return 20;
     }
 
     /**
@@ -379,7 +374,7 @@ public class bioZombie extends EntityMob
                 return;
             }
 
-            bioZombie entityzombie = new bioZombie(this.worldObj);
+            bioZombie entityzombie = new bioZombie(this.worldObj, health, width, height, drops, experienceValue, AttackStrength, IsHostile);
             entityzombie.func_82149_j(par1EntityLiving);
             this.worldObj.removeEntity(par1EntityLiving);
             entityzombie.initCreature();

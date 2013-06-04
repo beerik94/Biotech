@@ -13,9 +13,9 @@ import net.minecraftforge.common.IShearable;
 
 public class bioMooshroom extends bioCow implements IShearable
 {
-    public bioMooshroom(World par1World, int Health, float Width, float Height, int Drops)
+    public bioMooshroom(World par1World, int Health, float Width, float Height, int Drops, int EV)
     {
-        super(par1World, Health, Width, Height, Drops);
+        super(par1World, Health, Width, Height, Drops, EV);
         this.texture = "/mob/redcow.png";
         this.setSize(0.9F, 1.3F);
     }
@@ -47,7 +47,7 @@ public class bioMooshroom extends bioCow implements IShearable
 
     public bioMooshroom func_94900_c(EntityAgeable par1EntityAgeable)
     {
-        return new bioMooshroom(this.worldObj, Health, Width, Height, Drops);
+        return new bioMooshroom(this.worldObj, health, width, height, drops, experienceValue);
     }
 
     /**

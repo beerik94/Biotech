@@ -49,9 +49,9 @@ public class bioSheep extends bioEntityAnimal implements IShearable
 	/** The eat grass AI task for this mob. */
 	private EntityAIEatGrass		aiEatGrass			= new EntityAIEatGrass(this);
 	
-	public bioSheep(World par1World, int Health, float Width, float Height, int Drops)
+	public bioSheep(World par1World, int Health, float Width, float Height, int Drops, int EV)
 	{
-		super(par1World, Health, Width, Height, Drops);
+		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/sheep.png";
 		this.setSize(Width, Height);
 		float f = 0.23F;
@@ -100,7 +100,7 @@ public class bioSheep extends bioEntityAnimal implements IShearable
 	
 	public int getMaxHealth()
 	{
-		return Health;
+		return health;
 	}
 	
 	protected void entityInit()
@@ -118,7 +118,7 @@ public class bioSheep extends bioEntityAnimal implements IShearable
 	{
 		if (!this.getSheared())
 		{
-			this.entityDropItem(new ItemStack(Block.cloth.blockID, Drops, this.getFleeceColor()), 0.0F);
+			this.entityDropItem(new ItemStack(Block.cloth.blockID, drops, this.getFleeceColor()), 0.0F);
 		}
 	}
 	
@@ -270,10 +270,10 @@ public class bioSheep extends bioEntityAnimal implements IShearable
 		return i < 5 ? 15 : (i < 10 ? 7 : (i < 15 ? 8 : (i < 18 ? 12 : (par0Random.nextInt(500) == 0 ? 6 : 0))));
 	}
 	
-	public EntitySheep func_90015_b(EntityAgeable par1EntityAgeable)
+	public bioSheep func_90015_b(EntityAgeable par1EntityAgeable)
 	{
-		EntitySheep entitysheep = (EntitySheep) par1EntityAgeable;
-		EntitySheep entitysheep1 = new EntitySheep(this.worldObj);
+		bioSheep entitysheep = (bioSheep) par1EntityAgeable;
+		bioSheep entitysheep1 = new bioSheep(this.worldObj, health, width, height, drops, experienceValue);
 		int i = this.func_90014_a(this, entitysheep);
 		entitysheep1.setFleeceColor(15 - i);
 		return entitysheep1;

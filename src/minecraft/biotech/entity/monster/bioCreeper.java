@@ -22,7 +22,7 @@ import biotech.entity.ai.bioEntityAICreeperSwell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioCreeper extends EntityMob
+public class bioCreeper extends bioEntityMob
 {
     /**
      * Time when this creeper was last in an active state (Messed up code here, probably causes creeper animation to go
@@ -39,9 +39,9 @@ public class bioCreeper extends EntityMob
     /** Explosion radius for this creeper. */
     private int explosionRadius = 3;
 
-    public bioCreeper(World par1World)
+    public bioCreeper(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+        super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/creeper.png";
         this.tasks.addTask(1, new EntityAISwimming(this));
         this.tasks.addTask(2, new bioEntityAICreeperSwell(this));
@@ -79,11 +79,6 @@ public class bioCreeper extends EntityMob
         {
             this.timeSinceIgnited = this.fuseTime - 5;
         }
-    }
-
-    public int getMaxHealth()
-    {
-        return 20;
     }
 
     protected void entityInit()

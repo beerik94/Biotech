@@ -35,14 +35,14 @@ import net.minecraft.world.WorldProviderHell;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioSkeleton extends EntityMob implements IRangedAttackMob
+public class bioSkeleton extends bioEntityMob implements IRangedAttackMob
 {
     private EntityAIArrowAttack aiArrowAttack = new EntityAIArrowAttack(this, 0.25F, 20, 60, 15.0F);
     private EntityAIAttackOnCollide aiAttackOnCollide = new EntityAIAttackOnCollide(this, EntityPlayer.class, 0.31F, false);
 
-    public bioSkeleton(World par1World)
+    public bioSkeleton(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+        super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/skeleton.png";
         this.moveSpeed = 0.25F;
         this.tasks.addTask(1, new EntityAISwimming(this));
@@ -72,11 +72,6 @@ public class bioSkeleton extends EntityMob implements IRangedAttackMob
     public boolean isAIEnabled()
     {
         return true;
-    }
-
-    public int getMaxHealth()
-    {
-        return 20;
     }
 
     /**

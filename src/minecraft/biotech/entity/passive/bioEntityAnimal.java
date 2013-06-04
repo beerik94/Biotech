@@ -25,17 +25,17 @@ public abstract class bioEntityAnimal extends EntityAnimal
 	 */
 	private int		breeding	= 0;
 	
-	/**
-	 * Variables for editing base things.(health, etc...)
-	 */
-	public int		Health		= 10;
-	public float	Width		= 0.9F;
-	public float	Height		= 0.9F;
-	public int		Drops		= 3;
+	public int drops;
 	
-	public bioEntityAnimal(World par1World, int Health, float Width, float Height, int Drops)
+	public bioEntityAnimal(World par1World, int Health, float Width, float Height, int Drops, int EV)
 	{
 		super(par1World);
+		this.health = Health;
+		this.width = Width;
+		this.height = Height;
+		this.setSize(Width, Height);
+		this.drops = Drops;
+		this.experienceValue = EV;
 	}
 	
 	/**

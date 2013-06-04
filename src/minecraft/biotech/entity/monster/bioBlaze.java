@@ -1,17 +1,16 @@
 package biotech.entity.monster;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.monster.EntityMob;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.item.Item;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
-public class bioBlaze extends EntityMob
+public class bioBlaze extends bioEntityMob
 {
     /** Random offset used in floating behaviour */
     private float heightOffset = 0.5F;
@@ -20,17 +19,12 @@ public class bioBlaze extends EntityMob
     private int heightOffsetUpdateTime;
     private int field_70846_g;
 
-    public bioBlaze(World par1World)
+    public bioBlaze(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
     {
-        super(par1World);
+    	super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
         this.texture = "/mob/fire.png";
         this.isImmuneToFire = true;
         this.experienceValue = 10;
-    }
-
-    public int getMaxHealth()
-    {
-        return 20;
     }
 
     protected void entityInit()
