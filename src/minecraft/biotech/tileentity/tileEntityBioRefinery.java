@@ -9,15 +9,18 @@ import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 import biotech.Biotech;
 import biotech.handlers.PacketHandler;
 import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPacketReceiver
+public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPacketReceiver, ITankContainer
 {
 	// Watts being used per action / idle action
 	public static final double	WATTS_PER_TICK			= 500;
@@ -25,7 +28,8 @@ public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPa
 	public int					PROCESS_TIME			= 0;
 	
 	// Amount of milliBuckets of internal storage
-	//private ColorCode			color					= ColorCode.WHITE;
+	// private ColorCode color = ColorCode.WHITE;
+	private LiquidTank			milkTank;
 	private static final int	milkMaxStored			= 15 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private int					milkStored				= 0;
 	private int					bucketVol				= LiquidContainerRegistry.BUCKET_VOLUME;
@@ -368,35 +372,71 @@ public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPa
 		return this.milkMaxStored;
 	}
 	
+	@Override
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	{
+		return fill(ForgeDirection.DOWN, resource, doFill);
+	}
+	
+	@Override
+	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	{
+		return milkTank.fill(resource, doFill);
+	}
+	
+	@Override
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	{
+		return null;
+	}
+	
+	@Override
+	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	{	
+		return null;
+	}
+	
+	@Override
+	public ILiquidTank[] getTanks(ForgeDirection direction)
+	{
+		return null;
+	}
+	
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	{
+		return null;
+	}
+	
 	/*
-	@Override
-	public String getMeterReading(EntityPlayer user, ForgeDirection side)
-	{
-		return "Milk:" + this.milkStored;
-	}
-	
-	@Override
-	public ColorCode getColor()
-	{
-		return ColorCode.WHITE;
-	}
-	
-	@Override
-	public void setColor(Object obj)
-	{
-		// leave this blank unless you plan on having it change or be changed
-	}
-	
-	@Override
-	public double getMaxPressure(ForgeDirection side)
-	{
-		return color.getLiquidData().getPressure();
-	}
-	
-	@Override
-	public void onReceivePressure(double pressure)
-	{
-		// TODO Auto-generated method stub
-	}
-	*/
+	 * @Override
+	 * public String getMeterReading(EntityPlayer user, ForgeDirection side)
+	 * {
+	 * return "Milk:" + this.milkStored;
+	 * }
+	 * 
+	 * @Override
+	 * public ColorCode getColor()
+	 * {
+	 * return ColorCode.WHITE;
+	 * }
+	 * 
+	 * @Override
+	 * public void setColor(Object obj)
+	 * {
+	 * // leave this blank unless you plan on having it change or be changed
+	 * }
+	 * 
+	 * @Override
+	 * public double getMaxPressure(ForgeDirection side)
+	 * {
+	 * return color.getLiquidData().getPressure();
+	 * }
+	 * 
+	 * @Override
+	 * public void onReceivePressure(double pressure)
+	 * {
+	 * // TODO Auto-generated method stub
+	 * }
+	 */
 }

@@ -14,15 +14,18 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
+import net.minecraftforge.liquids.ILiquidTank;
 import net.minecraftforge.liquids.ITankContainer;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
+import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.liquids.LiquidTank;
 import biotech.Biotech;
 import biotech.handlers.PacketHandler;
 import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityCowMilker extends tileEntityBasicMachine implements IPacketReceiver
+public class tileEntityCowMilker extends tileEntityBasicMachine implements IPacketReceiver, ITankContainer
 {
 	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
@@ -30,6 +33,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	public static final double	ENERGY_PER_MILK			= 150;
 	
 	// How much milk is stored?
+	private LiquidTank			milkTank;
 	private int					milkStored				= 0;
 	private int					milkMaxStored			= 7 * LiquidContainerRegistry.BUCKET_VOLUME;
 	private boolean				isMilking				= false;
@@ -49,7 +53,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 		{
 			if (this.checkRedstone())
 			{
-				// this.drainTo(ForgeDirection.DOWN);
+				this.drainTo(ForgeDirection.DOWN);
 				
 				/* SCAN FOR COWS */
 				if (this.ticks % 40 == 0)
@@ -231,6 +235,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	{
 		return this.milkMaxStored;
 	}
+	
 	/*
 	 * @Override
 	 * public ColorCode getColor()
@@ -266,4 +271,40 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	 * this.color.isValidLiquid(stack);
 	 * }
 	 */
+	
+	@Override
+	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	{
+		return 0;
+	}
+	
+	@Override
+	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
+	{
+		return 0;
+	}
+	
+	@Override
+	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
+	{
+		return drain(ForgeDirection.DOWN, maxDrain, doDrain);
+	}
+	
+	@Override
+	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
+	{
+		return milkTank.drain(maxDrain, doDrain);
+	}
+	
+	@Override
+	public ILiquidTank[] getTanks(ForgeDirection direction)
+	{
+		return null;
+	}
+	
+	@Override
+	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	{
+		return null;
+	}
 }
