@@ -42,12 +42,30 @@ import biotech.Biotech;
 
 public class bioEventHandler 
 {
+	public void dropItemStack(int par1, int par2, LivingDropsEvent event)
+	{
+		ItemStack dropStack = new ItemStack(Biotech.bioDNA, par1, par2);
+        EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
+        entityitem.delayBeforeCanPickup = 10;
+        event.drops.add(entityitem);
+	}
+	
     /* Drops */
     @ForgeSubscribe
     public void onLivingDrop (LivingDropsEvent event)
     {
     	if (!event.entityLiving.isChild())
         {
+    		switch(event.entityLiving.getClass().getName())
+    		{
+    			case "EntityBat":
+    			case "bioBat":
+    			{
+    				dropItemStack(1, 1, event);
+    			}
+    			
+    		}
+    		/*
 	    	if (event.entityLiving.getClass() == EntityBat.class || event.entityLiving.getClass() == bioBat.class)
 	    	{
 	        	ItemStack dropStack = new ItemStack(Biotech.bioDNA, 1, 1);
@@ -55,7 +73,8 @@ public class bioEventHandler
 	            entityitem.delayBeforeCanPickup = 10;
 	            event.drops.add(entityitem);
 	        }
-	    	else if (event.entityLiving.getClass() == EntityChicken.class || event.entityLiving.getClass() == bioChicken.class)
+	        
+	    	else*/ if (event.entityLiving.getClass() == EntityChicken.class || event.entityLiving.getClass() == bioChicken.class)
 	    	{
 	        	ItemStack dropStack = new ItemStack(Biotech.bioDNA, 1, 2);
 	            EntityItem entityitem = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ, dropStack);
