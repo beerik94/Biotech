@@ -23,6 +23,11 @@ public class bioCow extends bioEntityAnimal
 		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/cow.png";
 		this.setSize(Width, Height);
+		this.width = Width;
+		this.height = Height;
+		this.health = Health;
+		this.drops = Drops;
+		this.experienceValue = EV;
 		this.getNavigator().setAvoidsWater(true);
 		this.tasks.addTask(0, new EntityAISwimming(this));
 		this.tasks.addTask(1, new EntityAIPanic(this, 0.38F));

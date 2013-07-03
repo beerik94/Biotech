@@ -6,16 +6,19 @@ import net.minecraft.world.World;
 import biotech.client.guiBioRefinery;
 import biotech.client.guiCowMilker;
 import biotech.client.guiCuttingMachine;
+import biotech.client.guiDnaSpawner;
 import biotech.client.guiFarmingMachine;
 import biotech.client.guiFertilizer;
 import biotech.container.containerBioRefinery;
 import biotech.container.containerCowMilker;
 import biotech.container.containerCuttingMachine;
+import biotech.container.containerDnaSpawner;
 import biotech.container.containerFarmingMachine;
 import biotech.container.containerFertilizer;
 import biotech.tileentity.tileEntityBioRefinery;
 import biotech.tileentity.tileEntityCowMilker;
 import biotech.tileentity.tileEntityCuttingMachine;
+import biotech.tileentity.tileEntityDnaSpawner;
 import biotech.tileentity.tileEntityFarmingMachine;
 import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -42,6 +45,8 @@ public class GuiHandler implements IGuiHandler
 					return new containerCuttingMachine(player.inventory, (tileEntityCuttingMachine) tileEntity);
 				case 4:
 					return new containerFertilizer(player.inventory, (tileEntityFertilizer) tileEntity);
+				case 5:
+					return new containerDnaSpawner(player.inventory, (tileEntityDnaSpawner) tileEntity);
 			}
 		}
 		return null;
@@ -66,6 +71,8 @@ public class GuiHandler implements IGuiHandler
 					return new guiCuttingMachine(player.inventory, (tileEntityCuttingMachine) tileEntity);
 				case 4:
 					return new guiFertilizer(player.inventory, (tileEntityFertilizer) tileEntity);
+				case 5:
+					return new guiDnaSpawner(player.inventory, (tileEntityDnaSpawner) tileEntity);
 			}
 		}
 		return null;

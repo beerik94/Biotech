@@ -31,6 +31,11 @@ public class bioPig extends bioEntityAnimal
 		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/pig.png";
 		this.setSize(Width, Height);
+		this.width = Width;
+		this.height = Height;
+		this.health = Health;
+		this.drops = Drops;
+		this.experienceValue = EV;
 		this.getNavigator().setAvoidsWater(true);
 		float f = 0.25F;
 		this.tasks.addTask(0, new EntityAISwimming(this));

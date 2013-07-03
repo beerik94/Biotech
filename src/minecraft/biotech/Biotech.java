@@ -4,10 +4,8 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.Configuration;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
@@ -36,6 +34,7 @@ import biotech.tileentity.tileEntityBasicMachine;
 import biotech.tileentity.tileEntityBioRefinery;
 import biotech.tileentity.tileEntityCowMilker;
 import biotech.tileentity.tileEntityCuttingMachine;
+import biotech.tileentity.tileEntityDnaSpawner;
 import biotech.tileentity.tileEntityFarmingMachine;
 import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.common.FMLLog;
@@ -216,6 +215,7 @@ public class Biotech
 		GameRegistry.registerTileEntity(tileEntityFertilizer.class, "FertilizerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityCowMilker.class, "CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityBioRefinery.class, "BioRefineryTileEntity");
+		GameRegistry.registerTileEntity(tileEntityDnaSpawner.class, "DnaSpawnerTileEntity");
 		
 		/**
 		 * Handle the blocks

@@ -14,7 +14,7 @@ import net.minecraft.util.Icon;
 public class itemBioDNA extends Item
 {
 	
-	private final static String[]	subNames	= { "Blank", "Bat", "Chicken", "Cow", "Mooshroom", "Ocelot", "Pig", "Sheep", "Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "Skeleton", "Spider", "Zombie" };
+	private final static String[]	subNames	= { /*"Blank", "Bat",*/ "Chicken", "Cow",/*"Ocelot",*/ "Pig", "Sheep", /*"Squid", "Wolf", "Blaze", "CaveSpider", "Creeper", "Enderman", "Ghast", "Skeleton", "Spider", "Zombie"*/ };
 	
 	private Icon[]					icons		= new Icon[subNames.length];
 	
@@ -24,7 +24,7 @@ public class itemBioDNA extends Item
 		setCreativeTab(Biotech.tabBiotech);
 		setHasSubtypes(true);
 		setUnlocalizedName("DNA");
-		setMaxStackSize(1);
+		setMaxStackSize(64);
 	}
 	
 	@Override
