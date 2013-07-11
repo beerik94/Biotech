@@ -1,6 +1,7 @@
 package biotech.handlers;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.IItemRenderer;
 
 import org.lwjgl.opengl.GL11;
@@ -66,7 +67,8 @@ public class ItemRenderHandler implements IItemRenderer
     	GL11.glScalef(scale, scale, scale);
     	GL11.glTranslatef(x, y, z);
 
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+    	ResourceLocation rLoc = new ResourceLocation(Biotech.MOD_ID, Biotech.BioCheeseTexture);
+		FMLClientHandler.instance().getClient().renderEngine.func_110577_a(rLoc);
 
 		cheese.render();
 		
@@ -85,7 +87,8 @@ public class ItemRenderHandler implements IItemRenderer
     	GL11.glRotatef(5.0F, 0.0F, 1.0F, 0.0F);
     	GL11.glTranslatef(x, y, z);
 
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+    	ResourceLocation rLoc = new ResourceLocation(Biotech.MOD_ID, Biotech.BioCheeseTexture);
+		FMLClientHandler.instance().getClient().renderEngine.func_110577_a(rLoc);
 
 		cheese.render();
 		
@@ -101,7 +104,8 @@ public class ItemRenderHandler implements IItemRenderer
     	GL11.glScalef(scale, scale, scale);
     	GL11.glTranslatef(x, y, z);
 
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+    	ResourceLocation rLoc = new ResourceLocation(Biotech.MOD_ID, Biotech.BioCheeseTexture);
+		FMLClientHandler.instance().getClient().renderEngine.func_110577_a(rLoc);
 
 		cheese.render();
 		

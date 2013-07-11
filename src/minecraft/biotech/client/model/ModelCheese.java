@@ -2,6 +2,7 @@ package biotech.client.model;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.entity.Entity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.AdvancedModelLoader;
 import net.minecraftforge.client.model.IModelCustom;
 import net.minecraftforge.client.model.obj.WavefrontObject;
@@ -36,7 +37,8 @@ public class ModelCheese extends ModelBase
     	GL11.glPushMatrix();
     	GL11.glDisable(GL11.GL_LIGHTING);
 		
-		FMLClientHandler.instance().getClient().renderEngine.bindTexture(Biotech.BioCheeseTexture);
+    	ResourceLocation rLoc = new ResourceLocation(Biotech.MOD_ID, Biotech.BioCheeseTexture);
+		FMLClientHandler.instance().getClient().renderEngine.func_110577_a(rLoc);
 		
 		GL11.glScalef(cheeseScale, cheeseScale, cheeseScale);
 		GL11.glTranslatef(0.0F, 0.0F, 0.0F);

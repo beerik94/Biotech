@@ -4,20 +4,20 @@ import java.io.File;
 import java.util.logging.Logger;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
-import net.minecraftforge.liquids.LiquidContainerData;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidDictionary;
-import net.minecraftforge.liquids.LiquidStack;
+import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidContainerRegistry.FluidContainerData;
+import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.oredict.OreDictionary;
 import biotech.block.blockBiotanium;
 import biotech.block.blockBiotechMachine;
-import biotech.block.blockMilkFlowing;
-import biotech.block.blockMilkStill;
+import biotech.block.blockMilkFluid;
 import biotech.common.CommonProxy;
 import biotech.handlers.GuiHandler;
 import biotech.handlers.OreGenHandler;
@@ -27,14 +27,12 @@ import biotech.handlers.bioEventHandler;
 import biotech.item.itemBioBlock;
 import biotech.item.itemBioCheese;
 import biotech.item.itemBioCircuit;
-import biotech.item.itemBioDNA;
 import biotech.item.itemBioTabIcon;
 import biotech.item.itemBiotaniumIngot;
 import biotech.tileentity.tileEntityBasicMachine;
 import biotech.tileentity.tileEntityBioRefinery;
 import biotech.tileentity.tileEntityCowMilker;
 import biotech.tileentity.tileEntityCuttingMachine;
-import biotech.tileentity.tileEntityDnaSpawner;
 import biotech.tileentity.tileEntityFarmingMachine;
 import biotech.tileentity.tileEntityFertilizer;
 import cpw.mods.fml.common.FMLLog;
@@ -64,12 +62,12 @@ public class Biotech
 	public static final String			MOD_ID				= "Biotech";
 	public static final String			CHANNEL				= "Biotech";
 	public static final String			NAME				= "Biotech";
-	public static final String			FILE_PATH			= "/mods/biotech/";
+	public static final String			FILE_PATH			= "/assets/biotech/";
 	public static final String			LANGUAGE_PATH		= FILE_PATH + "language/";
 	public static final String			TEXTURE_PATH		= FILE_PATH + "textures/";
 	public static final String			MODEL_PATH			= FILE_PATH + "models/";
-	public static final String			GUI_PATH			= TEXTURE_PATH + "gui/";
-	public static final String			MODEL_TEXTURE_PATH	= TEXTURE_PATH + "items/model/";
+	public static final String			GUI_PATH			= "/textures/gui/";
+	public static final String			MODEL_TEXTURE_PATH	= "/textures/items/model/";
 	public static final String			TEXTURE_NAME_PREFIX	= "biotech:";
 	private static final int			BLOCK_ID_PREFIX		= 2450;
 	private static final int			ITEM_ID_PREFIX		= (24400 - 256);
@@ -80,7 +78,7 @@ public class Biotech
 	public static final String			VERSION				= MAJOR_VERSION + "." + MINOR_VERSION + "." + REVISION_VERSION;
 	
 	// Default config loader
-	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "UniversalElectricity/Biotech.cfg"));
+	public static final Configuration	Config				= new Configuration(new File(Loader.instance().getConfigDir(), "Biotech.cfg"));
 	public static boolean				mekanismLoaded		= false;
 	public static boolean				IC2Loaded			= false;
 	public static boolean				BuildCraftLoaded	= false;
@@ -109,18 +107,16 @@ public class Biotech
 	
 	// Block templates
 	public static Block					biotechBlockMachine;
-	public static Block					milkMoving;
-	public static Block					milkStill;
+	public static Block					blockMilkFluid;
+	public static Fluid					MilkFluid;
 	public static Block					Biotanium;
+	public static FluidStack			MilkFluidStack;
 	
 	// Models
 	public static final String			ModelBioCheese		= MODEL_PATH + "Cheese.obj";
 	
 	// Model Textures
 	public static final String			BioCheeseTexture	= MODEL_TEXTURE_PATH + "cheeseTexture.png";
-	
-	// Liquid Stack Milk
-	public static LiquidStack			milkLiquid;
 	
 	// Says where the client and server 'proxy' code is loaded.
 	@SidedProxy(clientSide = "biotech.client.ClientProxy", serverSide = "biotech.common.CommonProxy")
@@ -150,15 +146,15 @@ public class Biotech
 		this.bioCircuit = new itemBioCircuit(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX + 1).getInt());
 		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 2).getInt());
 		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 3).getInt());
-		this.bioDNA = new itemBioDNA(Config.getItem("biotech.bioDNA", ITEM_ID_PREFIX + 4).getInt());
+		// this.bioDNA = new itemBioDNA(Config.getItem("biotech.bioDNA",
+		// ITEM_ID_PREFIX + 4).getInt());
 		
 		/**
 		 * Define the blocks.
 		 */
 		this.biotechBlockMachine = new blockBiotechMachine(Config.getBlock("biotech.BiotechBlock", BLOCK_ID_PREFIX).getInt(), 0);
-		this.milkMoving = new blockMilkFlowing(Config.getBlock("biotech.MilkFlowing", BLOCK_ID_PREFIX + 1).getInt());
-		this.milkStill = new blockMilkStill(Config.getBlock("biotech.MilkStill", BLOCK_ID_PREFIX + 2).getInt());
-		this.Biotanium = new blockBiotanium(Config.getBlock("biotech.Biotanium", BLOCK_ID_PREFIX + 3).getInt());
+		this.blockMilkFluid = new blockMilkFluid(BLOCK_ID_PREFIX + 1, this.MilkFluid, Material.water);
+		this.Biotanium = new blockBiotanium(Config.getBlock("biotech.Biotanium", BLOCK_ID_PREFIX + 2).getInt());
 		
 		/**
 		 * Ore gen per chunk
@@ -167,26 +163,21 @@ public class Biotech
 		this.BiotaniumPerBranch = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerBranch", BiotaniumPerBranch).getInt(BiotaniumPerBranch);
 		
 		Config.save();
-		
-		events = new bioEventHandler();
-		MinecraftForge.EVENT_BUS.register(events);
-		
+		/*
+		 * events = new bioEventHandler();
+		 * MinecraftForge.EVENT_BUS.register(events);
+		 */
 		/**
 		 * Registering Biotech Creative Tab Icon
 		 */
-		this.itemBioTab = new itemBioTabIcon(ITEM_ID_PREFIX); 
+		this.itemBioTab = new itemBioTabIcon(ITEM_ID_PREFIX);
 		this.BioTabIcon = new ItemStack(itemBioTab, 1);
-		
-		if (milkMoving.blockID + 1 != milkStill.blockID)
-		{
-			throw new RuntimeException("Milk Still id must be Milk Moving id + 1");
-		}
 		
 		/**
 		 * Register Milk as a Liquid
 		 */
-		milkLiquid = LiquidDictionary.getOrCreateLiquid("Milk", new LiquidStack(milkStill, 1));
-		LiquidContainerRegistry.registerLiquid(new LiquidContainerData(LiquidDictionary.getLiquid("Milk", LiquidContainerRegistry.BUCKET_VOLUME), new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty)));
+		FluidRegistry.registerFluid(MilkFluid);
+		FluidContainerRegistry.registerFluidContainer(MilkFluid, new ItemStack(Item.bucketMilk), new ItemStack(Item.bucketEmpty));
 		
 		if (Loader.isModLoaded("IC2"))
 			IC2Loaded = true;
@@ -215,14 +206,14 @@ public class Biotech
 		GameRegistry.registerTileEntity(tileEntityFertilizer.class, "FertilizerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityCowMilker.class, "CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityBioRefinery.class, "BioRefineryTileEntity");
-		GameRegistry.registerTileEntity(tileEntityDnaSpawner.class, "DnaSpawnerTileEntity");
+		// GameRegistry.registerTileEntity(tileEntityDnaSpawner.class,
+		// "DnaSpawnerTileEntity");
 		
 		/**
 		 * Handle the blocks
 		 */
 		GameRegistry.registerBlock(Biotech.biotechBlockMachine, itemBioBlock.class, "Basic Biotech Block");
-		GameRegistry.registerBlock(Biotech.milkMoving, "Milk(Flowing)");
-		GameRegistry.registerBlock(Biotech.milkStill, "Milk(Still)");
+		GameRegistry.registerBlock(Biotech.blockMilkFluid, "Milk");
 		GameRegistry.registerBlock(Biotech.Biotanium, "Biotanium");
 		
 		// Register the mod's ore handler
@@ -231,14 +222,14 @@ public class Biotech
 		/**
 		 * Call the recipe registry
 		 */
-		//if(!mekanismLoaded)
-		//{
-			RecipeHandler.BiotechRecipes();
-		//}
-		//else
-		//{
-		//	RecipeHandler.MekanismRecipes();
-		//}
+		// if(!mekanismLoaded)
+		// {
+		RecipeHandler.BiotechRecipes();
+		// }
+		// else
+		// {
+		// RecipeHandler.MekanismRecipes();
+		// }
 		
 		/**
 		 * Load Proxy
@@ -287,5 +278,5 @@ public class Biotech
 		biotechLogger.info("Biotech fully loaded");
 	}
 	
-	public static bioEventHandler events;
+	public static bioEventHandler	events;
 }

@@ -1,27 +1,29 @@
 package biotech.client;
 
-import org.lwjgl.opengl.GL11;
-import biotech.Biotech;
-import biotech.container.containerCuttingMachine;
-import biotech.tileentity.tileEntityCuttingMachine;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
+
+import org.lwjgl.opengl.GL11;
+
+import biotech.Biotech;
+import biotech.container.containerSewer;
+import biotech.tileentity.tileEntitySewer;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class guiCuttingMachine extends GuiContainer
+public class guiSewer extends GuiContainer
 {
-	private tileEntityCuttingMachine	tileEntity;
+	private tileEntitySewer	tileEntity;
 	
 	private int							containerWidth;
 	private int							containerHeight;
 	
-	public guiCuttingMachine(InventoryPlayer playerInventory, tileEntityCuttingMachine tileEntity)
+	public guiSewer(InventoryPlayer playerInventory, tileEntitySewer tileEntity)
 	{
-		super(new containerCuttingMachine(playerInventory, tileEntity));
+		super(new containerSewer(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
 	}
@@ -46,7 +48,6 @@ public class guiCuttingMachine extends GuiContainer
 			displayText = "Idle";
 		}
 		
-		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
 		this.fontRenderer.drawString(StatCollector.translateToLocal("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
 	}
 	
@@ -69,6 +70,6 @@ public class guiCuttingMachine extends GuiContainer
 	
 	public static String getTexture()
 	{
-		return Biotech.GUI_PATH + "GUI_CuttingMachine.png";
+		return Biotech.GUI_PATH + "GUI_Fertilizer.png";
 	}
 }

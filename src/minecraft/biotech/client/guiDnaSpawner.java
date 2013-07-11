@@ -3,6 +3,7 @@ package biotech.client;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
 import org.lwjgl.opengl.GL11;
@@ -23,6 +24,25 @@ public class guiDnaSpawner extends GuiContainer
 		super(new containerDnaSpawner(playerInventory, tileEntity));
 		
 		this.tileEntity = tileEntity;
+	}
+	
+	public void initGui()
+	{
+		super.initGui();
+		
+		int cornerX = (this.width - this.xSize) / 2;
+		int cornerY = (this.height - this.ySize) / 2;
+		buttonList.add(new GuiButton(0, cornerX + this.xSize, cornerY + 18, 10, 10, "+"));
+		buttonList.add(new GuiButton(1, cornerX + this.xSize + 12, cornerY + 18, 10, 10, "-"));
+		buttonList.add(new GuiButton(2, cornerX + this.xSize, cornerY + 30, 10, 10, "+"));
+		buttonList.add(new GuiButton(3, cornerX + this.xSize + 12, cornerY + 30, 10, 10, "-"));
+		buttonList.add(new GuiButton(4, cornerX + this.xSize, cornerY + 42, 10, 10, "+"));
+		buttonList.add(new GuiButton(5, cornerX + this.xSize + 12, cornerY + 42, 10, 10, "-"));
+		buttonList.add(new GuiButton(6, cornerX + this.xSize, cornerY + 54, 10, 10, "+"));
+		buttonList.add(new GuiButton(7, cornerX + this.xSize + 12, cornerY + 54, 10, 10, "-"));
+		buttonList.add(new GuiButton(8, cornerX + this.xSize, cornerY + 66, 10, 10, "+"));
+		buttonList.add(new GuiButton(9, cornerX + this.xSize + 12, cornerY + 66, 10, 10, "-"));
+		buttonList.add(new GuiButton(10, cornerX + 45, cornerY + 60, 40, 15, "Spawn Mob"));
 	}
 	
 	/**
@@ -61,50 +81,37 @@ public class guiDnaSpawner extends GuiContainer
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float f, int i, int j)
 	{
-		int cornerX = (this.width - this.xSize) / 2;
-        int cornerY = (this.height - this.ySize) / 2;
-        buttonList.add(new GuiButton(0, cornerX + this.xSize, cornerY + 18, 10, 10, "+"));
-    	buttonList.add(new GuiButton(1, cornerX + this.xSize + 12, cornerY + 18, 10, 10, "-"));
-        buttonList.add(new GuiButton(2, cornerX + this.xSize, cornerY + 30, 10, 10, "+"));
-        buttonList.add(new GuiButton(3, cornerX + this.xSize + 12, cornerY + 30, 10, 10, "-"));
-        buttonList.add(new GuiButton(4, cornerX + this.xSize, cornerY + 42, 10, 10, "+"));
-        buttonList.add(new GuiButton(5, cornerX + this.xSize + 12, cornerY + 42, 10, 10, "-"));
-        buttonList.add(new GuiButton(6, cornerX + this.xSize, cornerY + 54, 10, 10, "+"));
-        buttonList.add(new GuiButton(7, cornerX + this.xSize + 12, cornerY + 54, 10, 10, "-"));
-        buttonList.add(new GuiButton(8, cornerX + this.xSize, cornerY + 66, 10, 10, "+"));
-        buttonList.add(new GuiButton(9, cornerX + this.xSize + 12, cornerY + 66, 10, 10, "-"));
-		
 		GL11.glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-		this.mc.renderEngine.bindTexture(this.getTexture());
+		ResourceLocation rLoc = new ResourceLocation(Biotech.MOD_ID, this.getTexture());
+		this.mc.renderEngine.func_110577_a(rLoc);
+		
 		containerWidth = (this.width - this.xSize) / 2;
 		containerHeight = (this.height - this.ySize) / 2;
 		this.drawTexturedModalRect(containerWidth, containerHeight, 0, 0, xSize, ySize);
 	}
 	
 	@Override
-	protected void actionPerformed (GuiButton button)
+	protected void actionPerformed(GuiButton button)
 	{
 		switch (button.id)
 		{
 			case 0:
 				tileEntity.health += 1;
-				System.out.println("Health Plus");
 				break;
 			case 1:
 				tileEntity.health -= 1;
-				System.out.println("Health Minus");
 				break;
 			case 2:
-				tileEntity.width += 0.1f;
+				tileEntity.width += 0.1;
 				break;
 			case 3:
-				tileEntity.width -= 0.1f;
+				tileEntity.width -= 0.1;
 				break;
 			case 4:
-				tileEntity.height += 0.1f;
+				tileEntity.height += 0.1;
 				break;
 			case 5:
-				tileEntity.height -= 0.1f;
+				tileEntity.height -= 0.1;
 				break;
 			case 6:
 				tileEntity.drops += 1;
@@ -117,6 +124,10 @@ public class guiDnaSpawner extends GuiContainer
 				break;
 			case 9:
 				tileEntity.EV -= 1;
+				break;
+			case 10:
+				tileEntity.buttonSpawn = true;
+				System.out.println("ButtonPressed");
 				break;
 		}
 	}

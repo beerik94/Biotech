@@ -28,7 +28,7 @@ public class bioChicken extends bioEntityAnimal
 	/** The time until the next egg is spawned. */
 	public int		timeUntilNextEgg;
 	
-	public bioChicken(World par1World, int Health, float Width, float Height, int Drops, int EV)
+	public bioChicken(World par1World, double X, double Y, double Z, int Health, float Width, float Height, int Drops, int EV)
 	{
 		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/chicken.png";
@@ -38,6 +38,9 @@ public class bioChicken extends bioEntityAnimal
 		this.health = Health;
 		this.drops = Drops;
 		this.experienceValue = EV;
+		this.posX = X;
+		this.posY = Y;
+		this.posZ = Z;
 		this.timeUntilNextEgg = this.rand.nextInt(6000) + 6000;
 		float f = 0.25F;
 		this.tasks.addTask(0, new EntityAISwimming(this));
@@ -184,7 +187,7 @@ public class bioChicken extends bioEntityAnimal
 	 */
 	public bioChicken spawnBabyAnimal(EntityAgeable par1EntityAgeable)
 	{
-		return new bioChicken(this.worldObj, health, width, height, drops, experienceValue);
+		return new bioChicken(this.worldObj, this.posX, this.posY, this.posZ, health, width, height, drops, experienceValue);
 	}
 	
 	/**

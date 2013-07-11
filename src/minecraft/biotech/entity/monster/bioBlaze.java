@@ -1,6 +1,7 @@
 package biotech.entity.monster;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntitySmallFireball;
 import net.minecraft.item.Item;
@@ -12,19 +13,24 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class bioBlaze extends bioEntityMob
 {
-    /** Random offset used in floating behaviour */
+	/** Random offset used in floating behaviour */
     private float heightOffset = 0.5F;
 
     /** ticks until heightOffset is randomized */
     private int heightOffsetUpdateTime;
     private int field_70846_g;
 
-    public bioBlaze(World par1World, int Health, float Width, float Height, int Drops, int EV, int AS, boolean Hostile)
+    public bioBlaze(World par1World)
     {
-    	super(par1World, Health, Width, Height, Drops, EV, AS, Hostile);
-        this.texture = "/mob/fire.png";
+        super(par1World);
         this.isImmuneToFire = true;
         this.experienceValue = 10;
+    }
+
+    protected void func_110147_ax()
+    {
+        super.func_110147_ax();
+        this.func_110148_a(SharedMonsterAttributes.field_111264_e).func_111128_a(6.0D);
     }
 
     protected void entityInit()
@@ -81,7 +87,7 @@ public class bioBlaze extends bioEntityMob
         {
             if (this.isWet())
             {
-                this.attackEntityFrom(DamageSource.drown, 1);
+                this.attackEntityFrom(DamageSource.drown, 1.0F);
             }
 
             --this.heightOffsetUpdateTime;
@@ -236,13 +242,5 @@ public class bioBlaze extends bioEntityMob
     protected boolean isValidLightLevel()
     {
         return true;
-    }
-
-    /**
-     * Returns the amount of damage a mob should deal.
-     */
-    public int getAttackStrength(Entity par1Entity)
-    {
-        return 6;
     }
 }

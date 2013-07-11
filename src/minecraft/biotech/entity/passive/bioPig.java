@@ -26,7 +26,7 @@ public class bioPig extends bioEntityAnimal
 	/** AI task for player control. */
 	private final EntityAIControlledByPlayer	aiControlledByPlayer;
 	
-	public bioPig(World par1World, int Health, float Width, float Height, int Drops, int EV)
+	public bioPig(World par1World, double X, double Y, double Z, int Health, float Width, float Height, int Drops, int EV)
 	{
 		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/pig.png";
@@ -36,6 +36,9 @@ public class bioPig extends bioEntityAnimal
 		this.health = Health;
 		this.drops = Drops;
 		this.experienceValue = EV;
+		this.posX = X;
+		this.posY = Y;
+		this.posZ = Z;
 		this.getNavigator().setAvoidsWater(true);
 		float f = 0.25F;
 		this.tasks.addTask(0, new EntityAISwimming(this));
@@ -244,7 +247,7 @@ public class bioPig extends bioEntityAnimal
 	 */
 	public bioPig spawnBabyAnimal(EntityAgeable par1EntityAgeable)
 	{
-		return new bioPig(this.worldObj, health, width, height, drops, experienceValue);
+		return new bioPig(this.worldObj, this.posX, this.posY, this.posZ, health, width, height, drops, experienceValue);
 	}
 	
 	/**

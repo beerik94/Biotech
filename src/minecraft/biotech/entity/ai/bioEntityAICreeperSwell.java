@@ -1,6 +1,6 @@
 package biotech.entity.ai;
 
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.EntityAIBase;
 import biotech.entity.monster.bioCreeper;
 
@@ -12,7 +12,7 @@ public class bioEntityAICreeperSwell extends EntityAIBase
     /**
      * The creeper's attack target. This is used for the changing of the creeper's state.
      */
-    EntityLiving creeperAttackTarget;
+    EntityLivingBase creeperAttackTarget;
 
     public bioEntityAICreeperSwell(bioCreeper par1EntityCreeper)
     {
@@ -25,8 +25,8 @@ public class bioEntityAICreeperSwell extends EntityAIBase
      */
     public boolean shouldExecute()
     {
-        EntityLiving entityliving = this.swellingCreeper.getAttackTarget();
-        return this.swellingCreeper.getCreeperState() > 0 || entityliving != null && this.swellingCreeper.getDistanceSqToEntity(entityliving) < 9.0D;
+    	EntityLivingBase entitylivingbase = this.swellingCreeper.getAttackTarget();
+        return this.swellingCreeper.getCreeperState() > 0 || entitylivingbase != null && this.swellingCreeper.getDistanceSqToEntity(entitylivingbase) < 9.0D;
     }
 
     /**

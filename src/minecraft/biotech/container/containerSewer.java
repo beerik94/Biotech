@@ -3,23 +3,23 @@ package biotech.container;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Slot;
-import biotech.slots.slotDNA;
 import biotech.slots.slotElectricItem;
-import biotech.tileentity.tileEntityDnaSpawner;
+import biotech.slots.slotRangeUpgrade;
+import biotech.tileentity.tileEntitySewer;
 
-public class containerDnaSpawner extends containerBasic
+public class containerSewer extends containerBasic
 {
-	private tileEntityDnaSpawner	tileEntity;
+	private tileEntitySewer	tileEntity;
 	
-	public containerDnaSpawner(InventoryPlayer par1InventoryPlayer, tileEntityDnaSpawner te)
+	public containerSewer(InventoryPlayer par1InventoryPlayer, tileEntitySewer te)
 	{
 		this.tileEntity = te;
 		
 		// Slot for Electricity
 		this.addSlotToContainer(new slotElectricItem(tileEntity, 0, 5, 50));
 		
-		// Slot for DNA
-		this.addSlotToContainer(new slotDNA(tileEntity, 1, 5, 20));
+		// Slot for Range Upgrade
+		this.addSlotToContainer(new slotRangeUpgrade(tileEntity, 1, 5, 20));
 		
 		int var3;
 		

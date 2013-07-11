@@ -14,18 +14,18 @@ import net.minecraft.network.packet.Packet250CustomPayload;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraftforge.common.ForgeDirection;
-import net.minecraftforge.liquids.ILiquidTank;
-import net.minecraftforge.liquids.ITankContainer;
-import net.minecraftforge.liquids.LiquidContainerRegistry;
-import net.minecraftforge.liquids.LiquidStack;
-import net.minecraftforge.liquids.LiquidTank;
+import net.minecraftforge.fluids.FluidContainerRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidTank;
+import net.minecraftforge.fluids.FluidTankInfo;
+import net.minecraftforge.fluids.IFluidTank;
 import biotech.Biotech;
 import biotech.handlers.PacketHandler;
 import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityCowMilker extends tileEntityBasicMachine implements IPacketReceiver, ITankContainer
+public class tileEntityCowMilker extends tileEntityBasicMachine implements IPacketReceiver, IFluidTank
 {
 	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
@@ -33,9 +33,9 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	public static final double	ENERGY_PER_MILK			= 150;
 	
 	// How much milk is stored?
-	private LiquidTank			milkTank;
+	private FluidTank			milkTank;
 	private int					milkStored				= 0;
-	private int					milkMaxStored			= 7 * LiquidContainerRegistry.BUCKET_VOLUME;
+	private int					milkMaxStored			= 7 * FluidContainerRegistry.BUCKET_VOLUME;
 	private boolean				isMilking				= false;
 	public static final int		PROCESS_TIME_REQUIRED	= 60;
 	public int					processTicks			= 0;
@@ -150,9 +150,9 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	public void drainTo(ForgeDirection dir)
 	{
 		TileEntity ent = worldObj.getBlockTileEntity(xCoord + dir.offsetX, yCoord + dir.offsetY, zCoord + dir.offsetZ);
-		if (ent instanceof ITankContainer)
+		if (ent instanceof IFluidTank)
 		{
-			int filled = ((ITankContainer) ent).fill(dir.getOpposite(), Biotech.milkLiquid, true);
+			int filled = ((IFluidTank) ent).fill(Biotech.MilkFluidStack, true);
 			if (filled > 0)
 			{
 				this.setMilkStored(filled, false);
@@ -235,76 +235,45 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 	{
 		return this.milkMaxStored;
 	}
-	
-	/*
-	 * @Override
-	 * public ColorCode getColor()
-	 * {
-	 * return ColorCode.WHITE;
-	 * }
-	 * 
-	 * @Override
-	 * public void setColor(Object obj)
-	 * {
-	 * }
-	 * 
-	 * @Override
-	 * public String getMeterReading(EntityPlayer user, ForgeDirection side)
-	 * {
-	 * return "Milk: " + this.milkStored + " Units";
-	 * }
-	 * 
-	 * @Override
-	 * public int getPressureOut(LiquidStack stack, ForgeDirection dir)
-	 * {
-	 * if (stack != null && this.color.isValidLiquid(stack))
-	 * {
-	 * return LiquidHandler.get(stack).getPressure();
-	 * }
-	 * return 0;
-	 * }
-	 * 
-	 * @Override
-	 * public boolean getCanPressureTo(LiquidStack stack, ForgeDirection dir)
-	 * {
-	 * return dir == ForgeDirection.DOWN.getOpposite() &&
-	 * this.color.isValidLiquid(stack);
-	 * }
-	 */
-	
+
 	@Override
-	public int fill(ForgeDirection from, LiquidStack resource, boolean doFill)
+	public FluidStack getFluid()
 	{
-		return 0;
-	}
-	
-	@Override
-	public int fill(int tankIndex, LiquidStack resource, boolean doFill)
-	{
-		return 0;
-	}
-	
-	@Override
-	public LiquidStack drain(ForgeDirection from, int maxDrain, boolean doDrain)
-	{
-		return drain(ForgeDirection.DOWN, maxDrain, doDrain);
-	}
-	
-	@Override
-	public LiquidStack drain(int tankIndex, int maxDrain, boolean doDrain)
-	{
-		return milkTank.drain(maxDrain, doDrain);
-	}
-	
-	@Override
-	public ILiquidTank[] getTanks(ForgeDirection direction)
-	{
+		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
-	public ILiquidTank getTank(ForgeDirection direction, LiquidStack type)
+	public int getFluidAmount()
 	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getCapacity()
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public FluidTankInfo getInfo()
+	{
+		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public int fill(FluidStack resource, boolean doFill)
+	{
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public FluidStack drain(int maxDrain, boolean doDrain)
+	{
+		return drain(maxDrain, doDrain);
 	}
 }

@@ -49,11 +49,14 @@ public class bioSheep extends bioEntityAnimal implements IShearable
 	/** The eat grass AI task for this mob. */
 	private EntityAIEatGrass		aiEatGrass			= new EntityAIEatGrass(this);
 	
-	public bioSheep(World par1World, int Health, float Width, float Height, int Drops, int EV)
+	public bioSheep(World par1World, double X, double Y, double Z, int Health, float Width, float Height, int Drops, int EV)
 	{
 		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/sheep.png";
 		this.setSize(Width, Height);
+		this.posX = X;
+		this.posY = Y;
+		this.posZ = Z;
 		float f = 0.23F;
 		this.getNavigator().setAvoidsWater(true);
 		this.tasks.addTask(0, new EntityAISwimming(this));
@@ -273,7 +276,7 @@ public class bioSheep extends bioEntityAnimal implements IShearable
 	public bioSheep func_90015_b(EntityAgeable par1EntityAgeable)
 	{
 		bioSheep entitysheep = (bioSheep) par1EntityAgeable;
-		bioSheep entitysheep1 = new bioSheep(this.worldObj, health, width, height, drops, experienceValue);
+		bioSheep entitysheep1 = new bioSheep(this.worldObj, this.posX, this.posY, this.posZ, health, width, height, drops, experienceValue);
 		int i = this.func_90014_a(this, entitysheep);
 		entitysheep1.setFleeceColor(15 - i);
 		return entitysheep1;
