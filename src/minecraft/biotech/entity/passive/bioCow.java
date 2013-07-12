@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 public class bioCow extends bioEntityAnimal
 {
 	
-	public bioCow(World par1World, int Health, float Width, float Height, int Drops, int EV)
+	public bioCow(World par1World, double X, double Y, double Z, int Health, float Width, float Height, int Drops, int EV)
 	{
 		super(par1World, Health, Width, Height, Drops, EV);
 		this.texture = "/mob/cow.png";
@@ -28,6 +28,9 @@ public class bioCow extends bioEntityAnimal
 		this.health = Health;
 		this.drops = Drops;
 		this.experienceValue = EV;
+		this.posX = X;
+		this.posY = Y;
+		this.posZ = Z;
 		this.getNavigator().setAvoidsWater(true);
 		this.tasks.addTask(0, new EntityAISwimming(this));
 		this.tasks.addTask(1, new EntityAIPanic(this, 0.38F));
@@ -163,7 +166,7 @@ public class bioCow extends bioEntityAnimal
 	 */
 	public bioCow spawnBabyAnimal(EntityAgeable par1EntityAgeable)
 	{
-		return new bioCow(this.worldObj, health, width, height, drops, experienceValue);
+		return new bioCow(this.worldObj, this.posX, this.posY, this.posZ, health, width, height, drops, experienceValue);
 	}
 	
 	public EntityAgeable createChild(EntityAgeable par1EntityAgeable)

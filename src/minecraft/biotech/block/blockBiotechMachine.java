@@ -39,19 +39,19 @@ public class blockBiotechMachine extends BlockContainer
 	public static final int	FARM_METADATA			= 0;
 	public static final int	WOODCUTTER_METADATA		= 1;
 	public static final int	FERTILIZER_METADATA		= 2;
-	//public static final int	MINER_METADATA			= 3;
+	public static final int	SEWER_METADATA			= 3;
 	public static final int	COW_MILKER_METADATA		= 4;
 	public static final int	BIO_REFINERY_METADATA	= 5;
-	public static final int DNA_SPAWNER_METADATA	= 6;
+	//public static final int DNA_SPAWNER_METADATA	= 6;
 	
 	// Front Sides
 	private Icon			iconFarmer;
 	private Icon			iconWoodcutter;
 	private Icon			iconFertilizer;
-	//private Icon			iconMiner;
 	private Icon			iconCowMilker;
 	private Icon			iconBioRefinery;
-	private Icon			iconDnaSpawner;
+	//private Icon			iconDnaSpawner;
+	private Icon			iconSewer;
 	
 	// Other Sides
 	private Icon			iconEmptySide;
@@ -60,7 +60,7 @@ public class blockBiotechMachine extends BlockContainer
 	private Icon			iconInputOff;
 	private Icon			iconOutputOn;
 	private Icon			iconOutputOff;
-	private Icon			iconDnaOutput;
+	//private Icon			iconDnaOutput;
 	
 	public blockBiotechMachine(int id, int meta)
 	{
@@ -78,10 +78,9 @@ public class blockBiotechMachine extends BlockContainer
 		this.iconFarmer = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineFarmer");
 		this.iconWoodcutter = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineWoodCutter");
 		this.iconFertilizer = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineFertilizer");
-		//this.iconMiner = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineMiner");
 		this.iconCowMilker = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineCowMilker");
 		this.iconBioRefinery = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineRefinery");
-		this.iconDnaSpawner = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineDnaSpawner");
+		//this.iconDnaSpawner = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineDnaSpawner");
 		
 		this.iconEmptySide = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineEmptySide");
 		this.iconMilkSide = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineMilkSide");
@@ -89,7 +88,7 @@ public class blockBiotechMachine extends BlockContainer
 		this.iconInputOff = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineRedOffSide");
 		this.iconOutputOn = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOnSide");
 		this.iconOutputOff = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineBlackOffSide");
-		this.iconDnaOutput = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineDnaOutput");
+		//this.iconDnaOutput = par1IconRegister.registerIcon(Biotech.TEXTURE_NAME_PREFIX + "MachineDnaOutput");
 	}
 	
 	@Override
@@ -133,19 +132,18 @@ public class blockBiotechMachine extends BlockContainer
 					return this.iconEmptySide;
 			}
 		}
-		/*
 		else if (meta == 3)
 		{
 			switch (side)
 			{
 				case 3:
-					return this.iconMiner;
+					return this.iconSewer;
 				case 2:
 					return this.iconInputOff;
 				default:
 					return this.iconEmptySide;
 			}
-		}*/
+		}
 		else if (meta == 4)
 		{
 			switch (side)
@@ -164,18 +162,6 @@ public class blockBiotechMachine extends BlockContainer
 			{
 				case 3:
 					return this.iconBioRefinery;
-				case 2:
-					return this.iconInputOff;
-				default:
-					return this.iconEmptySide;
-			}
-		}
-		else if(meta == 6)
-		{
-			switch(side)
-			{
-				case 3:
-					return this.iconDnaSpawner;
 				case 2:
 					return this.iconInputOff;
 				default:
@@ -264,7 +250,6 @@ public class blockBiotechMachine extends BlockContainer
 				return this.iconFertilizer;
 			}
 		}
-		/*
 		else if (metadata == 3)
 		{
 			if (side == front)
@@ -273,9 +258,9 @@ public class blockBiotechMachine extends BlockContainer
 			}
 			else if (side == back)
 			{
-				return this.iconMiner;
+				return this.iconSewer;
 			}
-		}*/
+		}
 		else if (metadata == 4)
 		{
 			if (side == front)
@@ -304,21 +289,6 @@ public class blockBiotechMachine extends BlockContainer
 			else if (side == bottom)
 			{
 				return this.iconMilkSide;
-			}
-		}
-		else if(metadata == 6)
-		{
-			if (side == front)
-			{
-				return tileEntity.isPowered ? this.iconInputOn : this.iconInputOff;
-			}
-			else if(side == back)
-			{
-				return this.iconDnaSpawner;
-			}
-			else if(side == top)
-			{
-				return this.iconDnaOutput;
 			}
 		}
 		else
@@ -374,7 +344,7 @@ public class blockBiotechMachine extends BlockContainer
 	@SideOnly(Side.CLIENT)
 	public void getSubBlocks(int i, CreativeTabs creativetabs, List list)
 	{
-		for (int var4 = 0; var4 < 7; var4++)
+		for (int var4 = 0; var4 < 6; var4++)
 		{
 			list.add(new ItemStack(i, 1, var4));
 		}
@@ -400,6 +370,8 @@ public class blockBiotechMachine extends BlockContainer
 					player.openGui(Biotech.instance, 4, world, x, y, z);
 					return true;
 				case 3:
+					player.openGui(Biotech.instance, 5, world, x, y, z);
+					return true;
 				case 4:
 					player.openGui(Biotech.instance, 1, world, x, y, z);
 					return true;
@@ -407,8 +379,8 @@ public class blockBiotechMachine extends BlockContainer
 					player.openGui(Biotech.instance, 2, world, x, y, z);
 					return true;
 				case 6:
-					player.openGui(Biotech.instance, 5, world, x, y, z);
-					return true;
+					//player.openGui(Biotech.instance, 5, world, x, y, z);
+					//return true;
 			}
 		}
 		return true;
@@ -437,7 +409,7 @@ public class blockBiotechMachine extends BlockContainer
 			case 5:
 				return new tileEntityBioRefinery();
 			case 6:
-				return new tileEntityDnaSpawner();
+				//return new tileEntityDnaSpawner();
 			default:
 				return new tileEntityBasicMachine();
 		}

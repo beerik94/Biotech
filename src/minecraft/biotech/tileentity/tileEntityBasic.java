@@ -15,15 +15,12 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.INetworkManager;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.Packet250CustomPayload;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.ForgeDirection;
 import net.minecraftforge.common.MinecraftForge;
 import universalelectricity.core.UniversalElectricity;
-import universalelectricity.core.block.IConnector;
-import universalelectricity.core.block.IElectricityStorage;
-import universalelectricity.core.block.IVoltage;
 import universalelectricity.core.electricity.ElectricityNetworkHelper;
 import universalelectricity.core.electricity.ElectricityPack;
+import universalelectricity.prefab.tile.TileEntityElectricityStorage;
 import biotech.Biotech;
 import biotech.handlers.PacketHandler;
 import biotech.helpers.IPacketReceiver;
@@ -34,7 +31,7 @@ import buildcraft.api.power.PowerFramework;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWrenchable, IPowerReceptor, IEnergyTile, IElectricityStorage, IVoltage, IConnector, IStrictEnergyStorage, IStrictEnergyAcceptor
+public class tileEntityBasic extends TileEntityElectricityStorage implements IPacketReceiver, IWrenchable, IPowerReceptor, IEnergyTile, IStrictEnergyStorage, IStrictEnergyAcceptor
 {
 	/** BuildCraft power provider. */
 	public IPowerProvider	powerProvider;
@@ -43,7 +40,7 @@ public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWre
 	public double			electricityStored;
 	
 	/** Maximum amount of energy this machine can hold. */
-	public double			MaxElectricity	= 5000;
+	public double			MaxElectricity	= 2000;
 	
 	protected long			ticks			= 0;
 	protected ItemStack[]	inventory;
@@ -383,11 +380,6 @@ public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWre
 	}
 	
 	@Override
-	public void doWork()
-	{
-	}
-	
-	@Override
 	public int powerRequest(ForgeDirection from)
 	{
 		return (int) Math.min(((MaxElectricity - electricityStored) * Biotech.TO_BC), 100);
@@ -440,6 +432,11 @@ public class tileEntityBasic extends TileEntity implements IPacketReceiver, IWre
 	public ItemStack getWrenchDrop(EntityPlayer entityPlayer)
 	{
 		return null;
+	}
+
+	@Override
+	public void doWork()
+	{
 	}
 	
 }

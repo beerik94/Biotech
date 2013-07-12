@@ -150,7 +150,7 @@ public class Biotech
 		this.bioCircuit = new itemBioCircuit(Config.getItem("biotech.bioCircuit", ITEM_ID_PREFIX + 1).getInt());
 		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 2).getInt());
 		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 3).getInt());
-		this.bioDNA = new itemBioDNA(Config.getItem("biotech.bioDNA", ITEM_ID_PREFIX + 4).getInt());
+		//this.bioDNA = new itemBioDNA(Config.getItem("biotech.bioDNA", ITEM_ID_PREFIX + 4).getInt());
 		
 		/**
 		 * Define the blocks.
@@ -167,14 +167,14 @@ public class Biotech
 		this.BiotaniumPerBranch = Config.get(Config.CATEGORY_GENERAL, "biotech.BiotaniumPerBranch", BiotaniumPerBranch).getInt(BiotaniumPerBranch);
 		
 		Config.save();
-		
+		/*
 		events = new bioEventHandler();
 		MinecraftForge.EVENT_BUS.register(events);
-		
+		*/
 		/**
 		 * Registering Biotech Creative Tab Icon
 		 */
-		this.itemBioTab = new itemBioTabIcon(ITEM_ID_PREFIX); 
+		this.itemBioTab = new itemBioTabIcon(ITEM_ID_PREFIX);
 		this.BioTabIcon = new ItemStack(itemBioTab, 1);
 		
 		if (milkMoving.blockID + 1 != milkStill.blockID)
@@ -215,7 +215,7 @@ public class Biotech
 		GameRegistry.registerTileEntity(tileEntityFertilizer.class, "FertilizerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityCowMilker.class, "CowMilkerTileEntity");
 		GameRegistry.registerTileEntity(tileEntityBioRefinery.class, "BioRefineryTileEntity");
-		GameRegistry.registerTileEntity(tileEntityDnaSpawner.class, "DnaSpawnerTileEntity");
+		//GameRegistry.registerTileEntity(tileEntityDnaSpawner.class, "DnaSpawnerTileEntity");
 		
 		/**
 		 * Handle the blocks
@@ -231,14 +231,14 @@ public class Biotech
 		/**
 		 * Call the recipe registry
 		 */
-		//if(!mekanismLoaded)
-		//{
-			RecipeHandler.BiotechRecipes();
-		//}
-		//else
-		//{
-		//	RecipeHandler.MekanismRecipes();
-		//}
+		// if(!mekanismLoaded)
+		// {
+		RecipeHandler.BiotechRecipes();
+		// }
+		// else
+		// {
+		// RecipeHandler.MekanismRecipes();
+		// }
 		
 		/**
 		 * Load Proxy
@@ -287,5 +287,5 @@ public class Biotech
 		biotechLogger.info("Biotech fully loaded");
 	}
 	
-	public static bioEventHandler events;
+	public static bioEventHandler	events;
 }
