@@ -1,4 +1,4 @@
-package biotech.item;
+package biotech.dna;
 
 import java.util.ArrayList;
 import java.util.List;
