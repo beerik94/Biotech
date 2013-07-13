@@ -136,7 +136,7 @@ public class itemBioDNA extends Item
 			int count = dna.getInteger("count");
 			for (int i = 0; i < count; i++)
 			{
-				String string = dna.getString("upgrade" + count);
+				String string = dna.getString("upgrade" + i);
 				if (string != null && isValidDnaEffect(string))
 				{
 					effects.add(string);
