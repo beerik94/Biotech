@@ -27,7 +27,6 @@ public class itemBioDNA extends Item
 	{
 		super(id);
 		setCreativeTab(Biotech.tabBiotech);
-		setHasSubtypes(true);
 		setUnlocalizedName("DNA");
 		setMaxStackSize(1);
 	}
@@ -68,10 +67,11 @@ public class itemBioDNA extends Item
 
 			if (effects != null && effects.size() > 0)
 			{
-				par3List.add("\u00a75MOB:" + this.getItemDataStored(itemStack).getCompoundTag("DNA").getString("creatureName"));
-				par3List.add("\u00a75==DNA Changes==");
-				for (int i = 0; i < 4; i++)
+				// TODO add local translation using the entity.class
+				par3List.add("\u00a75=="+this.getItemDataStored(itemStack).getCompoundTag("DNA").getString("creatureName")+" DNA==");
+				for (int i = 0; i < 4 && i < effects.size(); i++)
 				{
+					// TODO sort effects for neg and pos as well show best effects if can
 					par3List.add((i + 1) + ": " + effects.get(i));
 				}
 				if (effects.size() > 4)
@@ -97,7 +97,7 @@ public class itemBioDNA extends Item
 	 */
 	public static ItemStack createNewDNA(ItemStack stack, DNAInfo info, String... effects)
 	{
-		if (stack != null)
+		if (stack != null && info != null)
 		{
 			ItemStack dnaStack = stack.copy();
 			NBTTagCompound tag = getItemDataStored(stack);
@@ -116,6 +116,9 @@ public class itemBioDNA extends Item
 				}
 				dna.setInteger("count", e);
 			}
+			tag.setCompoundTag("DNA", dna);
+			dnaStack.setTagCompound(tag);
+			return dnaStack;
 		}
 		return stack;
 	}
@@ -134,7 +137,7 @@ public class itemBioDNA extends Item
 			for (int i = 0; i < count; i++)
 			{
 				String string = dna.getString("upgrade" + count);
-				if (string != null && !string.isEmpty() && isValidDnaEffect(string))
+				if (string != null && isValidDnaEffect(string))
 				{
 					effects.add(string);
 				}
@@ -192,7 +195,7 @@ public class itemBioDNA extends Item
 	{
 		ItemStack stack = new ItemStack(this, 1, 0);
 		subItems.add(stack);
-		subItems.add(itemBioDNA.createNewDNA(stack, DNARegistry.chicken, "Creative"));
-		subItems.add(itemBioDNA.createNewDNA(stack, DNARegistry.cow, "Creative"));
+		subItems.add(createNewDNA(stack, DNARegistry.chicken, "Creative"));
+		subItems.add(createNewDNA(stack, DNARegistry.cow, "Creative"));
 	}
 }
