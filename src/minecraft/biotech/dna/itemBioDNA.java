@@ -11,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Icon;
 import biotech.Biotech;
+import biotech.dna.DNARegistry.DNAInfo;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -55,11 +56,7 @@ public class itemBioDNA extends Item
 	@Override
 	public String getUnlocalizedName(ItemStack itemStack)
 	{
-		if (itemStack == null || itemStack.getItemDamage() >= this.subNames.length)
-		{
-			return this.getUnlocalizedName();
-		}
-		return this.getUnlocalizedName() + "." + this.subNames[itemStack.getItemDamage()];
+		return this.getUnlocalizedName();
 	}
 
 	@Override
@@ -71,6 +68,7 @@ public class itemBioDNA extends Item
 
 			if (effects != null && effects.size() > 0)
 			{
+				par3List.add("\u00a75MOB:" + this.getItemDataStored(itemStack).getCompoundTag("DNA").getString("creatureName"));
 				par3List.add("\u00a75==DNA Changes==");
 				for (int i = 0; i < 4; i++)
 				{
@@ -90,11 +88,44 @@ public class itemBioDNA extends Item
 	}
 
 	/**
+	 * Used this to create a new DNA item with NBTTagCompound data for the DNAInfo
+	 * 
+	 * @param stack - itemStack that contains this item
+	 * @param info - DNAInfo to be encoded to the DNA Item
+	 * @param effects - effects to start the DNA strand off with
+	 * @return new ItemStack with DNA data encoded. That is if stack was not null
+	 */
+	public static ItemStack createNewDNA(ItemStack stack, DNAInfo info, String... effects)
+	{
+		if (stack != null)
+		{
+			ItemStack dnaStack = stack.copy();
+			NBTTagCompound tag = getItemDataStored(stack);
+			NBTTagCompound dna = tag.getCompoundTag("DNA");
+			dna.setString("creatureName", info.name);
+			if (effects != null)
+			{
+				int e = 0;
+				for (int i = 0; i < effects.length; i++)
+				{
+					if (isValidDnaEffect(effects[i]))
+					{
+						dna.setString("upgrade" + e, effects[i]);
+						e++;
+					}
+				}
+				dna.setInteger("count", e);
+			}
+		}
+		return stack;
+	}
+
+	/**
 	 * Gets the list of DNA effect/attributes from the Item's NBT
 	 */
-	public List<String> getDNAEffects(ItemStack stack)
+	public static List<String> getDNAEffects(ItemStack stack)
 	{
-		NBTTagCompound tag = this.getItemDataStored(stack);
+		NBTTagCompound tag = getItemDataStored(stack);
 		List<String> effects = new ArrayList<String>();
 		if (tag.hasKey("DNA"))
 		{
@@ -103,7 +134,7 @@ public class itemBioDNA extends Item
 			for (int i = 0; i < count; i++)
 			{
 				String string = dna.getString("upgrade" + count);
-				if (string != null && !string.isEmpty() && this.isValidDnaEffect(string))
+				if (string != null && !string.isEmpty() && isValidDnaEffect(string))
 				{
 					effects.add(string);
 				}
@@ -115,11 +146,11 @@ public class itemBioDNA extends Item
 	/**
 	 * Sets the DNA tag effect list of the itemStack. Doesn't check for valid tags
 	 */
-	public void setEffects(ItemStack stack, List<String> effects)
+	public static void setEffects(ItemStack stack, List<String> effects)
 	{
 		if (stack != null && effects != null)
 		{
-			NBTTagCompound tag = this.getItemDataStored(stack);
+			NBTTagCompound tag = getItemDataStored(stack);
 			NBTTagCompound dna = tag.getCompoundTag("DNA");
 			dna.setInteger("count", effects.size());
 			for (int i = 0; i < effects.size(); i++)
@@ -134,12 +165,12 @@ public class itemBioDNA extends Item
 	 * used to check if an effect is valid. Right now it always returns true but later this will be
 	 * check against a list of valid effects
 	 */
-	public boolean isValidDnaEffect(String effect)
+	public static boolean isValidDnaEffect(String effect)
 	{
 		return true;
 	}
 
-	public NBTTagCompound getItemDataStored(ItemStack stack)
+	public static NBTTagCompound getItemDataStored(ItemStack stack)
 	{
 		NBTTagCompound tag = stack.getTagCompound();
 
@@ -148,6 +179,7 @@ public class itemBioDNA extends Item
 			tag = new NBTTagCompound();
 			NBTTagCompound dna = new NBTTagCompound();
 			dna.setInteger("count", 0);
+			dna.setString("creatureName", "Unkown");
 			tag.setCompoundTag("DNA", dna);
 
 		}
@@ -158,6 +190,9 @@ public class itemBioDNA extends Item
 	@Override
 	public void getSubItems(int i, CreativeTabs tab, List subItems)
 	{
-		subItems.add(new ItemStack(this, 1, 0));
+		ItemStack stack = new ItemStack(this, 1, 0);
+		subItems.add(stack);
+		subItems.add(itemBioDNA.createNewDNA(stack, DNARegistry.chicken, "Creative"));
+		subItems.add(itemBioDNA.createNewDNA(stack, DNARegistry.cow, "Creative"));
 	}
 }

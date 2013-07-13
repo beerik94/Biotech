@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.passive.EntityChicken;
+import net.minecraft.entity.passive.EntityCow;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
 import net.minecraftforge.event.EventBus;
@@ -17,10 +18,14 @@ import net.minecraftforge.event.EventBus;
 public class DNARegistry
 {
 	private static HashMap<String, DNAInfo> DNAMap = new HashMap<String, DNAInfo>();
-
+	
+	public static final DNAInfo chicken = new DNAInfo("Chicken", EntityChicken.class,2,1);
+	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class,3,1);
+	
 	static
 	{
-		registerDNA("Chicken", new DNAInfo("Chicken", EntityChicken.class,2,1));
+		registerDNA(chicken);
+		registerDNA(cow);
 	}
 	/**
 	 * registers a new dna type, usually only one dna type per entity class
@@ -29,12 +34,12 @@ public class DNARegistry
 	 * acts the same as Fluid info
 	 * @param dna - Data to store on the dna reference
 	 */
-	public static void registerDNA(String ref, DNAInfo dna)
+	public static void registerDNA(DNAInfo dna)
 	{
-		if (ref != null && !ref.isEmpty() && DNAInfo.isValid(dna))
+		if (DNAInfo.isValid(dna))
 		{
-			DNAMap.put(ref, dna);
-			MinecraftForge.EVENT_BUS.post(new DNARegisterEvent(ref, dna));
+			DNAMap.put(dna.name, dna);
+			MinecraftForge.EVENT_BUS.post(new DNARegisterEvent(dna.name, dna));
 		}
 	}
 
