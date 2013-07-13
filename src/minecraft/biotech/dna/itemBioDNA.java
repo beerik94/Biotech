@@ -112,6 +112,28 @@ public class itemBioDNA extends Item
 		return effects;
 	}
 
+	/**
+	 * Sets the DNA tag effect list of the itemStack. Doesn't check for valid tags
+	 */
+	public void setEffects(ItemStack stack, List<String> effects)
+	{
+		if (stack != null && effects != null)
+		{
+			NBTTagCompound tag = this.getItemDataStored(stack);
+			NBTTagCompound dna = tag.getCompoundTag("DNA");
+			dna.setInteger("count", effects.size());
+			for (int i = 0; i < effects.size(); i++)
+			{
+				dna.setString("upgrade" + i, effects.get(i));
+			}
+			stack.stackTagCompound.setCompoundTag("DNA", dna);
+		}
+	}
+
+	/**
+	 * used to check if an effect is valid. Right now it always returns true but later this will be
+	 * check against a list of valid effects
+	 */
 	public boolean isValidDnaEffect(String effect)
 	{
 		return true;
@@ -124,6 +146,10 @@ public class itemBioDNA extends Item
 		if (tag == null)
 		{
 			tag = new NBTTagCompound();
+			NBTTagCompound dna = new NBTTagCompound();
+			dna.setInteger("count", 0);
+			tag.setCompoundTag("DNA", dna);
+
 		}
 		return tag;
 	}
@@ -132,9 +158,6 @@ public class itemBioDNA extends Item
 	@Override
 	public void getSubItems(int i, CreativeTabs tab, List subItems)
 	{
-		for (int meta = 0; meta < subNames.length; meta++)
-		{
-			subItems.add(new ItemStack(this, 1, meta));
-		}
+		subItems.add(new ItemStack(this, 1, 0));
 	}
 }
