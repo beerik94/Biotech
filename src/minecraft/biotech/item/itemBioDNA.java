@@ -1,5 +1,6 @@
 package biotech.item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.renderer.texture.IconRegister;
@@ -66,29 +67,61 @@ public class itemBioDNA extends Item
 	{
 		if (itemStack != null)
 		{
-			NBTTagCompound tag = this.getItemDataStored(itemStack);
+			List<String> effects = this.getDNAEffects(itemStack);
 
-			if (tag != null)
+			if (effects != null && effects.size() > 0)
 			{
-				par3List.add("==DNA Changes==");
-				par3List.add("1: " + tag.getString("upgradeOne"));
-				par3List.add("2: " + tag.getString("upgradeTwo"));
-				par3List.add("3: " + tag.getString("upgradeThree"));
-				par3List.add("4: " + tag.getString("upgradeFour"));
-				par3List.add("5: " + tag.getString("upgradeFive"));
+				par3List.add("\u00a75==DNA Changes==");
+				for (int i = 0; i < 4; i++)
+				{
+					par3List.add((i + 1) + ": " + effects.get(i));
+				}
+				if (effects.size() > 4)
+				{
+					par3List.add("\u00a7c!Long List!");
+				}
+
 			}
 			else
 			{
-				par3List.add("Empty");
+				par3List.add("Basic DNA");
 			}
 		}
 	}
-	
+
+	/**
+	 * Gets the list of DNA effect/attributes from the Item's NBT
+	 */
+	public List<String> getDNAEffects(ItemStack stack)
+	{
+		NBTTagCompound tag = this.getItemDataStored(stack);
+		List<String> effects = new ArrayList<String>();
+		if (tag.hasKey("DNA"))
+		{
+			NBTTagCompound dna = tag.getCompoundTag("DNA");
+			int count = dna.getInteger("count");
+			for (int i = 0; i < count; i++)
+			{
+				String string = dna.getString("upgrade" + count);
+				if (string != null && !string.isEmpty() && this.isValidDnaEffect(string))
+				{
+					effects.add(string);
+				}
+			}
+		}
+		return effects;
+	}
+
+	public boolean isValidDnaEffect(String effect)
+	{
+		return true;
+	}
+
 	public NBTTagCompound getItemDataStored(ItemStack stack)
 	{
 		NBTTagCompound tag = stack.getTagCompound();
-		
-		if(tag == null)
+
+		if (tag == null)
 		{
 			tag = new NBTTagCompound();
 		}
