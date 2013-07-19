@@ -1,6 +1,7 @@
 package biotech.dna.effects;
 
 import java.util.HashMap;
+import java.util.List;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.nbt.NBTTagCompound;
@@ -13,14 +14,40 @@ import biotech.dna.DNARegistry.DNAData;
 public class DNAEffectHandler
 {
 	HashMap<String, DnaEffect> effectMap = new HashMap<String, DnaEffect>();
-	
-	
+
 	public void registerEffect(DnaEffect effect)
 	{
-		
+		if (effect != null)
+		{
+			String prefix = effect.getEffectName();
+			List<String> effects = effect.getSubEffects();
+			for (String e : effects)
+			{
+				effectMap.put(prefix + e, effect);
+			}
+		}
 	}
-	
-	
+
+	public void onEffectUpdated(String effect, EntityLiving entity)
+	{
+		try
+		{
+			if (effectMap.containsKey(effect))
+			{
+				effectMap.get(effect).onEffectUpdate(effect, entity);
+			}
+		}
+		catch (Exception e)
+		{
+			System.out.println("Biotech has received an error while processing an effect on an entity");
+			if (entity != null)
+			{
+				System.out.println("Effect: " + effect + "   Entity: " + entity.toString());
+			}
+			e.printStackTrace();
+		}
+	}
+
 	@ForgeSubscribe
 	public void onEntitySpawn(LivingSpawnEvent event)
 	{
