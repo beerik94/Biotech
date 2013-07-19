@@ -18,6 +18,7 @@ import biotech.block.blockBiotechMachine;
 import biotech.block.blockMilkFlowing;
 import biotech.block.blockMilkStill;
 import biotech.common.CommonProxy;
+import biotech.dna.ItemToolSyringe;
 import biotech.dna.itemBioDNA;
 import biotech.handlers.GuiHandler;
 import biotech.handlers.OreGenHandler;
@@ -92,6 +93,7 @@ public class Biotech
 	public static Item bioCheese;
 	public static Item BiotaniumIngot;
 	public static Item bioDNA;
+	public static Item bioDnaTool;
 	public static Item itemBioTab;
 	public static ItemStack BioTabIcon;
 
@@ -148,6 +150,7 @@ public class Biotech
 		this.bioCheese = new itemBioCheese(Config.getItem("biotech.bioCheese", ITEM_ID_PREFIX + 2).getInt());
 		this.BiotaniumIngot = new itemBiotaniumIngot(Config.getItem("biotech.BiotaniumIngot", ITEM_ID_PREFIX + 3).getInt());
 		this.bioDNA = new itemBioDNA(Config.getItem("biotech.bioDNA", ITEM_ID_PREFIX + 4).getInt());
+		this.bioDnaTool = new ItemToolSyringe(Config.getItem("biotech.bioDNATool", ITEM_ID_PREFIX + 5).getInt());
 
 		/**
 		 * Define the blocks.

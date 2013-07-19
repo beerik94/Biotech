@@ -6,6 +6,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import biotech.Biotech;
 import biotech.dna.DNARegistry.DNAData;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemToolSyringe extends Item
 {
@@ -19,9 +21,10 @@ public class ItemToolSyringe extends Item
 	}
 
 	@Override
-	public void registerIcons(IconRegister iconRegister)
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IconRegister par1IconRegister)
 	{
-
+		this.itemIcon = par1IconRegister.registerIcon(Biotech.NAME + ":seringe");
 	}
 
 	@Override
