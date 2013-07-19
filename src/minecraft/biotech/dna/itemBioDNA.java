@@ -2,6 +2,7 @@ package biotech.dna;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.creativetab.CreativeTabs;
@@ -68,7 +69,7 @@ public class itemBioDNA extends Item
 			if (effects != null && effects.size() > 0)
 			{
 				// TODO add local translation using the entity.class
-				par3List.add("\u00a75=="+this.getItemDataStored(itemStack).getCompoundTag("DNA").getString("creatureName")+" DNA==");
+				par3List.add("\u00a75==" + this.getItemDataStored(itemStack).getCompoundTag("DNA").getString("creatureName") + " DNA==");
 				for (int i = 0; i < 4 && i < effects.size(); i++)
 				{
 					// TODO sort effects for neg and pos as well show best effects if can
@@ -195,7 +196,9 @@ public class itemBioDNA extends Item
 	{
 		ItemStack stack = new ItemStack(this, 1, 0);
 		subItems.add(stack);
-		subItems.add(createNewDNA(stack, DNARegistry.chicken, "Creative"));
-		subItems.add(createNewDNA(stack, DNARegistry.cow, "Creative"));
+		for (Entry<String, DNAInfo> entry : DNARegistry.DNAMap.entrySet())
+		{
+			subItems.add(createNewDNA(stack, entry.getValue(), "Creative"));
+		}
 	}
 }

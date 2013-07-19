@@ -34,13 +34,15 @@ public class ItemToolSyringe extends Item
 		if (entity != null && !entity.worldObj.isRemote)
 		{
 			DNAData data = DNARegistry.getDNAFor(entity);
-			if (data != null)
+			if (data != null && data.info != null)
 			{
 				int delay = EntityTickHandler.getDelay(entity);
 				if (delay > 0)
 				{
 					return true;
 				}
+				// TODO change this from dropping the item to filling the syringe with blood. Then
+				// have the syringe be processed to get the DNA
 				EntityTickHandler.onHarvestDna(entity, -1);
 				ItemStack stack = itemBioDNA.createNewDNA(new ItemStack(Biotech.bioDNA, 1, 0), data.info, data.effects);
 

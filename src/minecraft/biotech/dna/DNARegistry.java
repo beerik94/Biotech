@@ -7,8 +7,11 @@ import java.util.Set;
 import biotech.dna.DNARegistry.DNAInfo;
 
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.entity.passive.EntityChicken;
 import net.minecraft.entity.passive.EntityCow;
+import net.minecraft.entity.passive.EntityPig;
+import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
@@ -22,15 +25,21 @@ import net.minecraftforge.event.EventBus;
  */
 public class DNARegistry
 {
-	private static HashMap<String, DNAInfo> DNAMap = new HashMap<String, DNAInfo>();
+	public static HashMap<String, DNAInfo> DNAMap = new HashMap<String, DNAInfo>();
 
 	public static final DNAInfo chicken = new DNAInfo("Chicken", EntityChicken.class, 2, 0);
-	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class, 3, 0);
+	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class, 5, 0);
+	public static final DNAInfo pig = new DNAInfo("Pig", EntityPig.class, 3, 0);
+	public static final DNAInfo sheep = new DNAInfo("Sheep", EntitySheep.class, 3, 0);
+	public static final DNAInfo zombie = new DNAInfo("Zombie", EntityZombie.class, 8, 0);
 
 	static
 	{
 		registerDNA(chicken);
 		registerDNA(cow);
+		registerDNA(pig);
+		registerDNA(sheep);
+		registerDNA(zombie);
 	}
 
 	/**
@@ -70,7 +79,7 @@ public class DNARegistry
 				Class cla = entry.getValue().entityClass;
 				if (entity.getClass().equals(cla))
 				{
-					return new DNAData(entry.getValue());
+					return new DNAData(entry.getValue(), "Basic");
 				}
 			}
 			System.out.println("[BioTech]DNA strand not found for " + entity.toString());
