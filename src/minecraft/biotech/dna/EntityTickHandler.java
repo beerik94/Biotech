@@ -35,11 +35,33 @@ public class EntityTickHandler implements ITickHandler
 	 */
 	public static void onHarvestDna(EntityLiving entity, int delay)
 	{
-		if (delay < 0)
+		if (entity != null)
 		{
-			delay = harvestDelayMin + new Random().nextInt(((int) DNARegistry.getRarity(entity) * harvestDelayMin) + 1);
+			// get new delay or load it if delay is under zero
+			if (delay < 0)
+			{
+				delay = entity.getEntityData().getInteger("dnaDelay");
+				// Generate delay if delay is zero or bellow
+				if (delay <= 0)
+				{
+					delay = harvestDelayMin + new Random().nextInt(((int) DNARegistry.getRarity(entity) * harvestDelayMin) + 1);
+				}
+			}
+
+			harvestDelay.put(entity, delay);
 		}
-		harvestDelay.put(entity, delay);
+	}
+
+	/**
+	 * returns the current delay before DNA can be extracted again
+	 */
+	public static int getDelay(EntityLiving entity)
+	{
+		if (harvestDelay.containsKey(entity))
+		{
+			return harvestDelay.get(entity);
+		}
+		return 0;
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package biotech.dna;
 
 import net.minecraft.client.renderer.texture.IconRegister;
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import biotech.Biotech;
@@ -28,24 +29,29 @@ public class ItemToolSyringe extends Item
 	}
 
 	@Override
-	public boolean itemInteractionForEntity(ItemStack par1ItemStack, EntityLiving par2EntityLiving)
+	public boolean itemInteractionForEntity(ItemStack par1ItemStack, EntityLiving entity)
 	{
-		DNAData data = DNARegistry.getDNAFor(par2EntityLiving);
-		if (data != null)
+		if (entity != null && !entity.worldObj.isRemote)
 		{
-			int delay = par2EntityLiving.getEntityData().getInteger("dnaDelay");
-			if (delay > 0)
+			DNAData data = DNARegistry.getDNAFor(entity);
+			if (data != null)
 			{
-				EntityTickHandler.onHarvestDna(par2EntityLiving, delay);
+				int delay = EntityTickHandler.getDelay(entity);
+				if (delay > 0)
+				{
+					return true;
+				}
+				EntityTickHandler.onHarvestDna(entity, -1);
+				ItemStack stack = itemBioDNA.createNewDNA(new ItemStack(Biotech.bioDNA, 1, 0), data.info, data.effects);
+
+				EntityItem entityitem = new EntityItem(entity.worldObj, entity.posX, entity.posY + 1, entity.posZ, stack);
+				entityitem.delayBeforeCanPickup = 10;
+
+				entity.worldObj.spawnEntityInWorld(entityitem);
 				return true;
 			}
-			System.out.println("[BioTech]Debug: DNA extracted");
-			System.out.println("[BioTech]DNAData:" + data.toString());
-			EntityTickHandler.onHarvestDna(par2EntityLiving, -1);
-			return true;
 		}
 
 		return false;
 	}
-
 }
