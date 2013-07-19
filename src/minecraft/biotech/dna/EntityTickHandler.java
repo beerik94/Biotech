@@ -8,27 +8,21 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import biotech.dna.DNARegistry.DNAData;
+
 import net.minecraft.entity.EntityLiving;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.event.ForgeSubscribe;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import cpw.mods.fml.common.ITickHandler;
 import cpw.mods.fml.common.TickType;
 
 public class EntityTickHandler implements ITickHandler
 {
-	private static List<EntityLiving> DNAEntities = new ArrayList<EntityLiving>();
 	private static HashMap<EntityLiving, Integer> harvestDelay = new HashMap<EntityLiving, Integer>();
 	private long tick = 0;
 	public static int harvestDelayMin = 900;
-
-	/**
-	 * Registers a entity to the DNA Entity list to be tracked and modified
-	 */
-	public static void registerEntity(EntityLiving entity)
-	{
-		if (!DNAEntities.contains(entity))
-		{
-			DNAEntities.add(entity);
-		}
-	}
 
 	/**
 	 * Registers an entity to be track on delay that its dna can be extracted again
@@ -74,23 +68,6 @@ public class EntityTickHandler implements ITickHandler
 	public void tickEnd(EnumSet<TickType> type, Object... tickData)
 	{
 
-		if (tick % 100 == 0)
-		{
-			Iterator<EntityLiving> it = DNAEntities.iterator();
-			while (it.hasNext())
-			{
-				EntityLiving entity = it.next();
-				if (entity == null)
-				{
-					it.remove();
-				}
-				if (entity.isDead)
-				{
-					it.remove();
-				}
-			}
-		}
-
 		for (Entry<EntityLiving, Integer> entry : harvestDelay.entrySet())
 		{
 			int number = entry.getValue() - 1;
@@ -119,5 +96,7 @@ public class EntityTickHandler implements ITickHandler
 	{
 		return "Biotech-EntityTickHandler";
 	}
+
+	
 
 }

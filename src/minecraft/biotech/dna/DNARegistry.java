@@ -1,6 +1,8 @@
 package biotech.dna;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -26,12 +28,15 @@ import net.minecraftforge.event.EventBus;
 public class DNARegistry
 {
 	public static HashMap<String, DNAInfo> DNAMap = new HashMap<String, DNAInfo>();
+	public static List<String> validNeturialEffects = new ArrayList<String>();
+	public static List<String> validMonsterEffects = new ArrayList<String>();
+	public static List<String> validPlayerEffects = new ArrayList<String>();
 
-	public static final DNAInfo chicken = new DNAInfo("Chicken", EntityChicken.class, 2, 0);
-	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class, 5, 0);
-	public static final DNAInfo pig = new DNAInfo("Pig", EntityPig.class, 3, 0);
-	public static final DNAInfo sheep = new DNAInfo("Sheep", EntitySheep.class, 3, 0);
-	public static final DNAInfo zombie = new DNAInfo("Zombie", EntityZombie.class, 8, 0);
+	public static final DNAInfo chicken = new DNAInfo("Chicken", EntityChicken.class, 2, 0, validNeturialEffects);
+	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class, 5, 0, validNeturialEffects);
+	public static final DNAInfo pig = new DNAInfo("Pig", EntityPig.class, 3, 0, validNeturialEffects);
+	public static final DNAInfo sheep = new DNAInfo("Sheep", EntitySheep.class, 3, 0, validNeturialEffects);
+	public static final DNAInfo zombie = new DNAInfo("Zombie", EntityZombie.class, 8, 0, validMonsterEffects);
 
 	static
 	{
@@ -40,6 +45,10 @@ public class DNARegistry
 		registerDNA(pig);
 		registerDNA(sheep);
 		registerDNA(zombie);
+		validNeturialEffects.add("Regrow");
+		validNeturialEffects.add("GreaterRegrow");
+		validNeturialEffects.add("HealthRegen");
+		validNeturialEffects.add("Quickness");
 	}
 
 	/**
@@ -87,12 +96,61 @@ public class DNARegistry
 		return null;
 	}
 
+	public static DNAData getNewDataFor(EntityLiving entity)
+	{
+		DNAData data = null;
+		for (Entry<String, DNAInfo> entry : DNAMap.entrySet())
+		{
+			Class cla = entry.getValue().entityClass;
+			if (entity.getClass().equals(cla))
+			{
+				data = new DNAData(entry.getValue(), "Basic");
+				break;
+			}
+		}
+		if (data != null)
+		{
+
+		}
+		return data;
+	}
+
+	public static List<String> getRandomEffects(EntityLiving entity, int number)
+	{
+		DNAInfo info = get(entity);
+		List<String> effects = new ArrayList<String>();
+		if (info != null && info.validEffects != null && info.validEffects.size() > 0)
+		{			
+			if (number == 0)
+			{
+				number = info.maxChanges;
+			}
+		}
+
+		return effects;
+	}
+
 	/**
 	 * Gets the DNAInfo from the creature reference string
 	 */
 	public static DNAInfo get(String creatureRef)
 	{
 		return DNAMap.get(creatureRef);
+	}
+
+	public static DNAInfo get(EntityLiving entity)
+	{
+		DNAInfo info = null;
+		for (Entry<String, DNAInfo> entry : DNAMap.entrySet())
+		{
+			Class cla = entry.getValue().entityClass;
+			if (entity.getClass().equals(cla))
+			{
+				info = entry.getValue();
+				break;
+			}
+		}
+		return info;
 	}
 
 	/**
@@ -117,6 +175,7 @@ public class DNARegistry
 		public Class entityClass;
 		public int maxChanges;
 		public float rarity;
+		public List<String> validEffects;
 
 		/**
 		 * 
@@ -125,13 +184,18 @@ public class DNARegistry
 		 * @param maxChanges - max dna changes allowed per dna item
 		 * @param rarity - drop rarity 0 common 1 rare
 		 */
-		public DNAInfo(String entityName, Class entityClass, int maxChanges, float rarity)
+		public DNAInfo(String entityName, Class<? extends EntityLiving> entityClass, int maxChanges, float rarity, List<String> validEffects)
 		{
 			this.name = entityName;
-			// TODO check for extends EntityLiving to make sure all entities are creatures
 			this.entityClass = entityClass;
 			this.maxChanges = maxChanges;
 			this.rarity = rarity;
+			this.validEffects = validEffects;
+			
+			if (this.validEffects == null)
+			{
+				this.validEffects = new ArrayList<String>();
+			}
 		}
 
 		public static boolean isValid(DNAInfo dna)
