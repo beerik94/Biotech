@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.Configuration;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Property;
 import net.minecraftforge.liquids.LiquidContainerData;
 import net.minecraftforge.liquids.LiquidContainerRegistry;
@@ -18,8 +19,10 @@ import biotech.block.blockBiotechMachine;
 import biotech.block.blockMilkFlowing;
 import biotech.block.blockMilkStill;
 import biotech.common.CommonProxy;
+import biotech.dna.EntityTickHandler;
 import biotech.dna.ItemToolSyringe;
 import biotech.dna.itemBioDNA;
+import biotech.dna.effects.DNAEffectHandler;
 import biotech.handlers.GuiHandler;
 import biotech.handlers.OreGenHandler;
 import biotech.handlers.PacketHandler;
@@ -50,6 +53,8 @@ import cpw.mods.fml.common.network.NetworkMod;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.LanguageRegistry;
+import cpw.mods.fml.common.registry.TickRegistry;
+import cpw.mods.fml.relauncher.Side;
 
 @Mod(modid = Biotech.MOD_ID, name = Biotech.NAME, version = Biotech.VERSION, dependencies = "after:BasicComponents;after:Fluid_Mechanics")
 @NetworkMod(channels = Biotech.CHANNEL, clientSideRequired = true, serverSideRequired = false, packetHandler = PacketHandler.class)
@@ -140,6 +145,9 @@ public class Biotech
 		biotechLogger.setParent(FMLLog.getLogger());
 		biotechLogger.info("Starting Biotech");
 		biotechLogger.info("Loading config");
+		MinecraftForge.EVENT_BUS.register(new EntityTickHandler());
+		TickRegistry.registerTickHandler(new EntityTickHandler(), Side.SERVER);
+		MinecraftForge.EVENT_BUS.register(new DNAEffectHandler());
 		Config.load();
 		Property prop;
 

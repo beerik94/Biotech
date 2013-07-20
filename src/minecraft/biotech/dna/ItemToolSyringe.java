@@ -44,7 +44,7 @@ public class ItemToolSyringe extends Item
 				// TODO change this from dropping the item to filling the syringe with blood. Then
 				// have the syringe be processed to get the DNA
 				EntityTickHandler.onHarvestDna(entity, -1);
-				ItemStack stack = itemBioDNA.createNewDNA(new ItemStack(Biotech.bioDNA, 1, 0), data.info, data.effects);
+				ItemStack stack = itemBioDNA.createNewDNA(new ItemStack(Biotech.bioDNA, 1, 0), data.info, data != null ? data.effects.toArray(new String[data.effects.size()]) : null);
 
 				EntityItem entityitem = new EntityItem(entity.worldObj, entity.posX, entity.posY + 1, entity.posZ, stack);
 				entityitem.delayBeforeCanPickup = 10;

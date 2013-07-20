@@ -8,9 +8,9 @@ import net.minecraft.entity.EntityLiving;
 /**
  * Method all DNA modifiers or effects should use to construct effects that can be applied by the
  * DNA system to entities
- * 
+ *
  * @author DarkGuardsman
- * 
+ *
  */
 public abstract class DnaEffect
 {

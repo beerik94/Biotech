@@ -2,7 +2,7 @@ package biotech.dna.effects;
 
 import net.minecraft.entity.EntityLiving;
 
-public class EffectSpeed extends DnaEffect
+public class EffectSpeed extends MovementEffect
 {
 
 	@Override
@@ -12,20 +12,15 @@ public class EffectSpeed extends DnaEffect
 	}
 
 	@Override
-	public boolean onEffectUpdate(String effectName, EntityLiving entity)
+	public float getChanceOfHarvest(String effectName, EntityLiving entity)
 	{
-		if (entity != null && !entity.isDead)
-		{
-			EntityLiving entityDefault = new EntityLiving(entity.worldObj);
-		}
-		return false;
+		return 0.5f;
 	}
 
 	@Override
-	public float getChanceOfHarvest(String effectName, EntityLiving entity)
+	public float getSpeedModifier(String effectName, EntityLiving entity)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		return 2;
 	}
 
 }

@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 
-import biotech.dna.DNARegistry.DNAInfo;
+import biotech.dna.effects.DNAEffectHandler;
 
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.monster.EntityZombie;
@@ -17,26 +16,23 @@ import net.minecraft.entity.passive.EntitySheep;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.Event;
-import net.minecraftforge.event.EventBus;
 
 /**
  * Collects info on DNA types so to better sort and use DNA items
- * 
+ *
  * @author DarkGuardsman
- * 
+ *
  */
 public class DNARegistry
 {
 	public static HashMap<String, DNAInfo> DNAMap = new HashMap<String, DNAInfo>();
-	public static List<String> validNeturialEffects = new ArrayList<String>();
-	public static List<String> validMonsterEffects = new ArrayList<String>();
-	public static List<String> validPlayerEffects = new ArrayList<String>();
 
-	public static final DNAInfo chicken = new DNAInfo("Chicken", EntityChicken.class, 2, 0, validNeturialEffects);
-	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class, 5, 0, validNeturialEffects);
-	public static final DNAInfo pig = new DNAInfo("Pig", EntityPig.class, 3, 0, validNeturialEffects);
-	public static final DNAInfo sheep = new DNAInfo("Sheep", EntitySheep.class, 3, 0, validNeturialEffects);
-	public static final DNAInfo zombie = new DNAInfo("Zombie", EntityZombie.class, 8, 0, validMonsterEffects);
+
+	public static final DNAInfo chicken = new DNAInfo("Chicken", EntityChicken.class, 2, 0, DNAEffectHandler.validNeutralEffects);
+	public static final DNAInfo cow = new DNAInfo("Cow", EntityCow.class, 5, 0, DNAEffectHandler.validNeutralEffects);
+	public static final DNAInfo pig = new DNAInfo("Pig", EntityPig.class, 3, 0, DNAEffectHandler.validNeutralEffects);
+	public static final DNAInfo sheep = new DNAInfo("Sheep", EntitySheep.class, 3, 0, DNAEffectHandler.validNeutralEffects);
+	public static final DNAInfo zombie = new DNAInfo("Zombie", EntityZombie.class, 8, 0, DNAEffectHandler.validMonsterEffects);
 
 	static
 	{
@@ -45,15 +41,11 @@ public class DNARegistry
 		registerDNA(pig);
 		registerDNA(sheep);
 		registerDNA(zombie);
-		validNeturialEffects.add("Regrow");
-		validNeturialEffects.add("GreaterRegrow");
-		validNeturialEffects.add("HealthRegen");
-		validNeturialEffects.add("Quickness");
 	}
 
 	/**
 	 * registers a new dna type, usually only one dna type per entity class
-	 * 
+	 *
 	 * @param ref - reference the item will call to load info from NBT. Should never change, and
 	 * acts the same as Fluid info
 	 * @param dna - Data to store on the dna reference
@@ -108,9 +100,9 @@ public class DNARegistry
 				break;
 			}
 		}
-		if (data != null)
+		if (data != null && data.effects.size() < data.info.maxChanges)
 		{
-
+			data.effects.addAll(getRandomEffects(entity, data.info.maxChanges - data.effects.size()));
 		}
 		return data;
 	}
@@ -120,7 +112,7 @@ public class DNARegistry
 		DNAInfo info = get(entity);
 		List<String> effects = new ArrayList<String>();
 		if (info != null && info.validEffects != null && info.validEffects.size() > 0)
-		{			
+		{
 			if (number == 0)
 			{
 				number = info.maxChanges;
@@ -178,7 +170,7 @@ public class DNARegistry
 		public List<String> validEffects;
 
 		/**
-		 * 
+		 *
 		 * @param entityName - EntityName for display or look up
 		 * @param entityClass - Entity class
 		 * @param maxChanges - max dna changes allowed per dna item
@@ -191,7 +183,7 @@ public class DNARegistry
 			this.maxChanges = maxChanges;
 			this.rarity = rarity;
 			this.validEffects = validEffects;
-			
+
 			if (this.validEffects == null)
 			{
 				this.validEffects = new ArrayList<String>();
@@ -210,12 +202,18 @@ public class DNARegistry
 	public static class DNAData
 	{
 		public DNAInfo info;
-		public String[] effects;
+		public List<String> effects;
 
 		public DNAData(final DNAInfo info, String... effects)
 		{
 			this.info = info;
-			this.effects = effects;
+			for (int i = 0; i < effects.length; i++)
+			{
+				if (effects[i] != null)
+				{
+					this.effects.add(effects[i]);
+				}
+			}
 		}
 
 		public static DNAData read(NBTTagCompound compoundTag)
@@ -244,9 +242,9 @@ public class DNARegistry
 			if (effects != null)
 			{
 				int i;
-				for (i = 0; i < effects.length; i++)
+				for (i = 0; i < effects.size(); i++)
 				{
-					tag.setString("upgrade" + 1, effects[i]);
+					tag.setString("upgrade" + 1, effects.get(i));
 				}
 				tag.setInteger("count", i);
 			}
