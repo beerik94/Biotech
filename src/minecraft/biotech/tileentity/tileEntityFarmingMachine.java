@@ -38,14 +38,11 @@ public class tileEntityFarmingMachine extends tileEntityBasicMachine
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{
-			if (this.checkRedstone())
+			/* Per 40 Tick Processes */
+			if (this.ticks % 40 == 0 && this.energyStored >= ENERGY_PER_ACTION)
 			{
-				/* Per 40 Tick Processes */
-				if (this.ticks % 40 == 0 && this.electricityStored >= ENERGY_PER_ACTION)
-				{
-					this.WorkArea();
-					this.electricityStored -= ENERGY_PER_ACTION;
-				}
+				this.WorkArea();
+				this.energyStored -= ENERGY_PER_ACTION;
 			}
 		}
 	}

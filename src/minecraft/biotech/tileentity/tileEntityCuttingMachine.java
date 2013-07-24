@@ -26,13 +26,10 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{
-			if (this.checkRedstone())
+			/* Per 40 Tick Process */
+			if (this.ticks % 15 == 0 && this.energyStored >= ENERGY_PER_CUT)
 			{
-				/* Per 40 Tick Process */
-				if (this.ticks % 15 == 0 && this.electricityStored >= ENERGY_PER_CUT)
-				{
-					GetTree();
-				}
+				GetTree();
 			}
 		}
 	}
@@ -143,7 +140,7 @@ public class tileEntityCuttingMachine extends tileEntityBasicMachine
 		worldObj.setBlock(x, y, z, 0, 0, 2);
 		if (wood)
 		{
-			this.electricityStored -= ENERGY_PER_CUT;
+			this.energyStored -= ENERGY_PER_CUT;
 		}
 	}
 	

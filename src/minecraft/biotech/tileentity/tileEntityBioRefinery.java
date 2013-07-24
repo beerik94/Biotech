@@ -16,11 +16,10 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import biotech.Biotech;
 import biotech.handlers.PacketHandler;
-import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPacketReceiver, IFluidTank
+public class tileEntityBioRefinery extends tileEntityBasicMachine implements IFluidTank
 {
 	// Watts being used per action / idle action
 	public static final double	WATTS_PER_TICK			= 500;
@@ -50,53 +49,50 @@ public class tileEntityBioRefinery extends tileEntityBasicMachine implements IPa
 	{
 		if (!worldObj.isRemote)
 		{
-			if (this.checkRedstone())
+			this.fillFrom(ForgeDirection.DOWN);
+			if (this.getMilkStored() >= this.getMaxMilk())
 			{
-				this.fillFrom(ForgeDirection.DOWN);
-				if (this.getMilkStored() >= this.getMaxMilk())
+				this.milkStored = this.getMaxMilk();
+			}
+			if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME)
+			{
+				this.Refine();
+				this.PROCESS_TIME = 0;
+			}
+			working = (((MAX_PROCESS_TIME - (MAX_PROCESS_TIME - PROCESS_TIME)) / MAX_PROCESS_TIME) * 100);
+			PROCESS_TIME++;
+			
+			if (milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4] == null || milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4].stackSize < 16)
+			{
+				if (this.processTicks == 0)
 				{
-					this.milkStored = this.getMaxMilk();
+					this.processTicks = this.PROCESS_TIME_REQUIRED;
 				}
-				if (this.PROCESS_TIME >= this.MAX_PROCESS_TIME)
+				else if (this.processTicks > 0)
 				{
-					this.Refine();
-					this.PROCESS_TIME = 0;
-				}
-				working = (((MAX_PROCESS_TIME - (MAX_PROCESS_TIME - PROCESS_TIME)) / MAX_PROCESS_TIME) * 100);
-				PROCESS_TIME++;
-				
-				if (milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4] == null || milkStored <= (milkMaxStored - 30) && inventory[3] != null && inventory[4].stackSize < 16)
-				{
-					if (this.processTicks == 0)
+					this.processTicks--;
+					
+					/**
+					 * Process the item when the process timer is done.
+					 */
+					if (this.processTicks < 1)
 					{
-						this.processTicks = this.PROCESS_TIME_REQUIRED;
-					}
-					else if (this.processTicks > 0)
-					{
-						this.processTicks--;
-						
-						/**
-						 * Process the item when the process timer is done.
-						 */
-						if (this.processTicks < 1)
+						if (inventory[4] == null)
 						{
-							if (inventory[4] == null)
-							{
-								inventory[4] = (new ItemStack(Item.bucketEmpty, 1, 0));
-							}
-							else
-							{
-								inventory[4].stackSize += 1;
-							}
-							inventory[3] = null;
-							milkStored += this.MilkPerBucket;
-							this.processTicks = 0;
+							inventory[4] = (new ItemStack(Item.bucketEmpty, 1, 0));
 						}
-					}
-					else
-					{
+						else
+						{
+							inventory[4].stackSize += 1;
+						}
+						inventory[3] = null;
+						milkStored += this.MilkPerBucket;
 						this.processTicks = 0;
 					}
+				}
+				else
+				{
+					this.processTicks = 0;
 				}
 			}
 		}

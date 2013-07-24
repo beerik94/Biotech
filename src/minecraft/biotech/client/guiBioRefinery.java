@@ -98,7 +98,7 @@ public class guiBioRefinery extends GuiContainer
 		
 		String displayText = "";
 		
-		if (this.tileEntity.checkRedstone())
+		if (this.tileEntity.isPowered)
 		{
 			displayText = "Working";
 		}
@@ -109,7 +109,7 @@ public class guiBioRefinery extends GuiContainer
 		
 		this.fontRenderer.drawString("Status: " + displayText, 28, 22, 0x00CD00);
 		this.fontRenderer.drawString("Milk: " + this.tileEntity.getMilkStored() + "/" + this.tileEntity.getMaxMilk(), 28, 32, 0x00CD00);
-		if (this.tileEntity.checkRedstone())
+		if (this.tileEntity.isPowered)
 		{
 			this.fontRenderer.drawString("Refining: " + this.tileEntity.working + "%", 28, 42, 0x00CD00);
 		}

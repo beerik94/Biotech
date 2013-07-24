@@ -22,13 +22,10 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{
-			if (this.checkRedstone())
+			/* Per 10 Tick Process */
+			if (this.ticks % 10 == 0 && this.energyStored >= ENERGY_PER_ACTION)
 			{
-				/* Per 10 Tick Process */
-				if (this.ticks % 10 == 0 && this.electricityStored >= ENERGY_PER_ACTION)
-				{
-					GrowPlants();
-				}
+				GrowPlants();
 			}
 		}
 	}
@@ -66,7 +63,7 @@ public class tileEntityFertilizer extends tileEntityBasicMachine
 							((BlockCrops) Block.blocksList[bID]).fertilize(worldObj, xx, yy, zz);
 						}
 					}
-					this.electricityStored -= ENERGY_PER_ACTION;
+					this.energyStored -= ENERGY_PER_ACTION;
 				}
 			}
 		}

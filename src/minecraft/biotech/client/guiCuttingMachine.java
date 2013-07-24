@@ -37,7 +37,7 @@ public class guiCuttingMachine extends GuiContainer
 		
 		String displayText = "";
 		
-		if (this.tileEntity.checkRedstone())
+		if (this.tileEntity.isPowered)
 		{
 			displayText = "Working";
 		}

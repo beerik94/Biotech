@@ -21,11 +21,10 @@ import net.minecraftforge.fluids.FluidTankInfo;
 import net.minecraftforge.fluids.IFluidTank;
 import biotech.Biotech;
 import biotech.handlers.PacketHandler;
-import biotech.helpers.IPacketReceiver;
 
 import com.google.common.io.ByteArrayDataInput;
 
-public class tileEntityCowMilker extends tileEntityBasicMachine implements IPacketReceiver, IFluidTank
+public class tileEntityCowMilker extends tileEntityBasicMachine implements IFluidTank
 {
 	protected List<EntityCow>	CowList					= new ArrayList<EntityCow>();
 	
@@ -51,61 +50,58 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 		super.updateEntity();
 		if (!worldObj.isRemote)
 		{
-			if (this.checkRedstone())
+			this.drainTo(ForgeDirection.DOWN);
+			
+			/* SCAN FOR COWS */
+			if (this.ticks % 40 == 0)
 			{
-				this.drainTo(ForgeDirection.DOWN);
-				
-				/* SCAN FOR COWS */
-				if (this.ticks % 40 == 0)
+				scanForCows();
+			}
+			
+			/* Milk Cows */
+			if (this.ticks % 100 == 0 && this.milkStored <= this.milkMaxStored)
+			{
+				milkCows();
+			}
+			
+			if (milkStored >= this.MilkPerBucket && inventory[2] != null && inventory[3] == null)
+			{
+				if (this.processTicks == 0)
 				{
-					scanForCows();
+					this.processTicks = this.PROCESS_TIME_REQUIRED;
 				}
-				
-				/* Milk Cows */
-				if (this.ticks % 100 == 0 && this.milkStored <= this.milkMaxStored)
+				else if (this.processTicks > 0)
 				{
-					milkCows();
-				}
-				
-				if (milkStored >= this.MilkPerBucket && inventory[2] != null && inventory[3] == null)
-				{
-					if (this.processTicks == 0)
+					this.processTicks--;
+					
+					/**
+					 * Process the item when the process timer is done.
+					 */
+					if (this.processTicks < 1)
 					{
-						this.processTicks = this.PROCESS_TIME_REQUIRED;
-					}
-					else if (this.processTicks > 0)
-					{
-						this.processTicks--;
-						
-						/**
-						 * Process the item when the process timer is done.
-						 */
-						if (this.processTicks < 1)
+						if (inventory[2].stackSize > 1)
 						{
-							if (inventory[2].stackSize > 1)
-							{
-								inventory[2].stackSize -= 1;
-							}
-							else if (inventory[2].stackSize == 1)
-							{
-								inventory[2] = null;
-							}
-							ItemStack bMilk = new ItemStack(Item.bucketMilk);
-							inventory[3] = (bMilk);
-							milkStored -= this.MilkPerBucket;
-							this.processTicks = 0;
+							inventory[2].stackSize -= 1;
 						}
-					}
-					else
-					{
+						else if (inventory[2].stackSize == 1)
+						{
+							inventory[2] = null;
+						}
+						ItemStack bMilk = new ItemStack(Item.bucketMilk);
+						inventory[3] = (bMilk);
+						milkStored -= this.MilkPerBucket;
 						this.processTicks = 0;
 					}
-					
 				}
-				if (milkStored >= milkMaxStored)
+				else
 				{
-					milkStored = milkMaxStored;
+					this.processTicks = 0;
 				}
+				
+			}
+			if (milkStored >= milkMaxStored)
+			{
+				milkStored = milkMaxStored;
 			}
 		}
 	}
@@ -126,7 +122,7 @@ public class tileEntityCowMilker extends tileEntityBasicMachine implements IPack
 		{
 			int vol = (10 * CowList.size());
 			this.setMilkStored(vol, true);
-			this.electricityStored -= ENERGY_PER_MILK;
+			this.energyStored -= ENERGY_PER_MILK;
 		}
 	}
 	

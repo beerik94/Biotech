@@ -1,7 +1,5 @@
 package biotech.slots;
 
-import universalelectricity.core.item.IItemElectric;
-import mekanism.api.IEnergizedItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
